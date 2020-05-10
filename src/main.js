@@ -10,6 +10,16 @@ let config = {
     type: Phaser.CANVAS,
     width: 640,
     height: 480,
+    physics:{
+        default:'arcade',
+        arcade:{
+            debug: true,
+            gravity:{
+                x:0,
+                y:0
+            }
+        }
+    },
     scene: [Menu, Instructions, Play]
 };
 
@@ -22,4 +32,5 @@ game.settings = {
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyW, keyS, keySpace;
 let mouseDown = false;
+
 //need left mouse click
