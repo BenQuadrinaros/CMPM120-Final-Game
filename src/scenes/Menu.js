@@ -37,6 +37,18 @@ class Menu extends Phaser.Scene {
         this.singleClick = 0;
     }
 
+    update(){
+        if(Phaser.Input.Keyboard.JustDown(keyUP)) {
+            // this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay:1300,
+                callback: () => {this.scene.start("level_1Scene")},
+                loop:false,
+                callbackScope:this
+            });
+        }
+    }
+
     /*update() {
         if(game.input.mousePointer.isDown){
             this.singleClick++;
