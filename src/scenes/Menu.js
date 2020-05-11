@@ -27,12 +27,9 @@ class Menu extends Phaser.Scene {
         let textSpacer = 64;
 
         // (↑) & (↓)
-        //this.playText = this.add.text(centerX, centerY + textSpacer, "Click here or press (↑) \nto start Alpine Adventure.", menuConfig).setOrigin(.5).setInteractive();
+        this.playText = this.add.text(centerX, centerY + textSpacer, "Press (↑) to start Level 1.", menuConfig).setOrigin(.5).setInteractive();
 
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-        keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
         this.singleClick = 0;
     }

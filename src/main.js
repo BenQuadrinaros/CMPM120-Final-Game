@@ -20,7 +20,7 @@ let config = {
             }
         }
     },
-    scene: [Menu, Instructions, Play]
+    scene: [Menu, Instructions, Level_1]
 };
 
 let game = new Phaser.Game(config);
@@ -30,7 +30,7 @@ game.settings = {
 };
 
 //reserve some keyboard variables
-let keyUP, keyDOWN, keyW, keyS, keySpace;
+let keyUP, keyLEFT, keyRIGHT, keyR, keyESCAPE;
 let mouseDown = false;
 
 //need left mouse click
