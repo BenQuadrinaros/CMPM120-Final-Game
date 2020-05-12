@@ -9,6 +9,8 @@ class Menu extends Phaser.Scene {
     }
     
     create() {
+        this.cameras.main.setBackgroundColor("#5A5");
+
         let menuConfig = {
             fontFamily: "Courier", 
             fontSize: "32px",

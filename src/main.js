@@ -8,8 +8,8 @@ DESCRIPTION TEXT
 
 let config = {
     type: Phaser.CANVAS,
-    width: 640,
-    height: 480,
+    width: 880,
+    height: 640,
     physics:{
         default:'arcade',
         arcade:{
