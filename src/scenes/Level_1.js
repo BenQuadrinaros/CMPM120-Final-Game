@@ -47,18 +47,29 @@ class Level_1 extends Phaser.Scene {
         this.goal.body.setGravity(false);
         this.win = this.physics.add.overlap(this.player, this.goal);
         this.win.collideCallback = () => {this.toNextLevel()};
+
+        this.ballSpeed = 0;
     }
 
 
     update() {
-        //keyboard controls for moving the player
-        if(Phaser.Input.Keyboard.JustDown(keyUP)) {
-            //this.sound.play("ballHit");
+        if (Phaser.Input.Keyboard.JustUp(keyUP)){
             this.player.body.stop();
-            this.physics.velocityFromRotation(this.player.rotation, 10000, this.player.body.acceleration)
+            console.log(100*this.ballSpeed);
+            this.physics.velocityFromRotation(this.player.rotation, this.ballSpeed*100, this.player.body.acceleration);
+            this.ballSpeed = 0;
+
         } else {
             this.player.setAcceleration(0);
         }
+            console.log(Phaser.Input.Keyboard.JustUp(keyUP));
+
+        //keyboard controls for moving the player
+        if (keyUP.isDown){
+            this.ballSpeed++;
+
+        }
+
         if(keyLEFT.isDown) {
             //this.sound.play("rotate");
             this.player.setAngularVelocity(-90);
