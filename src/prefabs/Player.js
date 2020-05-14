@@ -6,7 +6,7 @@ constructor(scene,x,y,texture,keyUP,keyLeft,keyRight) {
     this.keyRight = keyRight;
     this.ballSpeed = 0;
     this.scene = scene;
-
+    this.shotIndicate = this.scene.add.rectangle(x,y,0,5,0xFACADE).setOrigin(0,0);
 
 
     scene.add.existing(this);
@@ -31,6 +31,7 @@ update(){
 
     //charge and hit ball by holding and realeasing up key
     if (Phaser.Input.Keyboard.JustUp(this.keyUp)){
+        this.shotIndicate.width = 0;
         //hot the ball with velocity proportional to charge time
         //this.sound.play("ballHit");
         this.body.stop();
@@ -43,16 +44,19 @@ update(){
     //charge hit while key is down
     if (this.keyUp.isDown){
         //this.sound.play("chargeHit");
+        this.shotIndicate.width = this.ballSpeed;
         this.ballSpeed++;
     }
 
     //rotate the direction the ball is facing
     if(this.keyRight.isDown) {
         //this.sound.play("rotate");
+        this.shotIndicate.rotation -= Math.PI/100;
         this.rotation -= Math.PI/100;
     }
     if(this.keyLeft.isDown) {
         //this.sound.play("rotate");
+        this.shotIndicate.rotation += Math.PI/100;
         this.rotation += Math.PI/100;
     }
 
