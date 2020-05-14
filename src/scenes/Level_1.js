@@ -15,6 +15,7 @@ class Level_1 extends Phaser.Scene {
         this.singleClick = 0;
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
+        this.newObjs = [];
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -94,37 +95,54 @@ class Level_1 extends Phaser.Scene {
         } else {
             this.singleClick = 0;
         }
-        //create when click ...
+        //create new object when clicking
         if (this.singleClick == 1) {
             this.input.on('pointerdown', () => {
-                if (this.mouse.rightButtonDown()) {
-                    //if right click, make hill and add to group
-                    let mound = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
-                    mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
-                    //mound.tint ='#FFF';
-                    mound.alpha = .25;
-                    mound.body.setImmovable(true);
-                    mound.body.setGravity(false);
-                    this.hills.add(mound)
-                } else {
-                    //if left click, make ravine and add to group
-                    let hole = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
-                    hole.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
-                    //hole.tint = "#000";
-                    hole.alpha = .5;
-                    hole.body.setImmovable(true);
-                    hole.body.setGravity(false);
-                    this.ravines.add(hole);
+                let temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
+                console.log("temp: " + temp);
+                temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                temp.body.setImmovable(true);
+                temp.body.setGravity(false);
+                temp.alpha = .5;
+                if(this.mouse.rightButtonDown()) {
+                    //if right click, add hill to group
+                    this.hills.add(temp)
+                    this.sizeIncrease(temp, "right", true);
+                }
+                if(this.mouse.leftButtonDown()) {
+                    //if left click, add ravine to group
+                    this.ravines.add(temp)
+                    this.sizeIncrease(temp, "left", true);
                 }
             });
         }
+    }
+
+    sizeIncrease(object, mouseButton, looping) {
+        //increase size as long as the correct mouse button is held down
+        object.scale += .005;
+        console.log("make it bigger");
+        if (mouseButton == "right" && !this.mouse.rightButtonDown()) {
+            looping = false;
+            console.log("wrong key (right)");
+        }
+        if (mouseButton == "left" && !this.mouse.leftButtonDown()) {
+            looping = false;
+            console.log("wrong key (left)");
+        } 
+        this.time.addEvent({
+            delay:100,
+            callback: () => {if(looping){this.sizeIncrease(object, mouseButton, looping);}},
+            loop:false,
+            callbackScope:this
+        });
     }
 
     //angle adjustment for bouncing off world bounds
     worldBounce() {
         if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
             this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
-            //if player ouces off top or bottom walls, adjust angle accordingly
+            //if player bounces off top or bottom walls, adjust angle accordingly
             if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
@@ -139,7 +157,7 @@ class Level_1 extends Phaser.Scene {
                 this.player.rotation = temp;
             }
         } else {
-            //if player ouces off left or right walls, adjust angle accordingly
+            //if player bounces off left or right walls, adjust angle accordingly
             if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
@@ -160,7 +178,7 @@ class Level_1 extends Phaser.Scene {
     objectBounce(player, object) {
         if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
             this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-            //if player ouces off top or bottom of object, adjust angle accordingly
+            //if player bounces off top or bottom of object, adjust angle accordingly
             if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
@@ -175,7 +193,7 @@ class Level_1 extends Phaser.Scene {
                 this.player.rotation = temp;
             }
         } else {
-            //if player ouces off left or right of object, adjust angle accordingly
+            //if player bounces off left or right of object, adjust angle accordingly
             if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
@@ -203,7 +221,7 @@ class Level_1 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
     }
 
     //overlapping with hills should push the player away from the center while changing momentum
@@ -218,7 +236,7 @@ class Level_1 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
     }
 
     //collision with hole
