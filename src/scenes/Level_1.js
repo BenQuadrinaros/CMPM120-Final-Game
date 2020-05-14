@@ -7,6 +7,7 @@ class Level_1 extends Phaser.Scene {
         //console.log("in level 1");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
+        this.load.image('background', './assets/Level1background.jpg');
     }
 
     create() {
@@ -15,40 +16,65 @@ class Level_1 extends Phaser.Scene {
         this.singleClick = 0;
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
-        this.newObjs = [];
+        this.startPosX = 100;
+        this.startPosY = 375;
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        keyQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
+        //set up map background
+        this.add.sprite(0, 0, 'background').setOrigin(0, 0);
+
         //set up player physics
-        this.player = new Player(this, 100, 100, 'ball', keyUP, keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
+                keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.physics.world.on('worldbounds', this.worldBounce, this);
 
-        //set up map obstacles and physics
+        //set up obstacles physics
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floor = this.physics.add.sprite(20, 250, 'wall').setOrigin(0, 0);
-            floor.body.setImmovable(true);
-            floor.body.setGravity(false);
-            this.walls.add(floor);
+            var floor1 = this.physics.add.sprite(0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            floor1.alpha = .5;
+            floor1.body.setImmovable(true);
+            floor1.body.setGravity(false);
+            this.walls.add(floor1);
+
+            var floor2 = this.physics.add.sprite(440, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            floor2.alpha = .5;
+            floor2.body.setImmovable(true);
+            floor2.body.setGravity(false);
+            this.walls.add(floor2);
+
+            var floor3 = this.physics.add.sprite(0, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            floor3.alpha = .5;
+            floor3.body.setImmovable(true);
+            floor3.body.setGravity(false);
+            this.walls.add(floor3);
+
+            var floor4 = this.physics.add.sprite(440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            floor4.alpha = .5;
+            floor4.body.setImmovable(true);
+            floor4.body.setGravity(false);
+            this.walls.add(floor4);
         }
         this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
 
         //set up hill physics
         this.hills = this.add.group();
         {
-            var mound = this.physics.add.sprite(750, 205, 'ball');
+            /*var mound = this.physics.add.sprite(750, 205, 'ball');
             mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
             //mound.tint = '#000';
             mound.alpha = .25;
             mound.body.setImmovable(true);
             mound.body.setGravity(false);
-            this.hills.add(mound)
+            this.hills.add(mound)*/
         }
         this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
 
@@ -56,8 +82,8 @@ class Level_1 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(400, 400, 'ball');
-            hole.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
+            var hole = this.physics.add.sprite(800, 375, 'ball');
+            hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
             //hole.tint = "#FFF";
             hole.alpha = .5;
             hole.body.setImmovable(true);
@@ -67,12 +93,41 @@ class Level_1 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
         //set up level goal
-        this.goal = this.physics.add.sprite(75, 550, 'ball');
+        this.goal = this.physics.add.sprite(800, 375, 'ball');
         this.goal.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
         this.goal.body.updateCenter();
         this.goal.body.setImmovable(true);
         this.goal.body.setGravity(false);
         this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
+
+        //tutorial text for Level_1
+        let textConfig = {
+            fontFamily: "Courier", 
+            fontSize: "32px",
+            backgroundColor: "#FFF",
+            color: "#000",
+            align: "center",
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+            fixedWidth: 0
+        };
+        let centerX = game.config.width/2;
+        let centerY = game.config.height/2;
+        let textSpacer = 64;
+        //fading tutorial text
+        this.fadeText1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Use (←) and (→) to turn the ball.", 
+                textConfig).setOrigin(.5);
+        this.fadeText2 = this.add.text(centerX, centerY - 3.75*textSpacer, "Hold (↑) to charge the shot power.", 
+                textConfig).setOrigin(.5);
+        this.fadeText3 = this.add.text(centerX, centerY - 3*textSpacer, "Release (↑) to fire the ball.", 
+                textConfig).setOrigin(.5);
+        textConfig.fontSize = "28px";
+        this.fadeText4 = this.add.text(centerX, centerY + 4*textSpacer, "Press (R) to reset the ball.", 
+                textConfig).setOrigin(.5);
+        this.fadeText5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Press (Q) to restart the level.", 
+                textConfig).setOrigin(.5);
     }
 
 
@@ -82,9 +137,9 @@ class Level_1 extends Phaser.Scene {
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
             //this.sound.play("wipe");
-            this.player.body.reset(100, 100);
+            this.player.body.reset(this.startPosX, this.startPosY);
         }
-        if (Phaser.Input.Keyboard.JustDown(keyP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyQ)) {
             //this.sound.play("pause");
             this.scene.restart();
         }
@@ -107,11 +162,13 @@ class Level_1 extends Phaser.Scene {
                 if(this.mouse.rightButtonDown()) {
                     //if right click, add hill to group
                     this.hills.add(temp)
+                    console.log(this.hills);
                     this.sizeIncrease(temp, "right", true);
                 }
                 if(this.mouse.leftButtonDown()) {
                     //if left click, add ravine to group
                     this.ravines.add(temp)
+                    console.log(this.ravines);
                     this.sizeIncrease(temp, "left", true);
                 }
             });
