@@ -25,6 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update() {
         this.shotIndicate.x = this.x;
         this.shotIndicate.y = this.y;
+        this.shotIndicate.rotation = this.rotation;
 
         // roll over for angles to keep between 0 and 2*Math.PI
         if (this.rotation % (2 * Math.PI) > 0) {
