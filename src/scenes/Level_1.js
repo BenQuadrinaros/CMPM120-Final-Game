@@ -14,16 +14,18 @@ class Level_1 extends Phaser.Scene {
         this.cameras.main.setBackgroundColor("#5A5");
         this.singleClick = 0;
         this.ballSpeed = 0;
+        this.mouse = this.input.activePointer;
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        keyESCAPE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESCAPE);
+        keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //set up player physics
-        this.player = this.physics.add.sprite(100, 100, 'ball').setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.player = this.physics.add.sprite(100, 100, 'ball');
+        this.player.setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.player.setDamping(true);
         this.player.setDrag(.999);
         this.player.setCollideWorldBounds(true, .9, .9);
@@ -47,9 +49,10 @@ class Level_1 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            var mound = this.physics.add.sprite(750, 205, 'ball').setOrigin(.5).setCircle(130).setScale(.75, .75);
-            mound.setTint('#000');
-            mound.alpha = .75;
+            var mound = this.physics.add.sprite(750, 205, 'ball');
+            mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
+            //mound.tint = '#000';
+            mound.alpha = .25;
             mound.body.setImmovable(true);
             mound.body.setGravity(false);
             this.hills.add(mound)
@@ -60,9 +63,10 @@ class Level_1 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(400, 400, 'ball').setOrigin(.5).setCircle(130).setScale(.75, .75);
-            hole.setTint("#FFF");
-            hole.alpha = .75;
+            var hole = this.physics.add.sprite(400, 400, 'ball');
+            hole.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
+            //hole.tint = "#FFF";
+            hole.alpha = .5;
             hole.body.setImmovable(true);
             hole.body.setGravity(false);
             this.ravines.add(hole);
@@ -70,7 +74,8 @@ class Level_1 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
         //set up level goal
-        this.goal = this.physics.add.sprite(75, 550, 'ball').setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
+        this.goal = this.physics.add.sprite(75, 550, 'ball');
+        this.goal.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
         this.goal.body.updateCenter();
         this.goal.body.setImmovable(true);
         this.goal.body.setGravity(false);
@@ -112,24 +117,52 @@ class Level_1 extends Phaser.Scene {
             //this.sound.play("rotate");
             this.player.rotation += Math.PI/100;
         }
-
         //keyboard controls for pause and restart
         if(Phaser.Input.Keyboard.JustDown(keyR)) {
             //this.sound.play("wipe");
             this.player.body.reset(100, 100);
         }
+        if(Phaser.Input.Keyboard.JustDown(keyP)) {
+            //this.sound.play("pause");
+            this.scene.restart();
+        }
 
         //mouse controls for terrain manipulation
         if(game.input.mousePointer.isDown){
             this.singleClick++;
-        } else if(!(game.input.mousePointer.isDown)){
+        } else {
             this.singleClick = 0;
+        }
+        //create when click ...
+        if(this.singleClick == 1) {
+            this.input.on('pointerdown',() => {
+                if(this.mouse.rightButtonDown()) {
+                    //if right click, make hill and add to group
+                    let mound = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
+                    mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
+                    //mound.tint ='#FFF';
+                    mound.alpha = .25;
+                    mound.body.setImmovable(true);
+                    mound.body.setGravity(false);
+                    this.hills.add(mound)
+                } else {
+                    //if left click, make ravine and add to group
+                    let hole = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
+                    hole.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
+                    //hole.tint = "#000";
+                    hole.alpha = .5;
+                    hole.body.setImmovable(true);
+                    hole.body.setGravity(false);
+                    this.ravines.add(hole);
+                }
+            });
         }
     }
 
     //angle adjustment for bouncing off world bounds
     worldBounce() {
-        if(this.player.y - this.player.body.height/2 - 5 <= 0 || this.player.y + this.player.body.height/2 + 5 >= game.config.height) {
+        if(this.player.y - this.player.body.height/2 - 5 <= 0 || 
+                this.player.y + this.player.body.height/2 + 5 >= game.config.height) {
             //if player ouces off top or bottom walls, adjust angle accordingly
             if(0 < this.player.rotation <= Math.PI/2) {
                 let temp = this.player.rotation;
