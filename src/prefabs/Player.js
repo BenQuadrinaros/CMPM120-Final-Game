@@ -22,6 +22,8 @@ constructor(scene,x,y,texture,keyUP,keyLeft,keyRight) {
 }
 
 update(){
+    this.shotIndicate.x = this.x;
+    this.shotIndicate.y = this.y;
 // roll over for angles to keep between 0 and 2*Math.PI
     if(this.rotation % (2*Math.PI) > 0) {
         this.rotation -= (2*Math.PI);
