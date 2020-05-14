@@ -36,7 +36,7 @@ class Level_1 extends Phaser.Scene {
         //set up map obstacles and physics
         this.walls = this.add.group();
         {
-            //create each wall in the level
+            //create each walls for the level
             var floor = this.physics.add.sprite(20, 250, 'wall').setOrigin(0, 0);
             floor.body.setImmovable(true);
             floor.body.setGravity(false);
@@ -46,15 +46,23 @@ class Level_1 extends Phaser.Scene {
 
         //set up hill physics
         this.hills = this.add.group();
+        {
+            var mound = this.physics.add.sprite(750, 205, 'ball').setOrigin(.5).setCircle(130).setScale(.75, .75);
+            mound.setTint('#000');
+            mound.alpha = .75;
+            mound.body.setImmovable(true);
+            mound.body.setGravity(false);
+            this.hills.add(mound)
+        }
         this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
         
         //set up ravine phsyics
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(250, 500, 'ball').setOrigin(0, 0).setOrigin(.5).setCircle(135).setScale(.4, .4);
+            var hole = this.physics.add.sprite(400, 400, 'ball').setOrigin(.5).setCircle(130).setScale(.75, .75);
             hole.setTint("#FFF");
-            hole.alpha = .25;
+            hole.alpha = .75;
             hole.body.setImmovable(true);
             hole.body.setGravity(false);
             this.ravines.add(hole);
@@ -71,7 +79,7 @@ class Level_1 extends Phaser.Scene {
 
 
     update() {
-        // roll over for angles
+        // roll over for angles to keep between 0 and 2*Math.PI
         if(this.player.rotation % (2*Math.PI) > 0) {
             this.player.rotation -= (2*Math.PI);
         } else if(this.player.rotation < 0) {
@@ -80,35 +88,35 @@ class Level_1 extends Phaser.Scene {
 
         //charge and hit ball by holding and realeasing up key
         if (Phaser.Input.Keyboard.JustUp(keyUP)){
+            //hot the ball with velocity proportional to charge time
+            //this.sound.play("ballHit");
             this.player.body.stop();
-            console.log(100*this.ballSpeed);
             this.physics.velocityFromRotation(this.player.rotation, this.ballSpeed*100, this.player.body.acceleration);
             this.ballSpeed = 0;
-
-        } else {
-            this.player.setAcceleration(0);
+        } else if(this.player.body.touching.none) {
+            //if no forces acting on player, reset acceleration
+            this.player.body.setAcceleration(0);
         }
-        console.log(Phaser.Input.Keyboard.JustUp(keyUP));
-        //charge hit
+        //charge hit while key is down
         if (keyUP.isDown){
+            //this.sound.play("chargeHit");
             this.ballSpeed++;
         }
 
         //rotate the direction the ball is facing
         if(keyLEFT.isDown) {
             //this.sound.play("rotate");
-            this.player.setAngularVelocity(-90);
-        } else if(keyRIGHT.isDown) {
+            this.player.rotation -= Math.PI/100;
+        } 
+        if(keyRIGHT.isDown) {
             //this.sound.play("rotate");
-            this.player.setAngularVelocity(90);
-        } else {
-            this.player.setAngularVelocity(0);
+            this.player.rotation += Math.PI/100;
         }
 
         //keyboard controls for pause and restart
         if(Phaser.Input.Keyboard.JustDown(keyR)) {
             //this.sound.play("wipe");
-            this.scene.restart();
+            this.player.body.reset(100, 100);
         }
 
         //mouse controls for terrain manipulation
@@ -119,8 +127,10 @@ class Level_1 extends Phaser.Scene {
         }
     }
 
+    //angle adjustment for bouncing off world bounds
     worldBounce() {
-        if(this.player.y - this.player.height/2 <= 0 || this.player.y + 2*this.player.height >= game.config.height) {
+        if(this.player.y - this.player.body.height/2 - 5 <= 0 || this.player.y + this.player.body.height/2 + 5 >= game.config.height) {
+            //if player ouces off top or bottom walls, adjust angle accordingly
             if(0 < this.player.rotation <= Math.PI/2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
@@ -135,6 +145,7 @@ class Level_1 extends Phaser.Scene {
                 this.player.rotation = temp;
             }
         } else {
+            //if player ouces off left or right walls, adjust angle accordingly
             if(0 < this.player.rotation <= Math.PI/2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
@@ -151,8 +162,11 @@ class Level_1 extends Phaser.Scene {
         }
     }
 
+    //angle adjustment for bouncing off objects
     objectBounce(player, object) {
-        if(this.player.y <= object.y + object.height || this.player.y + this.player.height >= object.y) {
+        if(this.player.y - this.player.body.height/2 - 5 <= object.y + object.body.height || 
+                this.player.y + this.player.body.height/2 + 5 >= object.y) {
+            //if player ouces off top or bottom of object, adjust angle accordingly
             if(0 < this.player.rotation <= Math.PI/2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
@@ -167,6 +181,7 @@ class Level_1 extends Phaser.Scene {
                 this.player.rotation = temp;
             }
         } else {
+            //if player ouces off left or right of object, adjust angle accordingly
             if(0 < this.player.rotation <= Math.PI/2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
@@ -183,34 +198,33 @@ class Level_1 extends Phaser.Scene {
         }
     }
 
-    clearMovement() {
-        this.player.setAcceleration(0);
-        this.player.setAngularVelocity(0);
-    }
-
+    //overlapping with ravines should pull the player towards the center while changing momentum
     pullOverlap(player, ravine) {
-        console.log("overlaps with ravine");
         //get the angle towards the center of the ravine
-        let angle = Phaser.Math.Angle.Between(this.player.x + player.width/2, this.player.y + player.height/2, 
-            ravine.x + ravine.width/2, ravine.y + ravine.height/2);
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
         //adjust player angle towards ravine center
-        console.log("angle to ravine center: " + (angle-this.player.rotation));
         if(angle < this.player.rotation) {
-            this.player.setAngularVelocity(-45);
-            console.log("angle counterclockwise");
+            this.player.rotation -= Math.PI/200;
         } else if(angle > this.player.rotation) {
-            this.player.setAngularVelocity(45);
-            console.log("angle clockwise");
-        } else {
-            this.player.setAngularVelocity(0);
+            this.player.rotation += Math.PI/200;
         }
-        //slightly alter momentum
-        this.physics.velocityFromRotation(player.rotation, 500, this.player.body.acceleration);
-        console.log("faster");
+        //slightly alter momentum based on rotation
+        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration);
     }
 
+    //overlapping with hills should push the player away from the center while changing momentum
     pushOverlap(player, hill) {
-
+        //get the angle away from the center of the hill
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
+        angle+= Math.PI;
+        //adjust player angle away from hill center
+        if(angle < this.player.rotation) {
+            this.player.rotation -= Math.PI/200;
+        } else if(angle > this.player.rotation) {
+            this.player.rotation += Math.PI/200;
+        }
+        //slightly alter momentum based on rotation
+        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration); 
     }
 
     //collision with hole
