@@ -23,15 +23,9 @@ class Level_1 extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //set up player physics
-        this.player = this.physics.add.sprite(100, 100, 'ball').setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.player.setDamping(true);
-        this.player.setDrag(.999);
-        this.player.setCollideWorldBounds(true, .9, .9);
-        this.player.body.onWorldBounds = true;
+        this.player = new Player(this,100,100,'ball',keyUP,keyRIGHT,keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.physics.world.on('worldbounds', this.worldBounce, this);
-        this.player.setBounce(.75);
-        this.player.body.setGravity(false);
-        this.player.setMaxVelocity(200);
+
 
         //set up map obstacles and physics
         this.walls = this.add.group();
@@ -79,39 +73,7 @@ class Level_1 extends Phaser.Scene {
 
 
     update() {
-        // roll over for angles to keep between 0 and 2*Math.PI
-        if(this.player.rotation % (2*Math.PI) > 0) {
-            this.player.rotation -= (2*Math.PI);
-        } else if(this.player.rotation < 0) {
-            this.player.rotation += (2*Math.PI);
-        }
-
-        //charge and hit ball by holding and realeasing up key
-        if (Phaser.Input.Keyboard.JustUp(keyUP)){
-            //hot the ball with velocity proportional to charge time
-            //this.sound.play("ballHit");
-            this.player.body.stop();
-            this.physics.velocityFromRotation(this.player.rotation, this.ballSpeed*100, this.player.body.acceleration);
-            this.ballSpeed = 0;
-        } else if(this.player.body.touching.none) {
-            //if no forces acting on player, reset acceleration
-            this.player.body.setAcceleration(0);
-        }
-        //charge hit while key is down
-        if (keyUP.isDown){
-            //this.sound.play("chargeHit");
-            this.ballSpeed++;
-        }
-
-        //rotate the direction the ball is facing
-        if(keyLEFT.isDown) {
-            //this.sound.play("rotate");
-            this.player.rotation -= Math.PI/100;
-        } 
-        if(keyRIGHT.isDown) {
-            //this.sound.play("rotate");
-            this.player.rotation += Math.PI/100;
-        }
+        this.player.update();
 
         //keyboard controls for pause and restart
         if(Phaser.Input.Keyboard.JustDown(keyR)) {
