@@ -44,8 +44,11 @@ update(){
     //charge hit while key is down
     if (this.keyUp.isDown){
         //this.sound.play("chargeHit");
-        this.shotIndicate.width = this.ballSpeed;
-        this.ballSpeed++;
+        //see if ball speed is less than max velocity - 200
+        if (this.ballSpeed < 200) {
+            this.shotIndicate.width = this.ballSpeed;
+            this.ballSpeed++;
+        }
     }
 
     //rotate the direction the ball is facing
