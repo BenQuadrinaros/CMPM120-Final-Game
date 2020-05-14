@@ -24,16 +24,8 @@ class Level_1 extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //set up player physics
-        this.player = this.physics.add.sprite(100, 100, 'ball');
-        this.player.setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.player.setDamping(true);
-        this.player.setDrag(.999);
-        this.player.setCollideWorldBounds(true, .9, .9);
-        this.player.body.onWorldBounds = true;
+        this.player = new Player(this, 100, 100, 'ball', keyUP, keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.physics.world.on('worldbounds', this.worldBounce, this);
-        this.player.setBounce(.75);
-        this.player.body.setGravity(false);
-        this.player.setMaxVelocity(200);
 
         //set up map obstacles and physics
         this.walls = this.add.group();
@@ -58,7 +50,7 @@ class Level_1 extends Phaser.Scene {
             this.hills.add(mound)
         }
         this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
-        
+
         //set up ravine phsyics
         this.ravines = this.add.group();
         {
@@ -84,59 +76,28 @@ class Level_1 extends Phaser.Scene {
 
 
     update() {
-        // roll over for angles to keep between 0 and 2*Math.PI
-        if(this.player.rotation % (2*Math.PI) > 0) {
-            this.player.rotation -= (2*Math.PI);
-        } else if(this.player.rotation < 0) {
-            this.player.rotation += (2*Math.PI);
-        }
+        this.player.update();
 
-        //charge and hit ball by holding and realeasing up key
-        if (Phaser.Input.Keyboard.JustUp(keyUP)){
-            //hot the ball with velocity proportional to charge time
-            //this.sound.play("ballHit");
-            this.player.body.stop();
-            this.physics.velocityFromRotation(this.player.rotation, this.ballSpeed*100, this.player.body.acceleration);
-            this.ballSpeed = 0;
-        } else if(this.player.body.touching.none) {
-            //if no forces acting on player, reset acceleration
-            this.player.body.setAcceleration(0);
-        }
-        //charge hit while key is down
-        if (keyUP.isDown){
-            //this.sound.play("chargeHit");
-            this.ballSpeed++;
-        }
-
-        //rotate the direction the ball is facing
-        if(keyLEFT.isDown) {
-            //this.sound.play("rotate");
-            this.player.rotation -= Math.PI/100;
-        } 
-        if(keyRIGHT.isDown) {
-            //this.sound.play("rotate");
-            this.player.rotation += Math.PI/100;
-        }
         //keyboard controls for pause and restart
-        if(Phaser.Input.Keyboard.JustDown(keyR)) {
+        if (Phaser.Input.Keyboard.JustDown(keyR)) {
             //this.sound.play("wipe");
             this.player.body.reset(100, 100);
         }
-        if(Phaser.Input.Keyboard.JustDown(keyP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyP)) {
             //this.sound.play("pause");
             this.scene.restart();
         }
 
         //mouse controls for terrain manipulation
-        if(game.input.mousePointer.isDown){
+        if (game.input.mousePointer.isDown) {
             this.singleClick++;
         } else {
             this.singleClick = 0;
         }
         //create when click ...
-        if(this.singleClick == 1) {
-            this.input.on('pointerdown',() => {
-                if(this.mouse.rightButtonDown()) {
+        if (this.singleClick == 1) {
+            this.input.on('pointerdown', () => {
+                if (this.mouse.rightButtonDown()) {
                     //if right click, make hill and add to group
                     let mound = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
                     mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
@@ -161,35 +122,35 @@ class Level_1 extends Phaser.Scene {
 
     //angle adjustment for bouncing off world bounds
     worldBounce() {
-        if(this.player.y - this.player.body.height/2 - 5 <= 0 || 
-                this.player.y + this.player.body.height/2 + 5 >= game.config.height) {
+        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
+            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
             //if player ouces off top or bottom walls, adjust angle accordingly
-            if(0 < this.player.rotation <= Math.PI/2) {
+            if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
-            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
                 let temp = Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
-            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
                 let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI/2 + temp;
-            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
-                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI / 2 + temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = temp;
             }
         } else {
             //if player ouces off left or right walls, adjust angle accordingly
-            if(0 < this.player.rotation <= Math.PI/2) {
+            if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
-            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
                 let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2*Math.PI + temp;
-            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+                this.player.rotation = 2 * Math.PI + temp;
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
                 let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2*Math.PI - temp;
-            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
-                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = 2 * Math.PI - temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
             }
         }
@@ -197,35 +158,35 @@ class Level_1 extends Phaser.Scene {
 
     //angle adjustment for bouncing off objects
     objectBounce(player, object) {
-        if(this.player.y - this.player.body.height/2 - 5 <= object.y + object.body.height || 
-                this.player.y + this.player.body.height/2 + 5 >= object.y) {
+        if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
+            this.player.y + this.player.body.height / 2 + 5 >= object.y) {
             //if player ouces off top or bottom of object, adjust angle accordingly
-            if(0 < this.player.rotation <= Math.PI/2) {
+            if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = -temp;
-            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
                 let temp = Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
-            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
                 let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI/2 + temp;
-            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
-                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI / 2 + temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = temp;
             }
         } else {
             //if player ouces off left or right of object, adjust angle accordingly
-            if(0 < this.player.rotation <= Math.PI/2) {
+            if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
-            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
                 let temp = Math.PI - this.player.rotation;
                 this.player.rotation = temp;
-            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
                 let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2*Math.PI - temp;
-            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
-                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = 2 * Math.PI - temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
             }
         }
@@ -236,10 +197,10 @@ class Level_1 extends Phaser.Scene {
         //get the angle towards the center of the ravine
         let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
         //adjust player angle towards ravine center
-        if(angle < this.player.rotation) {
-            this.player.rotation -= Math.PI/200;
-        } else if(angle > this.player.rotation) {
-            this.player.rotation += Math.PI/200;
+        if (angle < this.player.rotation) {
+            this.player.rotation -= Math.PI / 200;
+        } else if (angle > this.player.rotation) {
+            this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
         this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration);
@@ -249,15 +210,15 @@ class Level_1 extends Phaser.Scene {
     pushOverlap(player, hill) {
         //get the angle away from the center of the hill
         let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
-        angle+= Math.PI;
+        angle += Math.PI;
         //adjust player angle away from hill center
-        if(angle < this.player.rotation) {
-            this.player.rotation -= Math.PI/200;
-        } else if(angle > this.player.rotation) {
-            this.player.rotation += Math.PI/200;
+        if (angle < this.player.rotation) {
+            this.player.rotation -= Math.PI / 200;
+        } else if (angle > this.player.rotation) {
+            this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration); 
+        this.physics.velocityFromRotation(this.player.rotation, 20, this.player.body.acceleration);
     }
 
     //collision with hole
@@ -267,10 +228,10 @@ class Level_1 extends Phaser.Scene {
         //play animation for ball -> hole
         //this.sound.play("ballInHole");
         this.time.addEvent({
-            delay:1300,
-            callback: () => {this.scene.start("menuScene")},
-            loop:false,
-            callbackScope:this
+            delay: 1300,
+            callback: () => { this.scene.start("menuScene") },
+            loop: false,
+            callbackScope: this
         });
     }
 
