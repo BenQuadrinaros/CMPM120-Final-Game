@@ -117,41 +117,68 @@ class Level_1 extends Phaser.Scene {
         } else if(!(game.input.mousePointer.isDown)){
             this.singleClick = 0;
         }
-
-        //clear movement if not being changed
-        if(!this.pull && !this.push) {
-            this.clearMovement();
-        }
     }
 
     worldBounce() {
         if(this.player.y - this.player.height/2 <= 0 || this.player.y + 2*this.player.height >= game.config.height) {
-            if(3*Math.PI/2 < this.player.rotation < 2*Math.PI || Math.PI/2 < this.player.rotation < Math.PI) {
-                this.player.rotation += Math.PI * (Math.pow(Math.sin(this.player.rotation), 2));
-            } else {
-                this.player.rotation -= Math.PI * (Math.pow(Math.sin(this.player.rotation), 2));
+            if(0 < this.player.rotation <= Math.PI/2) {
+                let temp = this.player.rotation;
+                this.player.rotation = -temp;
+            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
+            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = Math.PI/2 + temp;
+            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
+                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = temp;
             }
         } else {
-            if(0 < this.player.rotation < Math.PI/2 || Math.PI < this.player.rotation < 3*Math.PI/2) {
-                this.player.rotation += Math.PI * (Math.pow(Math.cos(this.player.rotation), 2));
-            } else {
-                this.player.rotation -= Math.PI * (Math.pow(Math.cos(this.player.rotation), 2));
+            if(0 < this.player.rotation <= Math.PI/2) {
+                let temp = this.player.rotation;
+                this.player.rotation = Math.PI - temp;
+            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = 2*Math.PI + temp;
+            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = 2*Math.PI - temp;
+            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
+                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
             }
         }
     }
 
     objectBounce(player, object) {
         if(this.player.y <= object.y + object.height || this.player.y + this.player.height >= object.y) {
-            if(3*Math.PI/2 < this.player.rotation < 2*Math.PI || Math.PI/2 < this.player.rotation < Math.PI) {
-                this.player.rotation += Math.PI * (Math.pow(Math.sin(this.player.rotation), 2));
-            } else {
-                this.player.rotation -= Math.PI * (Math.pow(Math.sin(this.player.rotation), 2));
+            if(0 < this.player.rotation <= Math.PI/2) {
+                let temp = this.player.rotation;
+                this.player.rotation = -temp;
+            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
+            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = Math.PI/2 + temp;
+            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
+                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = temp;
             }
         } else {
-            if(0 < this.player.rotation < Math.PI/2 || Math.PI < this.player.rotation < 3*Math.PI/2) {
-                this.player.rotation += Math.PI * (Math.pow(Math.cos(this.player.rotation), 2));
-            } else {
-                this.player.rotation -= Math.PI * (Math.pow(Math.cos(this.player.rotation), 2));
+            if(0 < this.player.rotation <= Math.PI/2) {
+                let temp = this.player.rotation;
+                this.player.rotation = Math.PI - temp;
+            } else if(Math.PI/2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = temp;
+            } else if(Math.PI < this.player.rotation <= 3*Math.PI/2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = 2*Math.PI - temp;
+            } else if(3*Math.PI/2 < this.player.rotation <= 2*Math.PI) {
+                let temp = 2*Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
             }
         }
     }
@@ -174,6 +201,8 @@ class Level_1 extends Phaser.Scene {
         } else if(angle > this.player.rotation) {
             this.player.setAngularVelocity(45);
             console.log("angle clockwise");
+        } else {
+            this.player.setAngularVelocity(0);
         }
         //slightly alter momentum
         this.physics.velocityFromRotation(player.rotation, 500, this.player.body.acceleration);
