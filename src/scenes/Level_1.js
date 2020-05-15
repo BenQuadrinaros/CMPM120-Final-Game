@@ -116,23 +116,45 @@ class Level_1 extends Phaser.Scene {
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
         let textSpacer = 64;
-        //fading tutorial text
-        this.fadeText1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Use (←) and (→) to turn the ball.", 
+        this.text1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Use (←) and (→) to turn the ball.", 
                 textConfig).setOrigin(.5);
-        this.fadeText2 = this.add.text(centerX, centerY - 3.75*textSpacer, "Hold (↑) to charge the shot power.", 
+        this.text2 = this.add.text(centerX, centerY - 3.75*textSpacer, "Hold (↑) to charge the shot power.",
                 textConfig).setOrigin(.5);
-        this.fadeText3 = this.add.text(centerX, centerY - 3*textSpacer, "Release (↑) to fire the ball.", 
+        this.text3 = this.add.text(centerX, centerY - 3*textSpacer, "Release (↑) to fire the ball.",
                 textConfig).setOrigin(.5);
         textConfig.fontSize = "28px";
-        this.fadeText4 = this.add.text(centerX, centerY + 4*textSpacer, "Press (R) to reset the ball.", 
+        this.text4 = this.add.text(centerX, centerY + 4*textSpacer, "Press (R) to reset the ball.", 
                 textConfig).setOrigin(.5);
-        this.fadeText5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Press (Q) to restart the level.", 
+        this.text5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Press (Q) to restart the level.",
                 textConfig).setOrigin(.5);
+        //fading tutorial text
+        textConfig.backgroundColor = null;
+        textConfig.fontSize = "18px";
+        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn", 
+                textConfig).setOrigin(.5);
+        this.fadeText2 = this.add.text(this.player.x + 3*textSpacer, this.player.y + 5, "Hold (↑) to charge",
+                textConfig).setOrigin(.5);
+        this.fadeText3 = this.add.text(this.player.x + 30, this.player.y + textSpacer, "Release (↑) to fire",
+                textConfig).setOrigin(.5);
+        this.fadeDelay = false;
+        this.time.addEvent({
+            delay:10000,
+            callback: () => {this.fadeDelay = true;},
+            loop:false,
+            callbackScope:this
+        });
     }
 
 
     update() {
         this.player.update();
+
+        //fade out text slowly
+        if(this.fadeText1.alpha > 0 && this.fadeDelay) {
+            this.fadeText1.alpha -= .005;
+            this.fadeText2.alpha -= .005;
+            this.fadeText3.alpha -= .005;
+        }
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
