@@ -1,10 +1,10 @@
-class Level_1 extends Phaser.Scene {
+class Level_2 extends Phaser.Scene {
     constructor() {
-        super("level_1Scene");
+        super("level_2Scene");
     }
 
     preload() {
-        //console.log("in level 1");
+        //console.log("in level 2");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('background', './assets/Level1background.jpg');
@@ -119,8 +119,7 @@ class Level_1 extends Phaser.Scene {
         //tutorial text for Level_1
         let textConfig = {
             fontFamily: "Courier", 
-            fontSize: "28px",
-            backgroundColor: "#FFF",
+            fontSize: "32px",
             color: "#000",
             align: "center",
             padding: {
@@ -132,16 +131,13 @@ class Level_1 extends Phaser.Scene {
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
         let textSpacer = 64;
-        this.text1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Use (←) and (→) to turn the ball.", 
+        this.text1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Hold Left Click to create a Ravine", 
                 textConfig).setOrigin(.5);
-        this.text2 = this.add.text(centerX, centerY - 4*textSpacer, "Hold (↑) to charge the shot power.",
+        this.text2 = this.add.text(centerX, centerY - 3.75*textSpacer, "Ravines pull the ball in.",
                 textConfig).setOrigin(.5);
-        this.text3 = this.add.text(centerX, centerY - 3.5*textSpacer, "Release (↑) to fire the ball.",
+        this.text4 = this.add.text(centerX, centerY + 4*textSpacer, "Hold Right Clcik to create a Hill", 
                 textConfig).setOrigin(.5);
-        textConfig.fontSize = "28px";
-        this.text4 = this.add.text(centerX, centerY + 4*textSpacer, "Press (R) to reset the ball.", 
-                textConfig).setOrigin(.5);
-        this.text5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Press (Q) to restart the level.",
+        this.text5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Hills push the ball away.",
                 textConfig).setOrigin(.5);
         //fading tutorial text
         textConfig.backgroundColor = null;
@@ -346,7 +342,7 @@ class Level_1 extends Phaser.Scene {
         this.time.addEvent({
             delay: 2000,
             callback: () => {
-                this.scene.start("level_2Scene");
+                this.scene.start("menuScene");
             },
             loop: false,
             callbackScope: this
