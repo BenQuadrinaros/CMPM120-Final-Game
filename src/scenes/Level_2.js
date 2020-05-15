@@ -7,7 +7,7 @@ class Level_2 extends Phaser.Scene {
         //console.log("in level 2");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background', './assets/Level1background.jpg');
+        this.load.image('background2', './assets/Level2background.png');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -24,7 +24,9 @@ class Level_2 extends Phaser.Scene {
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.startPosX = 100;
-        this.startPosY = 375;
+        this.startPosY = 250;
+        this.endPosX = 750;
+        this.endPosY = 550;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -44,7 +46,7 @@ class Level_2 extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //set up map background
-        this.add.sprite(0, 0, 'background').setOrigin(0, 0);
+        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
@@ -55,25 +57,25 @@ class Level_2 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floor1 = this.physics.add.sprite(0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            var floor1 = this.physics.add.sprite(0, 25, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             floor1.alpha = .5;
             floor1.body.setImmovable(true);
             floor1.body.setGravity(false);
             this.walls.add(floor1);
 
-            var floor2 = this.physics.add.sprite(440, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            var floor2 = this.physics.add.sprite(440, 25, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             floor2.alpha = .5;
             floor2.body.setImmovable(true);
             floor2.body.setGravity(false);
             this.walls.add(floor2);
 
-            var floor3 = this.physics.add.sprite(0, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            var floor3 = this.physics.add.sprite(0, 350, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             floor3.alpha = .5;
             floor3.body.setImmovable(true);
             floor3.body.setGravity(false);
             this.walls.add(floor3);
 
-            var floor4 = this.physics.add.sprite(440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            var floor4 = this.physics.add.sprite(360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
             floor4.alpha = .5;
             floor4.body.setImmovable(true);
             floor4.body.setGravity(false);
@@ -98,7 +100,7 @@ class Level_2 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(800, 375, 'ball');
+            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
             hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
             //hole.tint = "#FFF";
             hole.alpha = .5;
@@ -109,7 +111,7 @@ class Level_2 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
         //set up level goal
-        this.goal = this.physics.add.sprite(800, 375, 'ball');
+        this.goal = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
         this.goal.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
         this.goal.body.updateCenter();
         this.goal.body.setImmovable(true);
@@ -121,6 +123,7 @@ class Level_2 extends Phaser.Scene {
             fontFamily: "Courier", 
             fontSize: "32px",
             color: "#000",
+            backgroundColor: "#FFF",
             align: "center",
             padding: {
                 top: 5,
@@ -133,11 +136,11 @@ class Level_2 extends Phaser.Scene {
         let textSpacer = 64;
         this.text1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Hold Left Click to create a Ravine", 
                 textConfig).setOrigin(.5);
-        this.text2 = this.add.text(centerX, centerY - 3.75*textSpacer, "Ravines pull the ball in.",
+        this.text2 = this.add.text(centerX, centerY - 3.9*textSpacer, "Ravines pull the ball in.",
                 textConfig).setOrigin(.5);
-        this.text4 = this.add.text(centerX, centerY + 4*textSpacer, "Hold Right Clcik to create a Hill", 
+        this.text4 = this.add.text(centerX - 3*textSpacer, centerY + 4*textSpacer, "Hold Right Click to create a Hill", 
                 textConfig).setOrigin(.5);
-        this.text5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Hills push the ball away.",
+        this.text5 = this.add.text(centerX - 3*textSpacer, centerY + 4.6*textSpacer, "Hills push the ball away.",
                 textConfig).setOrigin(.5);
         //fading tutorial text
         textConfig.backgroundColor = null;

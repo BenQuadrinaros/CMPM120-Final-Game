@@ -7,7 +7,7 @@ class Level_1 extends Phaser.Scene {
         //console.log("in level 1");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background', './assets/Level1background.jpg');
+        this.load.image('background1', './assets/Level1background.jpg');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -25,6 +25,8 @@ class Level_1 extends Phaser.Scene {
         this.mouse = this.input.activePointer;
         this.startPosX = 100;
         this.startPosY = 375;
+        this.endPosX = 800;
+        this.endPosY = 375;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -44,7 +46,7 @@ class Level_1 extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //set up map background
-        this.add.sprite(0, 0, 'background').setOrigin(0, 0);
+        this.add.sprite(0, 0, 'background1').setOrigin(0, 0);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
@@ -98,7 +100,7 @@ class Level_1 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(800, 375, 'ball');
+            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
             hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
             //hole.tint = "#FFF";
             hole.alpha = .5;
@@ -109,7 +111,7 @@ class Level_1 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
         //set up level goal
-        this.goal = this.physics.add.sprite(800, 375, 'ball');
+        this.goal = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
         this.goal.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
         this.goal.body.updateCenter();
         this.goal.body.setImmovable(true);
