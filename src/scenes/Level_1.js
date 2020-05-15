@@ -8,6 +8,13 @@ class Level_1 extends Phaser.Scene {
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('background', './assets/Level1background.jpg');
+        
+        //load player assosciated audio
+        this.load.audio("rotate", "./assets/angleTick.wav");
+        this.load.audio("chargeHit", "./assets/shotIndicator.wav");
+        this.load.audio("ballHit", "./assets/ballHit.wav");
+        this.load.audio("ballInHole", "./assets/ballInHole.wav");
+        this.load.audio("music", "./assets/music.wav");
     }
 
     create() {
@@ -18,6 +25,15 @@ class Level_1 extends Phaser.Scene {
         this.mouse = this.input.activePointer;
         this.startPosX = 100;
         this.startPosY = 375;
+
+        //audio volume adjustments
+        this.chargeSound = this.sound.add("chargeHit");
+        this.chargeSound.volume = .5;
+        this.rotateSound = this.sound.add("rotate");
+        this.rotateSound.volume = .5;
+        this.music = this.sound.add("music");
+        this.music.loop = true;
+        this.music.play();
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -321,12 +337,16 @@ class Level_1 extends Phaser.Scene {
     //collision with hole
     toNextLevel() {
         this.player.body.stop();
+        this.player.body.setEnable(false);
         this.player.alpha = 0;
         //play animation for ball -> hole
-        //this.sound.play("ballInHole");
+        this.music.stop();
+        this.sound.play("ballInHole");
         this.time.addEvent({
-            delay: 1300,
-            callback: () => { this.scene.start("menuScene") },
+            delay: 2000,
+            callback: () => {
+                this.scene.start("menuScene");
+            },
             loop: false,
             callbackScope: this
         });

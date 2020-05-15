@@ -9,7 +9,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.shotIndicate = this.scene.add.rectangle(x, y, 70, 5, 0xFFFFFF).setOrigin(0, 0);
 
-
+        //set physics properties
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
@@ -38,8 +38,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustUp(this.keyUp)) {
             this.shotIndicate.fillColor = '0xFACE44';
             this.shotIndicate.width = 0;
-            //hot the ball with velocity proportional to charge time
-            //this.sound.play("ballHit");
+            //hit the ball with velocity proportional to charge time
+            this.scene.sound.play("ballHit");
             this.body.stop();
             this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 100, this.body.acceleration);
             this.ballSpeed = 0;
@@ -49,7 +49,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
         //charge hit while key is down
         if (this.keyUp.isDown) {
-            //this.sound.play("chargeHit");
+            this.scene.chargeSound.play();
             //see if ball speed is less than max velocity - 200
             if (this.ballSpeed < 200) {
                 if (this.ballSpeed < 50) {
@@ -66,11 +66,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         //rotate the direction the ball is facing
         if (this.keyRight.isDown) {
-            //this.sound.play("rotate");
+            this.scene.rotateSound.play();
             this.rotation -= Math.PI / 100;
         }
         if (this.keyLeft.isDown) {
-            //this.sound.play("rotate");
+            this.scene.rotateSound.play();
             this.rotation += Math.PI / 100;
         }
 
