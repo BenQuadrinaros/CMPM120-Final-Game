@@ -51,9 +51,7 @@ class Sandbox extends Phaser.Scene {
         this.hills = this.add.group();
         {
             var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
-            //mound.tint = '#000';
-            mound.alpha = .25;
+            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
             mound.body.setImmovable(true);
             mound.body.setGravity(false);
             this.hills.add(mound);
@@ -65,9 +63,7 @@ class Sandbox extends Phaser.Scene {
         {
             //create a ravine in the hole
             var hole = this.physics.add.sprite(800, 375, 'ravine');
-            hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
-            //hole.tint = "#FFF";
-            hole.alpha = .5;
+            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
             hole.body.setImmovable(true);
             hole.body.setGravity(false);
             this.ravines.add(hole);
@@ -131,21 +127,19 @@ class Sandbox extends Phaser.Scene {
                     //if left click, add ravine to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    temp.alpha = .5;
                     this.ravines.add(temp)
                     console.log(this.ravines);
                     this.sizeIncrease(temp, "left", true);
                 } else if (this.mouse.rightButtonDown()) {
+                    //if right click, add hill to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    temp.alpha = .5;
-                    //if right click, add hill to group
                     this.hills.add(temp)
                     console.log(this.hills);
                     this.sizeIncrease(temp, "right", true);

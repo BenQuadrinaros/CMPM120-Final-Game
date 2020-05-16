@@ -60,25 +60,21 @@ class Level_2 extends Phaser.Scene {
         {
             //create each walls for the level
             var floor1 = this.physics.add.sprite(0, 25, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            floor1.alpha = .5;
             floor1.body.setImmovable(true);
             floor1.body.setGravity(false);
             this.walls.add(floor1);
 
             var floor2 = this.physics.add.sprite(440, 25, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            floor2.alpha = .5;
             floor2.body.setImmovable(true);
             floor2.body.setGravity(false);
             this.walls.add(floor2);
 
             var floor3 = this.physics.add.sprite(0, 350, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            floor3.alpha = .5;
             floor3.body.setImmovable(true);
             floor3.body.setGravity(false);
             this.walls.add(floor3);
 
             var floor4 = this.physics.add.sprite(360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
-            floor4.alpha = .5;
             floor4.body.setImmovable(true);
             floor4.body.setGravity(false);
             this.walls.add(floor4);
@@ -89,9 +85,7 @@ class Level_2 extends Phaser.Scene {
         this.hills = this.add.group();
         {
             /*var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
-            //mound.tint = '#000';
-            mound.alpha = .25;
+            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
             mound.body.setImmovable(true);
             mound.body.setGravity(false);
             this.hills.add(mound)*/
@@ -103,9 +97,7 @@ class Level_2 extends Phaser.Scene {
         {
             //create a ravine in the hole
             var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ravine');
-            hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
-            //hole.tint = "#FFF";
-            hole.alpha = .5;
+            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
             hole.body.setImmovable(true);
             hole.body.setGravity(false);
             this.ravines.add(hole);
@@ -125,7 +117,7 @@ class Level_2 extends Phaser.Scene {
             fontFamily: "Courier", 
             fontSize: "32px",
             color: "#000",
-            backgroundColor: "#FFF",
+            backgroundColor: "#AAA",
             align: "center",
             padding: {
                 top: 5,
@@ -140,9 +132,9 @@ class Level_2 extends Phaser.Scene {
                 textConfig).setOrigin(.5);
         this.text2 = this.add.text(centerX, centerY - 3.9*textSpacer, "Ravines pull the ball in.",
                 textConfig).setOrigin(.5);
-        this.text4 = this.add.text(centerX - 3*textSpacer, centerY + 4*textSpacer, "Hold Right Click to create a Hill", 
+        this.text4 = this.add.text(centerX - 2*textSpacer, centerY + 4*textSpacer, "Hold Right Click \nto create a Hill", 
                 textConfig).setOrigin(.5);
-        this.text5 = this.add.text(centerX - 3*textSpacer, centerY + 4.6*textSpacer, "Hills push the ball away.",
+        this.text5 = this.add.text(centerX - 2*textSpacer, centerY + 5.2*textSpacer, "Hills push the ball away.",
                 textConfig).setOrigin(.5);
         //fading tutorial text
         textConfig.backgroundColor = null;
@@ -197,21 +189,19 @@ class Level_2 extends Phaser.Scene {
                     //if left click, add ravine to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    temp.alpha = .5;
                     this.ravines.add(temp)
                     console.log(this.ravines);
                     this.sizeIncrease(temp, "left", true);
                 } else if (this.mouse.rightButtonDown()) {
+                    //if right click, add hill to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    temp.alpha = .5;
-                    //if right click, add hill to group
                     this.hills.add(temp)
                     console.log(this.hills);
                     this.sizeIncrease(temp, "right", true);
