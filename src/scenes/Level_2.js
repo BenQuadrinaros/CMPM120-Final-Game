@@ -8,6 +8,8 @@ class Level_2 extends Phaser.Scene {
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('background2', './assets/Level2background.png');
+        this.load.image('hill', './assets/mountain.png');
+        this.load.image('ravine', './assets/ravine.png');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -86,7 +88,7 @@ class Level_2 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            /*var mound = this.physics.add.sprite(750, 205, 'ball');
+            /*var mound = this.physics.add.sprite(750, 205, 'hill');
             mound.setOrigin(.5).setCircle(130).setScale(.75, .75).setInteractive();
             //mound.tint = '#000';
             mound.alpha = .25;
@@ -100,7 +102,7 @@ class Level_2 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
+            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ravine');
             hole.setOrigin(.5).setCircle(130).setScale(.4, .4).setInteractive();
             //hole.tint = "#FFF";
             hole.alpha = .5;
@@ -191,23 +193,28 @@ class Level_2 extends Phaser.Scene {
         //create new object when clicking
         if (this.singleClick == 1) {
             this.input.on('pointerdown', () => {
-                let temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ball');
-                console.log("temp: " + temp);
-                temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
-                temp.body.setImmovable(true);
-                temp.body.setGravity(false);
-                temp.alpha = .5;
-                if(this.mouse.rightButtonDown()) {
+                if(this.mouse.leftButtonDown()) {
+                    //if left click, add ravine to group
+                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
+                    console.log("temp: " + temp);
+                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.body.setImmovable(true);
+                    temp.body.setGravity(false);
+                    temp.alpha = .5;
+                    this.ravines.add(temp)
+                    console.log(this.ravines);
+                    this.sizeIncrease(temp, "left", true);
+                } else if (this.mouse.rightButtonDown()) {
+                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
+                    console.log("temp: " + temp);
+                    temp.setOrigin(.5).setCircle(130).setScale(.01, .01).setInteractive();
+                    temp.body.setImmovable(true);
+                    temp.body.setGravity(false);
+                    temp.alpha = .5;
                     //if right click, add hill to group
                     this.hills.add(temp)
                     console.log(this.hills);
                     this.sizeIncrease(temp, "right", true);
-                }
-                if(this.mouse.leftButtonDown()) {
-                    //if left click, add ravine to group
-                    this.ravines.add(temp)
-                    console.log(this.ravines);
-                    this.sizeIncrease(temp, "left", true);
                 }
             });
         }
