@@ -68,7 +68,7 @@ class Menu extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("level_1Scene") },
+                callback: () => { this.scene.start("level_3Scene") },
                 loop: false,
                 callbackScope: this
             });
