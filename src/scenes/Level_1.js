@@ -270,6 +270,7 @@ class Level_1 extends Phaser.Scene {
         //play animation for ball -> hole
         this.music.stop();
         this.sound.play("ballInHole");
+        levelsAvailable.push(2);
         this.time.addEvent({
             delay: 2000,
             callback: () => {
