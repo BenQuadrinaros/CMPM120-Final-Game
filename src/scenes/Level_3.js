@@ -1,6 +1,6 @@
-class Level_2 extends Phaser.Scene {
+class Level_3 extends Phaser.Scene {
     constructor() {
-        super("level_2Scene");
+        super("level_3Scene");
     }
 
     preload() {
@@ -10,6 +10,7 @@ class Level_2 extends Phaser.Scene {
         this.load.image('background2', './assets/Level2background.png');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
+        this.load.image('crab','./assets/crab.png');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -27,10 +28,10 @@ class Level_2 extends Phaser.Scene {
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
         this.startPosX = 100;
-        this.startPosY = 250;
+        this.startPosY = game.config.height/2;
         this.endPosX = 750;
-        this.endPosY = 550;
-        this.levelCount = 2;
+        this.endPosY = game.config.height/2;
+        this.levelCount = 3;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -41,14 +42,14 @@ class Level_2 extends Phaser.Scene {
         this.music.loop = true;
         this.music.play();
 
-        //key bindings for interface
+        //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-
+        
         //key bindings for mouse controls
         keyZERO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
         keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
@@ -74,15 +75,12 @@ class Level_2 extends Phaser.Scene {
             floorFrame.body.setGravity(false);
             this.walls.add(floorFrame);
 
-            var floor3 = this.physics.add.sprite(0, 350, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            floor3.body.setImmovable(true);
-            floor3.body.setGravity(false);
-            this.walls.add(floor3);
+            //create each walls for the level
+            var floor1 = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'wall').setOrigin(.5, .5).setScale(1, 3);
+            floor1.body.setImmovable(true);
+            floor1.body.setGravity(false);
+            this.walls.add(floor1);
 
-            var floor4 = this.physics.add.sprite(360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
-            floor4.body.setImmovable(true);
-            floor4.body.setGravity(false);
-            this.walls.add(floor4);
         }
         this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
 
@@ -117,7 +115,18 @@ class Level_2 extends Phaser.Scene {
         this.goal.body.setGravity(false);
         this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
 
-        //tutorial text for Level_2
+
+        //set up crab
+        this.crabs= this.add.group();
+
+        this.crab1 = new Crab(this,this.endPosX-100,150,'crab',.5).setScale(.1,.1);
+        this.crabs.add(this.crab1);
+        this.crab2 = new Crab(this,this.endPosX-100,450,'crab',-.5).setScale(.1,.1);
+        this.crabs.add(this.crab2);
+        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
+
+
+        //tutorial text for Level_3
         let textConfig = {
             fontFamily: "Courier", 
             fontSize: "32px",
@@ -149,7 +158,7 @@ class Level_2 extends Phaser.Scene {
             loop:false,
             callbackScope:this
         });
-        
+
         //permanent control display
         if(this.levelCount > 0) {
             let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
@@ -169,6 +178,8 @@ class Level_2 extends Phaser.Scene {
 
     update() {
         this.player.update();
+        this.crab1.update();
+        this.crab2.update();
 
         //fade out text slowly
         if(this.fadeText1.alpha > 0 && this.fadeDelay) {
@@ -182,7 +193,6 @@ class Level_2 extends Phaser.Scene {
             //this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
-            this.player.body.setEnable(false);
         }
         if (Phaser.Input.Keyboard.JustDown(keyQ)) {
             //this.sound.play("pause");
@@ -337,7 +347,7 @@ class Level_2 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 40*ravine.scale, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
     }
 
     //overlapping with hills should push the player away from the center while changing momentum
@@ -352,7 +362,7 @@ class Level_2 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 40*hill.scale, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
     }
 
     //collision with hole
@@ -366,7 +376,7 @@ class Level_2 extends Phaser.Scene {
         this.time.addEvent({
             delay: 2000,
             callback: () => {
-                this.scene.start("level_3Scene");
+                this.scene.start("menuScene");
             },
             loop: false,
             callbackScope: this

@@ -138,6 +138,7 @@ class Level_1 extends Phaser.Scene {
             callbackScope:this
         });
         
+        //permanent control display
         if(this.levelCount > 0) {
             let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
                 "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
