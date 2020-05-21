@@ -29,6 +29,7 @@ class Level_1 extends Phaser.Scene {
         this.startPosY = 375;
         this.endPosX = 800;
         this.endPosY = 375;
+        this.levelCount = 1;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -59,6 +60,12 @@ class Level_1 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
+            var floorFrame = this.physics.add.sprite(0, 0, 'wall')
+                .setOrigin(0, 0).setScale(4.6, .75);
+            floorFrame.body.setImmovable(true);
+            floorFrame.body.setGravity(false);
+            this.walls.add(floorFrame);
+
             var floor1 = this.physics.add.sprite(0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             floor1.body.setImmovable(true);
             floor1.body.setGravity(false);
@@ -80,17 +87,6 @@ class Level_1 extends Phaser.Scene {
             this.walls.add(floor4);
         }
         this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
-
-        //set up hill physics
-        this.hills = this.add.group();
-        {
-            /*var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
-            mound.body.setImmovable(true);
-            mound.body.setGravity(false);
-            this.hills.add(mound)*/
-        }
-        this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
 
         //set up ravine phsyics
         this.ravines = this.add.group();
@@ -115,8 +111,7 @@ class Level_1 extends Phaser.Scene {
         //tutorial text for Level_1
         let textConfig = {
             fontFamily: "Courier", 
-            fontSize: "28px",
-            backgroundColor: "#AAA",
+            fontSize: "18px",
             color: "#000",
             align: "center",
             padding: {
@@ -128,20 +123,7 @@ class Level_1 extends Phaser.Scene {
         let centerX = game.config.width/2;
         let centerY = game.config.height/2;
         let textSpacer = 64;
-        this.text1 = this.add.text(centerX, centerY - 4.5*textSpacer, "Use (←) and (→) to turn the ball.", 
-                textConfig).setOrigin(.5);
-        this.text2 = this.add.text(centerX, centerY - 4*textSpacer, "Hold (↑) to charge the shot power.",
-                textConfig).setOrigin(.5);
-        this.text3 = this.add.text(centerX, centerY - 3.5*textSpacer, "Release (↑) to fire the ball.",
-                textConfig).setOrigin(.5);
-        textConfig.fontSize = "28px";
-        this.text4 = this.add.text(centerX, centerY + 4*textSpacer, "Press (R) to reset the ball.", 
-                textConfig).setOrigin(.5);
-        this.text5 = this.add.text(centerX, centerY + 4.5*textSpacer, "Press (Q) to restart the level.",
-                textConfig).setOrigin(.5);
         //fading tutorial text
-        textConfig.backgroundColor = null;
-        textConfig.fontSize = "18px";
         this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn", 
                 textConfig).setOrigin(.5);
         this.fadeText2 = this.add.text(this.player.x + 3*textSpacer, this.player.y + 5, "Hold (↑) to charge",
@@ -155,8 +137,21 @@ class Level_1 extends Phaser.Scene {
             loop:false,
             callbackScope:this
         });
+        
+        if(this.levelCount > 0) {
+            let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
+                "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
+                textConfig).setOrigin(.5);
+        }
+        if(this.levelCount > 1) {
+            this.mouseText = this.add.text(centerX, game.config.height/15, 
+                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType, 
+                textConfig).setOrigin(.5);
+            let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15, 
+                "(0) Remove\n(1) Hill\n(2) Ravine", 
+                textConfig).setOrigin(.5);
+        }
     }
-
 
     update() {
         this.player.update();
@@ -178,59 +173,6 @@ class Level_1 extends Phaser.Scene {
             //this.sound.play("pause");
             this.scene.restart();
         }
-
-        //mouse controls for terrain manipulation
-        if (game.input.mousePointer.isDown) {
-            this.singleClick++;
-        } else {
-            this.singleClick = 0;
-        }
-        //create new object when clicking
-        if (this.singleClick == 1) {
-            this.input.on('pointerdown', () => {
-                if(this.mouse.leftButtonDown()) {
-                    //if left click, add ravine to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
-                    console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
-                    this.ravines.add(temp)
-                    console.log(this.ravines);
-                    this.sizeIncrease(temp, "left", true);
-                } else if (this.mouse.rightButtonDown()) {
-                    //if right click, add hill to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
-                    console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
-                    this.hills.add(temp)
-                    console.log(this.hills);
-                    this.sizeIncrease(temp, "right", true);
-                }
-            });
-        }
-    }
-
-    sizeIncrease(object, mouseButton, looping) {
-        //increase size as long as the correct mouse button is held down
-        object.scale += .005;
-        console.log("make it bigger");
-        if (mouseButton == "right" && !this.mouse.rightButtonDown()) {
-            looping = false;
-            console.log("wrong key (right)");
-        }
-        if (mouseButton == "left" && !this.mouse.leftButtonDown()) {
-            looping = false;
-            console.log("wrong key (left)");
-        } 
-        this.time.addEvent({
-            delay:100,
-            callback: () => {if(looping){this.sizeIncrease(object, mouseButton, looping);}},
-            loop:false,
-            callbackScope:this
-        });
     }
 
     //angle adjustment for bouncing off world bounds
@@ -316,22 +258,7 @@ class Level_1 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
-    }
-
-    //overlapping with hills should push the player away from the center while changing momentum
-    pushOverlap(player, hill) {
-        //get the angle away from the center of the hill
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
-        angle += Math.PI;
-        //adjust player angle away from hill center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, ravine.scale, this.player.body.acceleration);
     }
 
     //collision with hole

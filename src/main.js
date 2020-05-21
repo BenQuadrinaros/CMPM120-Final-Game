@@ -13,7 +13,7 @@ let config = {
     physics:{
         default:'arcade',
         arcade:{
-            debug: true,
+            debug: false,
             gravity:{
                 x:0,
                 y:0
@@ -31,6 +31,7 @@ game.settings = {
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
+let keyZERO, keyONE, keyTWO, keyTHREE, keyFOUR;
 let mouseDown = false;
 
 //need left mouse click
