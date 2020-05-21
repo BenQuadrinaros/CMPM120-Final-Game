@@ -52,8 +52,14 @@ class Level_Select extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
+         this.key1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+        this.key2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+        this.key3 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+        this.key4 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+
+
         let i = 1;
-        levelsComplete.forEach( level => {
+        levelsAvailable.forEach(level => {
             this.add.rectangle(textSpacer*level,70,50,50,'0xffffff');
             this.add.text(textSpacer*level,70,level.toString(),menuConfig).setOrigin(.5,.5);
 
@@ -75,6 +81,54 @@ class Level_Select extends Phaser.Scene {
             });
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("sandboxScene") },
+                loop: false,
+                callbackScope: this
+            });
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.key1)) {
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("level_1Scene") },
+                loop: false,
+                callbackScope: this
+            });
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.key2)) {
+            if (levelsAvailable.includes(2)) {
+                this.sound.play("menuSelect");
+                this.time.addEvent({
+                    delay: 1300,
+                    callback: () => {
+                        this.scene.start("level_2Scene")
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            }
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.key3)) {
+            if (levelsAvailable.includes(3)) {
+                this.sound.play("menuSelect");
+                this.time.addEvent({
+                    delay: 1300,
+                    callback: () => {
+                        this.scene.start("level_3Scene")
+                    },
+                    loop: false,
+                    callbackScope: this
+                });
+            }
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.key4)) {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
