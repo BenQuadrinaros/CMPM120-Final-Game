@@ -43,7 +43,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             //hit the ball with velocity proportional to charge time
             this.scene.sound.play("ballHit");
             this.body.stop();
-            this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 100, this.body.acceleration);
+            this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 200, this.body.acceleration);
             this.ballSpeed = 0;
         } else if (this.body.touching.none) {
             //if no forces acting on player, reset acceleration

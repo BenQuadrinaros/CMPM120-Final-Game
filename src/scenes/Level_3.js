@@ -11,6 +11,7 @@ class Level_3 extends Phaser.Scene {
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab','./assets/crab.png');
+        this.load.image('hole', './assets/hole.png');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -69,16 +70,11 @@ class Level_3 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floorFrame = this.physics.add.sprite(0, 0, 'wall')
-                .setOrigin(0, 0).setScale(4.6, .75);
-            floorFrame.body.setImmovable(true);
-            floorFrame.body.setGravity(false);
+            var floorFrame = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
             this.walls.add(floorFrame);
 
             //create each walls for the level
-            var floor1 = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'wall').setOrigin(.5, .5).setScale(1, 3);
-            floor1.body.setImmovable(true);
-            floor1.body.setGravity(false);
+            var floor1 = new Obstacle(this,game.config.width/2, game.config.height/2, 'wall').setOrigin(.5, .5).setScale(1, 3);
             this.walls.add(floor1);
 
         }
@@ -108,11 +104,7 @@ class Level_3 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
         //set up level goal
-        this.goal = this.physics.add.sprite(this.endPosX, this.endPosY, 'ball');
-        this.goal.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
-        this.goal.body.updateCenter();
-        this.goal.body.setImmovable(true);
-        this.goal.body.setGravity(false);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole');
         this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
 
 
@@ -189,14 +181,20 @@ class Level_3 extends Phaser.Scene {
         }
 
         //keyboard controls for pause and restart
-        if (Phaser.Input.Keyboard.JustDown(keyR)) {
+        if (Phaser.Input.Keyboard.JustDown(keyP)) {
             //this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
         }
-        if (Phaser.Input.Keyboard.JustDown(keyQ)) {
-            //this.sound.play("pause");
+        if (Phaser.Input.Keyboard.JustDown(keyR)) {
+            //this.sound.play("wipe");
+            this.music.pause();
             this.scene.restart();
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyQ)) {
+            //this.sound.play("wipe");
+            this.music.pause();
+            this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
             //this.sound.play("switch");
@@ -347,7 +345,7 @@ class Level_3 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 100*ravine.scale, this.player.body.acceleration);
     }
 
     //overlapping with hills should push the player away from the center while changing momentum
@@ -362,7 +360,7 @@ class Level_3 extends Phaser.Scene {
             this.player.rotation += Math.PI / 200;
         }
         //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 20, this.player.body.acceleration);
+        this.physics.velocityFromRotation(angle, 100*hill.scale, this.player.body.acceleration);
     }
 
     //collision with hole

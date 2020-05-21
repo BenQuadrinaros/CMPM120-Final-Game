@@ -110,9 +110,9 @@ class Sandbox extends Phaser.Scene {
             textConfig).setOrigin(.5);
         this.text2 = this.add.text(centerX, centerY - 1.75 * textSpacer, "Press (Q) to quit to the menu.",
             textConfig).setOrigin(.5);
-        this.text3 = this.add.text(centerX, centerY + 4 * textSpacer, "Press (R) to reset the ball.",
+        this.text3 = this.add.text(centerX, centerY + 4 * textSpacer, "Press (P) to place the ball.",
             textConfig).setOrigin(.5);
-        this.text4 = this.add.text(centerX, centerY + 4.5 * textSpacer, "Press (P) to reset the sandbox.",
+        this.text4 = this.add.text(centerX, centerY + 4.5 * textSpacer, "Press (R) to reset the sandbox.",
             textConfig).setOrigin(.5);
 
         textConfig.fontSize = "18px";
@@ -136,19 +136,21 @@ class Sandbox extends Phaser.Scene {
         this.player.update();
 
         //keyboard controls for pause and restart
-        if (Phaser.Input.Keyboard.JustDown(keyR)) {
+        if (Phaser.Input.Keyboard.JustDown(keyP)) {
             //this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
             this.player.body.setEnable(false);
         }
+        if (Phaser.Input.Keyboard.JustDown(keyR)) {
+            //this.sound.play("wipe");
+            this.music.pause();
+            this.scene.restart();
+        }
         if (Phaser.Input.Keyboard.JustDown(keyQ)) {
             //this.sound.play("wipe");
-            this.scene.load("menuScene");
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            //this.sound.play("pause");
-            this.scene.restart();
+            this.music.pause();
+            this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
             //this.sound.play("switch");
