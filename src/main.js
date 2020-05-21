@@ -13,14 +13,16 @@ let config = {
     physics:{
         default:'arcade',
         arcade:{
-            debug: true,
+            debug: false,
             gravity:{
                 x:0,
                 y:0
             }
         }
     },
+
     scene: [Menu, Sandbox, Level_1, Level_2,Level_3,Level_Select]
+
 };
 
 let game = new Phaser.Game(config);
@@ -32,6 +34,7 @@ let levelsComplete = [1,2,3,4];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
+let keyZERO, keyONE, keyTWO, keyTHREE, keyFOUR;
 let mouseDown = false;
 
 //need left mouse click

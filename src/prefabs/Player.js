@@ -1,12 +1,13 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight) {
+    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight, infiniteHit = false) {
         super(scene, x, y, texture);
         this.keyUp = keyUP;
         this.keyLeft = keyLeft;
         this.keyRight = keyRight;
         this.ballSpeed = 0;
         this.scene = scene;
+        this.infiniteHit = infiniteHit;
         this.shotIndicate = this.scene.add.rectangle(x, y, 70, 5, 0xFFFFFF).setOrigin(0, 0);
 
         //set physics properties
@@ -19,6 +20,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.setBounce(.75);
         this.body.setGravity(false);
         this.setMaxVelocity(200);
+        this.body.setEnable(false);
     }
 
     update() {
@@ -34,7 +36,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         //charge and hit ball by holding and realeasing up key
-        if (Phaser.Input.Keyboard.JustUp(this.keyUp)) {
+        if (Phaser.Input.Keyboard.JustUp(this.keyUp) && (!this.body.enable || this.infiniteHit)) {
+            this.body.setEnable(true);
             this.shotIndicate.fillColor = '0xFACE44';
             this.shotIndicate.width = 0;
             //hit the ball with velocity proportional to charge time
@@ -47,7 +50,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setAcceleration(0);
         }
         //charge hit while key is down
-        if (this.keyUp.isDown) {
+        if (this.keyUp.isDown && (!this.body.enable || this.infiniteHit)) {
             this.scene.chargeSound.play();
             //see if ball speed is less than max velocity - 200
             if (this.ballSpeed < 200) {
@@ -64,11 +67,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         //rotate the direction the ball is facing
-        if (this.keyRight.isDown) {
+        if (this.keyRight.isDown && (!this.body.enable || this.infiniteHit)) {
             this.scene.rotateSound.play();
             this.rotation -= Math.PI / 100;
         }
-        if (this.keyLeft.isDown) {
+        if (this.keyLeft.isDown && (!this.body.enable || this.infiniteHit)) {
             this.scene.rotateSound.play();
             this.rotation += Math.PI / 100;
         }
