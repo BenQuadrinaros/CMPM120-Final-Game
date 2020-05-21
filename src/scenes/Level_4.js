@@ -1,6 +1,7 @@
-class Level_3 extends Phaser.Scene {
+class Level_4 extends Phaser.Scene {
     constructor() {
-        super("level_3Scene");
+        console.log("in level 4")
+        super("level_4Scene");
     }
 
     preload() {
@@ -11,7 +12,7 @@ class Level_3 extends Phaser.Scene {
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab','./assets/crab.png');
-        
+
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
@@ -27,10 +28,10 @@ class Level_3 extends Phaser.Scene {
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
-        this.startPosX = 100;
-        this.startPosY = game.config.height/2;
-        this.endPosX = 750;
-        this.endPosY = game.config.height/2;
+        this.startPosX = game.config.width/10;
+        this.startPosY = game.config.height-40;
+        this.endPosX = game.config.width/10;
+        this.endPosY = game.config.height/3;
         this.levelCount = 3;
 
         //audio volume adjustments
@@ -49,7 +50,7 @@ class Level_3 extends Phaser.Scene {
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-        
+
         //key bindings for mouse controls
         keyZERO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
         keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
@@ -61,8 +62,8 @@ class Level_3 extends Phaser.Scene {
         this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
 
         //set up player physics
-        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
-                keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
+            keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.physics.world.on('worldbounds', this.worldBounce, this);
 
         //set up obstacles physics
@@ -76,10 +77,21 @@ class Level_3 extends Phaser.Scene {
             this.walls.add(floorFrame);
 
             //create each walls for the level
-            var floor1 = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'wall').setOrigin(.5, .5).setScale(1, 3);
+            var floor1 = this.physics.add.sprite(300, 2*game.config.height/3, 'wall').setOrigin(.5, .5).setScale(3, .5);
             floor1.body.setImmovable(true);
             floor1.body.setGravity(false);
             this.walls.add(floor1);
+
+
+            var floor2 = this.physics.add.sprite(300, game.config.height/4, 'wall').setOrigin(.5, .5).setScale(.5, 2);
+            floor2.body.setImmovable(true);
+            floor2.body.setGravity(false);
+            this.walls.add(floor2);
+
+            var floor3 = this.physics.add.sprite(4*game.config.width/7, 3*game.config.height/7 +10, 'wall').setOrigin(.5, .5).setScale(.5, 2);
+            floor3.body.setImmovable(true);
+            floor3.body.setGravity(false);
+            this.walls.add(floor3);
 
         }
         this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
@@ -116,19 +128,19 @@ class Level_3 extends Phaser.Scene {
         this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
 
 
-        //set up crab
-        this.crabs= this.add.group();
-
-        this.crab1 = new Crab(this,this.endPosX-100,150,'crab',.5).setScale(.1,.1);
-        this.crabs.add(this.crab1);
-        this.crab2 = new Crab(this,this.endPosX-100,450,'crab',-.5).setScale(.1,.1);
-        this.crabs.add(this.crab2);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
+        // //set up crab
+        // this.crabs= this.add.group();
+        //
+        // this.crab1 = new Crab(this,this.endPosX-100,150,'crab',.5).setScale(.1,.1);
+        // this.crabs.add(this.crab1);
+        // this.crab2 = new Crab(this,this.endPosX-100,450,'crab',-.5).setScale(.1,.1);
+        // this.crabs.add(this.crab2);
+        // this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
 
 
         //tutorial text for Level_3
         let textConfig = {
-            fontFamily: "Courier", 
+            fontFamily: "Courier",
             fontSize: "32px",
             color: "#000",
             backgroundColor: "#AAA",
@@ -145,12 +157,12 @@ class Level_3 extends Phaser.Scene {
         //fading tutorial text
         textConfig.backgroundColor = null;
         textConfig.fontSize = "18px";
-        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn", 
-                textConfig).setOrigin(.5);
+        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn",
+            textConfig).setOrigin(.5);
         this.fadeText2 = this.add.text(this.player.x + 3*textSpacer, this.player.y + 5, "Hold (↑) to charge",
-                textConfig).setOrigin(.5);
+            textConfig).setOrigin(.5);
         this.fadeText3 = this.add.text(this.player.x + 30, this.player.y + textSpacer, "Release (↑) to fire",
-                textConfig).setOrigin(.5);
+            textConfig).setOrigin(.5);
         this.fadeDelay = false;
         this.time.addEvent({
             delay:10000,
@@ -161,16 +173,16 @@ class Level_3 extends Phaser.Scene {
 
         //permanent control display
         if(this.levelCount > 0) {
-            let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
+            let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15,
                 "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
                 textConfig).setOrigin(.5);
         }
         if(this.levelCount > 1) {
-            this.mouseText = this.add.text(centerX, game.config.height/15, 
-                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType, 
+            this.mouseText = this.add.text(centerX, game.config.height/15,
+                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType,
                 textConfig).setOrigin(.5);
-            let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15, 
-                "(0) Remove\n(1) Hill\n(2) Ravine", 
+            let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15,
+                "(0) Remove\n(1) Hill\n(2) Ravine",
                 textConfig).setOrigin(.5);
         }
     }
@@ -178,8 +190,8 @@ class Level_3 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
-        this.crab2.update();
+        // this.crab1.update();
+        // this.crab2.update();
 
         //fade out text slowly
         if(this.fadeText1.alpha > 0 && this.fadeDelay) {
@@ -255,7 +267,7 @@ class Level_3 extends Phaser.Scene {
         if (!this.mouse.leftButtonDown()) {
             looping = false;
             console.log("wrong key (left)");
-        } 
+        }
         this.time.addEvent({
             delay:100,
             callback: () => {if(looping){this.sizeIncrease(object, looping);}},
@@ -378,7 +390,7 @@ class Level_3 extends Phaser.Scene {
         this.time.addEvent({
             delay: 2000,
             callback: () => {
-                this.scene.start("level_4Scene");
+                this.scene.start("menuScene");
             },
             loop: false,
             callbackScope: this

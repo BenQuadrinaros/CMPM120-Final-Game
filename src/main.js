@@ -21,7 +21,7 @@ let config = {
         }
     },
 
-    scene: [Menu, Sandbox, Level_1, Level_2,Level_3,Level_Select]
+    scene: [Menu, Sandbox, Level_1, Level_2,Level_3,Level_4,Level_Select]
 
 };
 
