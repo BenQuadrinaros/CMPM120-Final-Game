@@ -1,6 +1,6 @@
-class Menu extends Phaser.Scene {
+class Level_Select extends Phaser.Scene {
     constructor() {
-        super("menuScene");
+        super("Level_Select");
     }
 
     preload() {
@@ -39,7 +39,7 @@ class Menu extends Phaser.Scene {
         let menuConfig = {
             fontFamily: "Courier",
             fontSize: "32px",
-            color: "#FFF",
+            color: "#000",
             align: "center",
             padding: {
                 top: 5,
@@ -50,17 +50,18 @@ class Menu extends Phaser.Scene {
 
         let centerX = game.config.width / 2;
         let centerY = game.config.height / 2;
-        let textSpacer = 64;
+        let textSpacer = 80;
 
-        // (↑) & (↓)
-        this.add.text(centerX, centerY - 2*textSpacer, "Press (↑) to start golfing.", menuConfig)
+        let i = 1;
+        levelsComplete.forEach( level => {
+            this.add.rectangle(textSpacer*level,70,50,50,'0xffffff');
+            this.add.text(textSpacer*level,70,level.toString(),menuConfig).setOrigin(.5,.5);
+
+        });
+
+
+        this.add.text(centerX, centerY - 2*textSpacer, "Press (↑) to Return.", menuConfig)
             .setOrigin(.5).setInteractive();
-        this.add.text(centerX, centerY + 2*textSpacer, "Press (↓) to go to the sandbox.", menuConfig)
-            .setOrigin(.5).setInteractive();
-        menuConfig.fontSize = "48px";
-        menuConfig.strokeThickness = 3;
-        menuConfig.stroke = "#FD0";
-        this.add.text(centerX, centerY, "GOD GOLF", menuConfig).setOrigin(.5);
     }
 
     update() {
@@ -68,7 +69,7 @@ class Menu extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("Level_Select") },
+                callback: () => { this.scene.start("menuScene") },
                 loop: false,
                 callbackScope: this
             });
@@ -83,52 +84,6 @@ class Menu extends Phaser.Scene {
             });
         }
     }
-
-    /*update() {
-        if(game.input.mousePointer.isDown){
-            this.singleClick++;
-        } else if(!(game.input.mousePointer.isDown)){
-            this.singleClick = 0;
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyUP)) {
-            this.sound.play("menuSelect");
-            this.time.addEvent({
-                delay:1300,
-                callback: () => {this.scene.start("playScene")},
-                loop:false,
-                callbackScope:this
-            });
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-            this.sound.play("menuSelect");
-            this.time.addEvent({
-                delay:1300,
-                callback: () => {this.scene.start("instructionScene")},
-                loop:false,
-                callbackScope:this
-            });
-        }
-        if(this.singleClick == 1) {
-            this.playText.on('pointerdown',() => {
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay:1300,
-                    callback: () => {this.scene.start("playScene")},
-                    loop:false,
-                    callbackScope:this
-                });
-            });
-            this.instructionsText.on('pointerdown',() => {
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay:1300,
-                    callback: () => {this.scene.start("instructionScene")},
-                    loop:false,
-                    callbackScope:this
-                });
-            });
-        }
-    }*/
 
     //angle adjustment for bouncing off world bounds
     worldBounce() {
