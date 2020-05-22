@@ -11,7 +11,7 @@ class Level_1 extends Phaser.Scene {
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('hole', './assets/hole.png');
-        
+
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
