@@ -12,6 +12,10 @@ class Level_2 extends Phaser.Scene {
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('hole', './assets/hole.png');
 
+        //load texture atlasii
+        this.load.atlas('distortionAtlas','./assets/dist_spritesheet.png','./assets/dist_sprites.json');
+
+
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
@@ -33,6 +37,11 @@ class Level_2 extends Phaser.Scene {
         this.endPosX = 750;
         this.endPosY = 550;
         this.levelCount = 2;
+
+
+        //create animations
+        createAnims(this);
+
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -221,6 +230,7 @@ class Level_2 extends Phaser.Scene {
                     temp.body.setGravity(false);
                     this.ravines.add(temp);
                     console.log(this.ravines);
+                    temp.play("ravine");
                     sizeIncrease(temp, true,this.mouse,this.time);
                 } else if (this.mouseType == "Hill") {
                     //if right click, add hill to group
@@ -231,6 +241,7 @@ class Level_2 extends Phaser.Scene {
                     temp.body.setGravity(false);
                     this.hills.add(temp);
                     console.log(this.hills);
+                    temp.play("mountain");
                     sizeIncrease(temp, true,this.mouse,this.time);
                 }
             });

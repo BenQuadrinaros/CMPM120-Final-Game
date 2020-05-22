@@ -12,6 +12,9 @@ class Level_3 extends Phaser.Scene {
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab','./assets/crab.png');
         this.load.image('hole', './assets/hole.png');
+
+        //load texture atlasii
+        this.load.atlas('distortionAtlas','./assets/dist_spritesheet.png','./assets/dist_sprites.json');
         
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -34,6 +37,10 @@ class Level_3 extends Phaser.Scene {
         this.endPosX = 750;
         this.endPosY = game.config.height/2;
         this.levelCount = 3;
+
+
+        //create animations
+        createAnims(this);
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -229,7 +236,9 @@ class Level_3 extends Phaser.Scene {
                     temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    this.ravines.add(temp)
+                    this.ravines.add(temp);
+                    temp.play("ravine");
+
                     console.log(this.ravines);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 } else if (this.mouseType == "Hill") {
@@ -239,7 +248,9 @@ class Level_3 extends Phaser.Scene {
                     temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    this.hills.add(temp)
+                    this.hills.add(temp);
+                    temp.play("mountain");
+
                     console.log(this.hills);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 }
