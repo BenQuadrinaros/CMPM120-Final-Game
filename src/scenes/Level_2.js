@@ -11,7 +11,7 @@ class Level_2 extends Phaser.Scene {
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('hole', './assets/hole.png');
-        
+
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
@@ -22,6 +22,7 @@ class Level_2 extends Phaser.Scene {
 
     create() {
         //misc set up
+        console.log("In Level 2");
         this.cameras.main.setBackgroundColor("#5A5");
         this.singleClick = 0;
         this.ballSpeed = 0;
@@ -61,9 +62,9 @@ class Level_2 extends Phaser.Scene {
         this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
 
         //set up player physics
-        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
-                keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
+            keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
         this.walls = this.add.group();
@@ -78,7 +79,7 @@ class Level_2 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
             this.walls.add(floor4);
         }
-        this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
+        this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
         this.hills = this.add.group();
@@ -89,7 +90,7 @@ class Level_2 extends Phaser.Scene {
             mound.body.setGravity(false);
             this.hills.add(mound)*/
         }
-        this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
+        this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
         //set up ravine phsyics
         this.ravines = this.add.group();
@@ -101,15 +102,15 @@ class Level_2 extends Phaser.Scene {
             hole.body.setGravity(false);
             this.ravines.add(hole);
         }
-        this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
+        this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole');
-        this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole',2);
+        this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         //tutorial text for Level_2
         let textConfig = {
-            fontFamily: "Courier", 
+            fontFamily: "Courier",
             fontSize: "32px",
             color: "#000",
             backgroundColor: "#AAA",
@@ -120,38 +121,40 @@ class Level_2 extends Phaser.Scene {
             },
             fixedWidth: 0
         };
-        let centerX = game.config.width/2;
-        let centerY = game.config.height/2;
+        let centerX = game.config.width / 2;
+        let centerY = game.config.height / 2;
         let textSpacer = 64;
         //fading tutorial text
         textConfig.backgroundColor = null;
         textConfig.fontSize = "18px";
-        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn", 
-                textConfig).setOrigin(.5);
-        this.fadeText2 = this.add.text(this.player.x + 3*textSpacer, this.player.y + 5, "Hold (↑) to charge",
-                textConfig).setOrigin(.5);
+        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn",
+            textConfig).setOrigin(.5);
+        this.fadeText2 = this.add.text(this.player.x + 3 * textSpacer, this.player.y + 5, "Hold (↑) to charge",
+            textConfig).setOrigin(.5);
         this.fadeText3 = this.add.text(this.player.x + 30, this.player.y + textSpacer, "Release (↑) to fire",
-                textConfig).setOrigin(.5);
+            textConfig).setOrigin(.5);
         this.fadeDelay = false;
         this.time.addEvent({
-            delay:10000,
-            callback: () => {this.fadeDelay = true;},
-            loop:false,
-            callbackScope:this
+            delay: 10000,
+            callback: () => {
+                this.fadeDelay = true;
+            },
+            loop: false,
+            callbackScope: this
         });
-        
+
         //permanent control display
-        if(this.levelCount > 0) {
-            let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
+        if (this.levelCount > 0) {
+            let angleText = this.add.text(centerX - game.config.width / 3, game.config.height / 15,
                 "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
                 textConfig).setOrigin(.5);
         }
-        if(this.levelCount > 1) {
-            this.mouseText = this.add.text(centerX, game.config.height/15, 
-                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType, 
+        if (this.levelCount > 1) {
+            this.mouseText = this.add.text(centerX, game.config.height / 15,
+                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType,
                 textConfig).setOrigin(.5);
-            let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15, 
-                "(0) Remove\n(1) Hill\n(2) Ravine", 
+            let objectText = this.add.text(centerX + game.config.width / 3, game.config.height / 15,
+                "(0) Remove\n(1) Hill\n(2) Ravine",
                 textConfig).setOrigin(.5);
         }
     }
@@ -161,7 +164,7 @@ class Level_2 extends Phaser.Scene {
         this.player.update();
 
         //fade out text slowly
-        if(this.fadeText1.alpha > 0 && this.fadeDelay) {
+        if (this.fadeText1.alpha > 0 && this.fadeDelay) {
             this.fadeText1.alpha -= .005;
             this.fadeText2.alpha -= .005;
             this.fadeText3.alpha -= .005;
@@ -207,18 +210,18 @@ class Level_2 extends Phaser.Scene {
             this.singleClick = 0;
         }
         //create new object when clicking
-        if (this.singleClick == 1  && !this.player.body.enable) {
+        if (this.singleClick == 1 && !this.player.body.enable) {
             this.input.on('pointerdown', () => {
-                if(this.mouseType == "Ravine") {
+                if (this.mouseType == "Ravine") {
                     //if left click, add ravine to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
                     console.log("temp: " + temp);
                     temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    this.ravines.add(temp)
+                    this.ravines.add(temp);
                     console.log(this.ravines);
-                    this.sizeIncrease(temp, true);
+                    sizeIncrease(temp, true,this.mouse,this.time);
                 } else if (this.mouseType == "Hill") {
                     //if right click, add hill to group
                     var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
@@ -226,148 +229,12 @@ class Level_2 extends Phaser.Scene {
                     temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
                     temp.body.setGravity(false);
-                    this.hills.add(temp)
+                    this.hills.add(temp);
                     console.log(this.hills);
-                    this.sizeIncrease(temp, true);
+                    sizeIncrease(temp, true,this.mouse,this.time);
                 }
             });
         }
-    }
-
-    sizeIncrease(object, looping) {
-        //increase size as long as the correct mouse button is held down
-        object.scale += .01;
-        console.log("make it bigger");
-        if (!this.mouse.leftButtonDown()) {
-            looping = false;
-            console.log("wrong key (left)");
-        } 
-        this.time.addEvent({
-            delay:100,
-            callback: () => {if(looping){this.sizeIncrease(object, looping);}},
-            loop:false,
-            callbackScope:this
-        });
-    }
-
-    //angle adjustment for bouncing off world bounds
-    worldBounce() {
-        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
-            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
-            //if player bounces off top or bottom walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2 * Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //angle adjustment for bouncing off objects
-    objectBounce(player, object) {
-        if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
-            this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-            //if player bounces off top or bottom of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //overlapping with ravines should pull the player towards the center while changing momentum
-    pullOverlap(player, ravine) {
-        //get the angle towards the center of the ravine
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
-        //adjust player angle towards ravine center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 100*ravine.scale, this.player.body.acceleration);
-    }
-
-    //overlapping with hills should push the player away from the center while changing momentum
-    pushOverlap(player, hill) {
-        //get the angle away from the center of the hill
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
-        angle += Math.PI;
-        //adjust player angle away from hill center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 100*hill.scale, this.player.body.acceleration);
-    }
-
-    //collision with hole
-    toNextLevel() {
-        this.player.body.stop();
-        this.player.body.setEnable(false);
-        this.player.alpha = 0;
-        //play animation for ball -> hole
-        this.music.stop();
-        levelsAvailable.push(3);
-        this.sound.play("ballInHole");
-        this.time.addEvent({
-            delay: 2000,
-            callback: () => {
-                this.scene.start("level_3Scene");
-            },
-            loop: false,
-            callbackScope: this
-        });
     }
 
 }

@@ -55,7 +55,7 @@ class Level_1 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
                 keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
         this.walls = this.add.group();
@@ -76,7 +76,7 @@ class Level_1 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             this.walls.add(floor4);
         }
-        this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
+        this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up ravine phsyics
         this.ravines = this.add.group();
@@ -88,11 +88,11 @@ class Level_1 extends Phaser.Scene {
             hole.body.setGravity(false);
             this.ravines.add(hole);
         }
-        this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
+        this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole');
-        this.win = this.physics.add.overlap(this.player, this.goal, this.toNextLevel, null, this);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole',1);
+        this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         //tutorial text for Level_1
         let textConfig = {
@@ -168,109 +168,6 @@ class Level_1 extends Phaser.Scene {
         }
     }
 
-    //angle adjustment for bouncing off world bounds
-    worldBounce() {
-        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
-            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
-            //if player bounces off top or bottom walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2 * Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
 
-    //angle adjustment for bouncing off objects
-    objectBounce(player, object) {
-        if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
-            this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-            //if player bounces off top or bottom of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //overlapping with ravines should pull the player towards the center while changing momentum
-    pullOverlap(player, ravine) {
-        //get the angle towards the center of the ravine
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
-        //adjust player angle towards ravine center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, ravine.scale, this.player.body.acceleration);
-    }
-
-    //collision with hole
-    toNextLevel() {
-        this.player.body.stop();
-        this.player.body.setEnable(false);
-        this.player.alpha = 0;
-        //play animation for ball -> hole
-        this.music.stop();
-        this.sound.play("ballInHole");
-        levelsAvailable.push(2);
-        this.time.addEvent({
-            delay: 2000,
-            callback: () => {
-                this.scene.start("level_2Scene");
-            },
-            loop: false,
-            callbackScope: this
-        });
-    }
 
 }
