@@ -29,7 +29,6 @@ class Sandbox extends Phaser.Scene {
         this.mouseType = "None";
         this.startPosX = 100;
         this.startPosY = 200;
-        this.levelCount = 10;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -65,11 +64,7 @@ class Sandbox extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floorFrame = this.physics.add.sprite(0, 0, 'wall')
-                .setOrigin(0, 0).setScale(4.6, .75);
-            floorFrame.body.setImmovable(true);
-            floorFrame.body.setGravity(false);
-            this.walls.add(floorFrame);
+            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
         }
         this.physics.add.collider(this.player, this.walls, () => {this.souns.play("bounce")}, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, this);
@@ -77,11 +72,7 @@ class Sandbox extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
-            mound.body.setImmovable(true);
-            mound.body.setGravity(false);
-            this.hills.add(mound);
+            this.hills.add(new Hill(this, 750, 205, 'hill', .75));
         }
         this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
 
@@ -89,11 +80,7 @@ class Sandbox extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(800, 375, 'ravine');
-            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
-            hole.body.setImmovable(true);
-            hole.body.setGravity(false);
-            this.ravines.add(hole);
+            this.ravines.add(new Ravine(this, 800, 375, 'ravine', .4));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
 
@@ -185,17 +172,14 @@ class Sandbox extends Phaser.Scene {
             this.input.on('pointerdown', () => {
                 if(this.mouseType == "Ravine") {
                     //if left click, add ravine to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
+                    var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
                     this.ravines.add(temp)
                     console.log(this.ravines);
                     this.sizeIncrease(temp, true);
                 } else if (this.mouseType == "Hill") {
                     //if right click, add hill to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
+                    var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
                     console.log("temp: " + temp);
                     temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
                     temp.body.setImmovable(true);
