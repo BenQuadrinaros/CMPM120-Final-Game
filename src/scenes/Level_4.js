@@ -37,7 +37,6 @@ class Level_4 extends Phaser.Scene {
         this.startPosY = game.config.height-40;
         this.endPosX = game.config.width/10;
         this.endPosY = game.config.height/3;
-        this.levelCount = 3;
 
         //create animations
         createAnims(this);
@@ -79,20 +78,15 @@ class Level_4 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floorFrame = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
-            this.walls.add(floorFrame);
+            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
 
             //create each walls for the level
-            var floor1 = new Obstacle(this, 300, 2*game.config.height/3, 'wall').setOrigin(.5, .5).setScale(3, .5);
-            this.walls.add(floor1);
+            this.walls.add(new Obstacle(this, 300, 2*game.config.height/3, 'wall').setOrigin(.5, .5).setScale(3, .5));
 
+            this.walls.add(new Obstacle(this, 300, game.config.height/4, 'wall').setOrigin(.5, .5).setScale(.5, 2));
 
-            var floor2 = new Obstacle(this, 300, game.config.height/4, 'wall').setOrigin(.5, .5).setScale(.5, 2);
-            this.walls.add(floor2);
-
-            var floor3 = new Obstacle(this, 4*game.config.width/7, 3*game.config.height/7 + 10, 'wall')
-                .setOrigin(.5, .5).setScale(.5, 2);
-            this.walls.add(floor3);
+            this.walls.add(new Obstacle(this, 4*game.config.width/7, 3*game.config.height/7 + 10, 'wall')
+                    .setOrigin(.5, .5).setScale(.5, 2));
 
         }
         this.physics.add.collider(this.player, this.walls, () => {this.sound.play("bounce")}, null, this);
@@ -101,11 +95,7 @@ class Level_4 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            /*var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
-            mound.body.setImmovable(true);
-            mound.body.setGravity(false);
-            this.hills.add(mound)*/
+            //this.hills.add(new Hole(this, 750, 205, 'hill', .75))
         }
         this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
@@ -113,11 +103,7 @@ class Level_4 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ravine');
-            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
-            hole.body.setImmovable(true);
-            hole.body.setGravity(false);
-            this.ravines.add(hole);
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
@@ -241,26 +227,18 @@ class Level_4 extends Phaser.Scene {
             this.input.on('pointerdown', () => {
                 if(this.mouseType == "Ravine") {
                     //if left click, add ravine to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
+                    var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
                     this.ravines.add(temp);
                     temp.play("ravine");
-
                     console.log(this.ravines);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 } else if (this.mouseType == "Hill") {
                     //if right click, add hill to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
+                    var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
                     this.hills.add(temp);
                     temp.play("mountain");
-
                     console.log(this.hills);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 }

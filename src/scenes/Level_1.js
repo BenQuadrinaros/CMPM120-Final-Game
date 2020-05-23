@@ -33,7 +33,6 @@ class Level_1 extends Phaser.Scene {
         this.startPosY = 375;
         this.endPosX = 800;
         this.endPosY = 375;
-        this.levelCount = 1;
 
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
@@ -56,9 +55,9 @@ class Level_1 extends Phaser.Scene {
         this.add.sprite(0, 0, 'background1').setOrigin(0, 0);
 
         //set up player physics
-        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
-                keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', () => {this.sound.play("bounce")}, this);
+        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
+            keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -80,7 +79,7 @@ class Level_1 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             this.walls.add(floor4);
         }
-        this.physics.add.collider(this.player, this.walls, () => {this.sound.play("bounce")}, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up ravine phsyics
@@ -101,7 +100,7 @@ class Level_1 extends Phaser.Scene {
 
         //tutorial text for Level_1
         let textConfig = {
-            fontFamily: "Courier", 
+            fontFamily: "Courier",
             fontSize: "18px",
             color: "#000",
             align: "center",
@@ -111,37 +110,35 @@ class Level_1 extends Phaser.Scene {
             },
             fixedWidth: 0
         };
-        let centerX = game.config.width/2;
-        let centerY = game.config.height/2;
+        let centerX = game.config.width / 2;
+        let centerY = game.config.height / 2;
         let textSpacer = 64;
         //fading tutorial text
-        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn", 
-                textConfig).setOrigin(.5);
-        this.fadeText2 = this.add.text(this.player.x + 3*textSpacer, this.player.y + 5, "Hold (↑) to charge",
-                textConfig).setOrigin(.5);
+        this.fadeText1 = this.add.text(this.player.x + 30, this.player.y - textSpacer, "(←) and (→) to turn",
+            textConfig).setOrigin(.5);
+        this.fadeText2 = this.add.text(this.player.x + 3 * textSpacer, this.player.y + 5, "Hold (↑) to charge",
+            textConfig).setOrigin(.5);
         this.fadeText3 = this.add.text(this.player.x + 30, this.player.y + textSpacer, "Release (↑) to fire",
-                textConfig).setOrigin(.5);
+            textConfig).setOrigin(.5);
         this.fadeDelay = false;
         this.time.addEvent({
-            delay:10000,
-            callback: () => {this.fadeDelay = true;},
-            loop:false,
-            callbackScope:this
+            delay: 10000,
+            callback: () => { this.fadeDelay = true; },
+            loop: false,
+            callbackScope: this
         });
-        
+
         //permanent control display
-        if(this.levelCount > 0) {
-            let angleText = this.add.text(centerX - game.config.width/3, game.config.height/15, 
-                "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
-                textConfig).setOrigin(.5);
-        }
+        let angleText = this.add.text(centerX - game.config.width / 3, game.config.height / 15,
+            "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
+            textConfig).setOrigin(.5);
     }
 
     update() {
         this.player.update();
 
         //fade out text slowly
-        if(this.fadeText1.alpha > 0 && this.fadeDelay) {
+        if (this.fadeText1.alpha > 0 && this.fadeDelay) {
             this.fadeText1.alpha -= .005;
             this.fadeText2.alpha -= .005;
             this.fadeText3.alpha -= .005;

@@ -38,8 +38,6 @@ class Level_3 extends Phaser.Scene {
         this.startPosY = game.config.height/2;
         this.endPosX = 750;
         this.endPosY = game.config.height/2;
-        this.levelCount = 3;
-
 
         //create animations
         createAnims(this);
@@ -95,10 +93,7 @@ class Level_3 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            /*var mound = this.physics.add.sprite(750, 205, 'hill');
-            mound.setOrigin(.5).setCircle(130, 20, 20).setScale(.75, .75).setInteractive();
-            mound.body.setImmovable(true);
-            mound.body.setGravity(false);
+            /*var mound = new Hill(this, 750, 205, 'hill', .75);
             this.hills.add(mound)*/
         }
         this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
@@ -107,10 +102,7 @@ class Level_3 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ravine');
-            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
-            hole.body.setImmovable(true);
-            hole.body.setGravity(false);
+            var hole = new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4);
             this.ravines.add(hole);
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
@@ -118,7 +110,6 @@ class Level_3 extends Phaser.Scene {
         //set up level goal
         this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 3);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
-
 
         //set up crab
         this.crabs= this.add.group();
@@ -196,6 +187,8 @@ class Level_3 extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
+            this.crab1.body.reset(this.endPosX-100,150);
+            this.crab2.body.reset(this.endPosX-100,450);
             this.player.rotation = 0;
         }
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
@@ -235,26 +228,18 @@ class Level_3 extends Phaser.Scene {
             this.input.on('pointerdown', () => {
                 if(this.mouseType == "Ravine") {
                     //if left click, add ravine to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'ravine');
+                    var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
                     this.ravines.add(temp);
                     temp.play("ravine");
-
                     console.log(this.ravines);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 } else if (this.mouseType == "Hill") {
                     //if right click, add hill to group
-                    var temp = this.physics.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, 'hill');
+                    var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
                     console.log("temp: " + temp);
-                    temp.setOrigin(.5).setCircle(130, 20, 20).setScale(.01, .01).setInteractive();
-                    temp.body.setImmovable(true);
-                    temp.body.setGravity(false);
                     this.hills.add(temp);
                     temp.play("mountain");
-
                     console.log(this.hills);
                     sizeIncrease(temp, true,this.mouse,this.time);
                 }
