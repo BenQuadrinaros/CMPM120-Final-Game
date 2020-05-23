@@ -18,6 +18,9 @@ class Level_1 extends Phaser.Scene {
         this.load.audio("ballHit", "./assets/ballHit.wav");
         this.load.audio("ballInHole", "./assets/ballInHole.wav");
         this.load.audio("music", "./assets/music.wav");
+        this.load.audio("bounce", "./assets/bounce.wav");
+        this.load.audio("quit", "./assets/quit.wav");
+        this.load.audio("wipe", "./assets/wipe.wav");
     }
 
     create() {
@@ -55,6 +58,7 @@ class Level_1 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
                 keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.physics.world.on('worldbounds', () => {this.sound.play("bounce")}, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -76,6 +80,7 @@ class Level_1 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             this.walls.add(floor4);
         }
+        this.physics.add.collider(this.player, this.walls, () => {this.sound.play("bounce")}, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up ravine phsyics
@@ -91,7 +96,7 @@ class Level_1 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole',1);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 1);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         //tutorial text for Level_1
@@ -130,14 +135,6 @@ class Level_1 extends Phaser.Scene {
                 "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
                 textConfig).setOrigin(.5);
         }
-        if(this.levelCount > 1) {
-            this.mouseText = this.add.text(centerX, game.config.height/15, 
-                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType, 
-                textConfig).setOrigin(.5);
-            let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15, 
-                "(0) Remove\n(1) Hill\n(2) Ravine", 
-                textConfig).setOrigin(.5);
-        }
     }
 
     update() {
@@ -152,22 +149,19 @@ class Level_1 extends Phaser.Scene {
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
         }
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.music.pause();
             this.scene.restart();
         }
         if (Phaser.Input.Keyboard.JustDown(keyQ)) {
-            //this.sound.play("wipe");
+            this.sound.play("quit");
             this.music.pause();
             this.scene.start("menuScene");
         }
     }
-
-
-
 }

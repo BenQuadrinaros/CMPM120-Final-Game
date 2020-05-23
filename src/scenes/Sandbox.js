@@ -15,6 +15,9 @@ class Sandbox extends Phaser.Scene {
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
         this.load.audio("ballHit", "./assets/ballHit.wav");
         this.load.audio("music", "./assets/music.wav");
+        this.load.audio("bounce", "./assets/bounce.wav");
+        this.load.audio("quit", "./assets/quit.wav");
+        this.load.audio("wipe", "./assets/wipe.wav");
     }
 
     create() {
@@ -55,7 +58,9 @@ class Sandbox extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
             keyRIGHT, keyLEFT, true).setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', this.worldBounce, this);
+            
+        this.physics.world.on('worldbounds', () => {this.sound.play("bounce")}, this);
+        this.physics.world.on('worldbounds', worldBounce, this);
 
         this.walls = this.add.group();
         {
@@ -66,7 +71,8 @@ class Sandbox extends Phaser.Scene {
             floorFrame.body.setGravity(false);
             this.walls.add(floorFrame);
         }
-        this.physics.add.collider(this.player, this.walls, this.objectBounce, null, this);
+        this.physics.add.collider(this.player, this.walls, () => {this.souns.play("bounce")}, this);
+        this.physics.add.collider(this.player, this.walls, objectBounce, this);
 
         //set up hill physics
         this.hills = this.add.group();
@@ -123,7 +129,7 @@ class Sandbox extends Phaser.Scene {
         }
         if (this.levelCount > 1) {
             this.mouseText = this.add.text(centerX, game.config.height / 15,
-                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType,
+                "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
                 textConfig).setOrigin(.5);
             let objectText = this.add.text(centerX + game.config.width / 3, game.config.height / 15,
                 "(0) Remove\n(1) Hill\n(2) Ravine",
@@ -137,35 +143,35 @@ class Sandbox extends Phaser.Scene {
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
             this.player.body.setEnable(false);
         }
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.music.pause();
             this.scene.restart();
         }
         if (Phaser.Input.Keyboard.JustDown(keyQ)) {
-            //this.sound.play("wipe");
+            this.sound.play("quit");
             this.music.pause();
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
             //this.sound.play("switch");
             this.mouseType = "Remove";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
             //this.sound.play("switch");
             this.mouseType = "Hill";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
             //this.sound.play("switch");
             this.mouseType = "Ravine";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
 
         //mouse controls for terrain manipulation
@@ -217,106 +223,4 @@ class Sandbox extends Phaser.Scene {
             callbackScope: this
         });
     }
-
-    //angle adjustment for bouncing off objects
-    objectBounce(player, object) {
-        if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
-            this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-            //if player bounces off top or bottom of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //angle adjustment for bouncing off world bounds
-    worldBounce() {
-        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
-            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
-            //if player bounces off top or bottom walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2 * Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //overlapping with ravines should pull the player towards the center while changing momentum
-    pullOverlap(player, ravine) {
-        //get the angle towards the center of the ravine
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
-        //adjust player angle towards ravine center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 40 * ravine.scale, this.player.body.acceleration);
-    }
-
-    //overlapping with hills should push the player away from the center while changing momentum
-    pushOverlap(player, hill) {
-        //get the angle away from the center of the hill
-        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
-        angle += Math.PI;
-        //adjust player angle away from hill center
-        if (angle < this.player.rotation) {
-            this.player.rotation -= Math.PI / 200;
-        } else if (angle > this.player.rotation) {
-            this.player.rotation += Math.PI / 200;
-        }
-        //slightly alter momentum based on rotation
-        this.physics.velocityFromRotation(angle, 40 * hill.scale, this.player.body.acceleration);
-    }
-
 }

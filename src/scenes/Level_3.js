@@ -22,11 +22,13 @@ class Level_3 extends Phaser.Scene {
         this.load.audio("ballHit", "./assets/ballHit.wav");
         this.load.audio("ballInHole", "./assets/ballInHole.wav");
         this.load.audio("music", "./assets/music.wav");
+        this.load.audio("bounce", "./assets/bounce.wav");
+        this.load.audio("quit", "./assets/quit.wav");
+        this.load.audio("wipe", "./assets/wipe.wav");
     }
 
     create() {
         //misc set up
-        console.log("In Level 3");
         this.cameras.main.setBackgroundColor("#5A5");
         this.singleClick = 0;
         this.ballSpeed = 0;
@@ -72,6 +74,7 @@ class Level_3 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP, 
                 keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.physics.world.on('worldbounds', () => {this.sound.play("bounce")}, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -86,6 +89,7 @@ class Level_3 extends Phaser.Scene {
             this.walls.add(floor1);
 
         }
+        this.physics.add.collider(this.player, this.walls, () => {this.sound.play("bounce")}, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
@@ -112,7 +116,7 @@ class Level_3 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole',3);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 3);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
 
@@ -167,7 +171,7 @@ class Level_3 extends Phaser.Scene {
         }
         if(this.levelCount > 1) {
             this.mouseText = this.add.text(centerX, game.config.height/15, 
-                "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType, 
+                "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType, 
                 textConfig).setOrigin(.5);
             let objectText = this.add.text(centerX + game.config.width/3, game.config.height/15, 
                 "(0) Remove\n(1) Hill\n(2) Ravine", 
@@ -190,34 +194,34 @@ class Level_3 extends Phaser.Scene {
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
             this.player.rotation = 0;
         }
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
-            //this.sound.play("wipe");
+            this.sound.play("wipe");
             this.music.pause();
             this.scene.restart();
         }
         if (Phaser.Input.Keyboard.JustDown(keyQ)) {
-            //this.sound.play("wipe");
+            this.sound.play("quit");
             this.music.pause();
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
             //this.sound.play("switch");
             this.mouseType = "Remove";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
             //this.sound.play("switch");
             this.mouseType = "Hill";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
             //this.sound.play("switch");
             this.mouseType = "Ravine";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (4) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
 
         //mouse controls for terrain manipulation
