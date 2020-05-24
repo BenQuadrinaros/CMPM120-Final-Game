@@ -31,6 +31,7 @@ function pushOverlap(player, hill) {
 function toNextLevel(player, hole) {
     console.log(hole.level);
     let nextLevel = hole.level+1;
+    this.player.play("score");
     this.player.body.stop();
     this.player.body.setEnable(false);
     this.player.alpha = 0;

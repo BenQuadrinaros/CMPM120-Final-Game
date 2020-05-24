@@ -1,7 +1,7 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight, infiniteHit = false) {
-        super(scene, x, y, texture);
+    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight, infiniteHit = false,frame) {
+        super(scene, x, y, texture,frame);
         this.keyUp = keyUP;
         this.keyLeft = keyLeft;
         this.keyRight = keyRight;
@@ -44,6 +44,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.sound.play("ballHit");
             this.body.stop();
             this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 200, this.body.acceleration);
+            this.play("roll");
             this.ballSpeed = 0;
         } else if (this.body.touching.none) {
             //if no forces acting on player, reset acceleration

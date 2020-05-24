@@ -11,6 +11,8 @@ class Level_1 extends Phaser.Scene {
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('hole', './assets/hole.png');
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
 
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
@@ -34,6 +36,9 @@ class Level_1 extends Phaser.Scene {
         this.endPosX = 800;
         this.endPosY = 375;
 
+        createAnims(this);
+
+
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
         this.chargeSound.volume = .5;
@@ -55,8 +60,8 @@ class Level_1 extends Phaser.Scene {
         this.add.sprite(0, 0, 'background1').setOrigin(0, 0);
 
         //set up player physics
-        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
-            keyRIGHT, keyLEFT).setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT,false,'roll1').setOrigin(.5).setCircle(135).setScale(.25, .25);
         this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
