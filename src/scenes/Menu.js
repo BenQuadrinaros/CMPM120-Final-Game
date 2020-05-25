@@ -9,6 +9,7 @@ class Menu extends Phaser.Scene {
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
+        this.load.audio("bounce", "./assets/bounce.wav");
     }
 
     create() {
@@ -18,7 +19,7 @@ class Menu extends Phaser.Scene {
         this.singleClick = 0;
 
         //create a ball to bounce in the background
-        this.player = this.physics.add.sprite(Phaser.Math.Between(100, game.config.width - 100), 
+        this.player = this.physics.add.sprite(Phaser.Math.Between(100, game.config.width - 100),
             Phaser.Math.Between(100, game.config.height - 100), "ball");
         this.player.setOrigin(.5).setCircle(130).setScale(.25, .25);
         this.player.rotation = Phaser.Math.Between(0, 2 * Math.PI);
@@ -26,7 +27,8 @@ class Menu extends Phaser.Scene {
         this.player.body.onWorldBounds = true;
         this.player.body.setGravity(false);
         this.player.setMaxVelocity(200);
-        this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
+        this.physics.world.on('worldbounds', worldBounce, this);
         this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000) * 100,
             this.player.body.acceleration);
         this.time.addEvent({
@@ -53,9 +55,9 @@ class Menu extends Phaser.Scene {
         let textSpacer = 64;
 
         // (↑) & (↓)
-        this.add.text(centerX, centerY - 2*textSpacer, "Press (↑) to start golfing.", menuConfig)
+        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↑) to start golfing.", menuConfig)
             .setOrigin(.5).setInteractive();
-        this.add.text(centerX, centerY + 2*textSpacer, "Press (↓) to go to the sandbox.", menuConfig)
+        this.add.text(centerX, centerY + 2 * textSpacer, "Press (↓) to go to the sandbox.", menuConfig)
             .setOrigin(.5).setInteractive();
         menuConfig.fontSize = "48px";
         menuConfig.strokeThickness = 3;
@@ -129,41 +131,4 @@ class Menu extends Phaser.Scene {
             });
         }
     }*/
-
-    //angle adjustment for bouncing off world bounds
-    worldBounce() {
-        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
-            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
-            //if player bounces off top or bottom walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2 * Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
 }

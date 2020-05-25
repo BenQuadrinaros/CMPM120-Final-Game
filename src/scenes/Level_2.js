@@ -94,8 +94,7 @@ class Level_2 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            /*var mound = new Hill(this, 750, 205, 'hill', .75);
-            this.hills.add(mound)*/
+            //this.hills.add(new Hill(this, 750, 205, 'hill', .75))
         }
         this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
@@ -103,8 +102,7 @@ class Level_2 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole to pull the ball in
-            var hole = new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4);
-            this.ravines.add(hole);
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
@@ -148,13 +146,13 @@ class Level_2 extends Phaser.Scene {
         });
 
         //permanent control display
-        let angleText = this.add.text(centerX - game.config.width / 3, game.config.height / 15,
+        this.add.text(centerX - game.config.width / 3, game.config.height / 15,
             "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
             textConfig).setOrigin(.5);
         this.mouseText = this.add.text(centerX, game.config.height / 15,
             "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
             textConfig).setOrigin(.5);
-        let objectText = this.add.text(centerX + game.config.width / 3, game.config.height / 15,
+        this.add.text(centerX + game.config.width / 3, game.config.height / 15,
             "(0) Remove\n(1) Hill\n(2) Ravine",
             textConfig).setOrigin(.5);
 
@@ -189,17 +187,17 @@ class Level_2 extends Phaser.Scene {
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Remove";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Hill";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Ravine";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }

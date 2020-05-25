@@ -69,20 +69,15 @@ class Level_1 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            var floorFrame = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
-            this.walls.add(floorFrame);
+            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
 
-            var floor1 = new Obstacle(this, 0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            this.walls.add(floor1);
+            this.walls.add(new Obstacle(this, 0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1));
 
-            var floor2 = new Obstacle(this, 440, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            this.walls.add(floor2);
+            this.walls.add(new Obstacle(this, 440, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1));
 
-            var floor3 = new Obstacle(this, 0, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            this.walls.add(floor3);
+            this.walls.add(new Obstacle(this, 0, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1));
 
-            var floor4 = new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1);
-            this.walls.add(floor4);
+            this.walls.add(new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1));
         }
         this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
@@ -91,11 +86,7 @@ class Level_1 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            var hole = this.physics.add.sprite(this.endPosX, this.endPosY, 'ravine');
-            hole.setOrigin(.5).setCircle(130, 20, 20).setScale(.4, .4).setInteractive();
-            hole.body.setImmovable(true);
-            hole.body.setGravity(false);
-            this.ravines.add(hole);
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
@@ -134,7 +125,7 @@ class Level_1 extends Phaser.Scene {
         });
 
         //permanent control display
-        let angleText = this.add.text(centerX - game.config.width / 3, game.config.height / 15,
+        this.add.text(centerX - game.config.width / 3, game.config.height / 15,
             "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
             textConfig).setOrigin(.5);
     }

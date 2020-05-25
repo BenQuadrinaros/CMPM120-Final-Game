@@ -57,32 +57,37 @@ class Sandbox extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
             keyRIGHT, keyLEFT, true).setOrigin(.5).setCircle(135).setScale(.25, .25);
-            
-        this.physics.world.on('worldbounds', () => {this.sound.play("bounce")}, this);
+
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
+        //set up obstacles physics
         this.walls = this.add.group();
         {
             //create each walls for the level
             this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
         }
-        this.physics.add.collider(this.player, this.walls, () => {this.souns.play("bounce")}, this);
-        this.physics.add.collider(this.player, this.walls, objectBounce, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
+        this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
         this.hills = this.add.group();
         {
-            this.hills.add(new Hill(this, 750, 205, 'hill', .75));
+            this.hills.add(new Hill(this, Phaser.Math.Between(100, game.config.width - 100),
+                Phaser.Math.Between(200, game.config.height - 100), 'hill',
+                Phaser.Math.Between(.1, .5)));
         }
-        this.push = this.physics.add.overlap(this.player, this.hills, this.pushOverlap, null, this);
+        this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
         //set up ravine phsyics
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            this.ravines.add(new Ravine(this, 800, 375, 'ravine', .4));
+            this.ravines.add(new Ravine(this, Phaser.Math.Between(100, game.config.width - 100),
+                Phaser.Math.Between(200, game.config.height - 100), 'ravine',
+                Phaser.Math.Between(.1, .5)));
         }
-        this.pull = this.physics.add.overlap(this.player, this.ravines, this.pullOverlap, null, this);
+        this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //sandbox text
         let textConfig = {
@@ -109,19 +114,15 @@ class Sandbox extends Phaser.Scene {
             textConfig).setOrigin(.5);
 
         textConfig.fontSize = "18px";
-        if (this.levelCount > 0) {
-            let angleText = this.add.text(centerX - game.config.width / 3, game.config.height / 15,
-                "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
-                textConfig).setOrigin(.5);
-        }
-        if (this.levelCount > 1) {
-            this.mouseText = this.add.text(centerX, game.config.height / 15,
-                "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
-                textConfig).setOrigin(.5);
-            let objectText = this.add.text(centerX + game.config.width / 3, game.config.height / 15,
-                "(0) Remove\n(1) Hill\n(2) Ravine",
-                textConfig).setOrigin(.5);
-        }
+        this.add.text(centerX - game.config.width / 3, game.config.height / 15,
+            "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
+            textConfig).setOrigin(.5);
+        this.mouseText = this.add.text(centerX, game.config.height / 15,
+            "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
+            textConfig).setOrigin(.5);
+        this.add.text(centerX + game.config.width / 3, game.config.height / 15,
+            "(0) Remove\n(1) Hill\n(2) Ravine",
+            textConfig).setOrigin(.5);
     }
 
 
@@ -146,17 +147,17 @@ class Sandbox extends Phaser.Scene {
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Remove";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Hill";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
-            //this.sound.play("switch");
+            this.rotateSound.play();
             this.mouseType = "Ravine";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
@@ -168,9 +169,9 @@ class Sandbox extends Phaser.Scene {
             this.singleClick = 0;
         }
         //create new object when clicking
-        if (this.singleClick == 1  && !this.player.body.enable) {
+        if (this.singleClick == 1 && !this.player.body.enable) {
             this.input.on('pointerdown', () => {
-                if(this.mouseType == "Ravine") {
+                if (this.mouseType == "Ravine") {
                     //if left click, add ravine to group
                     var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
                     console.log("temp: " + temp);

@@ -1,3 +1,5 @@
+//physics operations for levels
+
 //overlapping with ravines should pull the player towards the center while changing momentum
 function pullOverlap(player, ravine) {
     //get the angle towards the center of the ravine
@@ -106,7 +108,7 @@ function worldBounce() {
 function objectBounce(player, object) {
     if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
         this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-        //if player bounces off top or bottom of object, adjust angle accordingly
+        //if player bounces off top or bottom side of object, adjust angle accordingly
         if (0 < this.player.rotation <= Math.PI / 2) {
             let temp = this.player.rotation;
             this.player.rotation = -temp;
@@ -121,13 +123,13 @@ function objectBounce(player, object) {
             this.player.rotation = temp;
         }
     } else {
-        //if player bounces off left or right of object, adjust angle accordingly
+        //if player bounces off left or right side of object, adjust angle accordingly
         if (0 < this.player.rotation <= Math.PI / 2) {
             let temp = this.player.rotation;
             this.player.rotation = Math.PI - temp;
         } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
             let temp = Math.PI - this.player.rotation;
-            this.player.rotation = temp;
+            this.player.rotation = 2 * Math.PI + temp;
         } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
             let temp = this.player.rotation - Math.PI;
             this.player.rotation = 2 * Math.PI - temp;

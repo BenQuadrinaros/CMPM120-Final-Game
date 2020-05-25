@@ -30,11 +30,9 @@ let game = new Phaser.Game(config);
 game.settings = {
     
 };
-let levelsAvailable = [1,2,3,4];
+let levelsAvailable = [1];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
 let keyZERO, keyONE, keyTWO, keyTHREE, keyFOUR;
 let mouseDown = false;
-
-//need left mouse click

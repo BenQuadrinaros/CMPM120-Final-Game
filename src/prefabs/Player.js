@@ -76,7 +76,5 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.rotateSound.play();
             this.rotation += Math.PI / 100;
         }
-
     }
-
 }
