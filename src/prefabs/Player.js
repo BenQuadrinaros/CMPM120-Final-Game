@@ -1,6 +1,6 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight, infiniteHit = false,frame) {
+    constructor(scene, x, y, texture, keyUP, keyLeft, keyRight, infiniteHit = false, frame) {
         super(scene, x, y, texture,frame);
         this.keyUp = keyUP;
         this.keyLeft = keyLeft;
@@ -22,12 +22,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setGravity(false);
         this.setMaxVelocity(200);
         this.body.setEnable(false);
+        this.setOrigin(.5).setCircle(130).setScale(.25, .25);
     }
 
     update() {
         this.shotIndicate.x = this.x;
         this.shotIndicate.y = this.y;
         this.shotIndicate.rotation = this.rotation;
+
+        //update shot indicator
+        if (this.ballSpeed < 50) {
+            this.shotIndicate.fillColor = '0x00FF00';
+        } else if (this.ballSpeed > 50 && this.ballSpeed < 105) {
+            this.shotIndicate.fillColor = '0xFFFF00';
+        } else if (this.ballSpeed > 130) {
+            this.shotIndicate.fillColor = '0xFF0000'
+        }
+        this.shotIndicate.width = this.ballSpeed;
 
         //invert movement for chargin shot if full or empty
         if(this.ballSpeed >= 200) {
@@ -47,7 +58,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustUp(this.keyUp) && (!this.body.enable || this.infiniteHit)) {
             this.body.setEnable(true);
             this.shotIndicate.fillColor = '0xFACE44';
-            this.shotIndicate.width = 0;
             //hit the ball with velocity proportional to charge time
             this.scene.sound.play("ballHit");
             this.body.stop();
@@ -63,24 +73,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.scene.chargeSound.volume = .5;
             //see if ball speed is less than max velocity - 200
             if (this.chargeUp && this.ballSpeed < 200) {
-                if (this.ballSpeed < 50) {
-                    this.shotIndicate.fillColor = '0x00FF00';
-                } else if (this.ballSpeed > 50 && this.ballSpeed < 105) {
-                    this.shotIndicate.fillColor = '0xFFFF00';
-                } else if (this.ballSpeed > 130) {
-                    this.shotIndicate.fillColor = '0xFF0000'
-                }
-                this.shotIndicate.width = this.ballSpeed;
                 this.ballSpeed++;
             } else if(!this.chargeUp && this.ballSpeed > 0) {
-                if (this.ballSpeed < 50) {
-                    this.shotIndicate.fillColor = '0x00FF00';
-                } else if (this.ballSpeed > 50 && this.ballSpeed < 105) {
-                    this.shotIndicate.fillColor = '0xFFFF00';
-                } else if (this.ballSpeed > 130) {
-                    this.shotIndicate.fillColor = '0xFF0000'
-                }
-                this.shotIndicate.width = this.ballSpeed;
                 this.ballSpeed--;
             }
         } else {

@@ -85,7 +85,7 @@ class Sandbox extends Phaser.Scene {
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
-            keyRIGHT, keyLEFT, true).setOrigin(.5).setCircle(135).setScale(.25, .25);
+            keyRIGHT, keyLEFT, true);
 
         this.physics.world.on('worldbounds', () => { 
             this.bounceSound.volume = .75;

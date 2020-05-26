@@ -13,7 +13,6 @@ class Level_Select extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor("#5A5");
-        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.singleClick = 0;
         this.hasChosen = false;
@@ -65,12 +64,12 @@ class Level_Select extends Phaser.Scene {
 
         });
 
-        this.add.text(centerX, centerY - 2*textSpacer, "Press (↑) to Return.", menuConfig)
+        this.add.text(centerX, centerY - 2*textSpacer, "Press (↓) to Return.", menuConfig)
             .setOrigin(.5).setInteractive();
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyUP) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -86,7 +85,7 @@ class Level_Select extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("level_1Scene") },
+                callback: () => { this.scene.start("pre1") },
                 loop: false,
                 callbackScope: this
             });
