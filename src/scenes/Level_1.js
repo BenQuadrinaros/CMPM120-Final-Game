@@ -70,7 +70,15 @@ class Level_1 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT,false,'roll1').setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', () => { this.bounceSound.volume = .75 }, this);
+        this.physics.world.on('worldbounds', () => { 
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+        }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -87,7 +95,15 @@ class Level_1 extends Phaser.Scene {
 
             this.walls.add(new Obstacle(this, 440, 475, 'wall').setOrigin(0, 0).setScale(2.3, 1));
         }
-        this.physics.add.collider(this.player, this.walls, () => { this.bounceSound.volume = .75 }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { 
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+         }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up ravine phsyics

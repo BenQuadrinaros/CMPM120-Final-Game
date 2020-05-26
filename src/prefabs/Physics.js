@@ -11,7 +11,11 @@ function pullOverlap(player, ravine) {
         this.player.rotation += Math.PI / 200;
     }
     //slightly alter momentum based on rotation
-    this.physics.velocityFromRotation(angle, 100*ravine.scale, this.player.body.acceleration);
+    if(ravine.scale < 1) {
+        this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
+    } else {
+        this.physics.velocityFromRotation(angle, 100*ravine.scale, this.player.body.acceleration);
+    }
 }
 
 //overlapping with hills should push the player away from the center while changing momentum
@@ -26,7 +30,11 @@ function pushOverlap(player, hill) {
         this.player.rotation += Math.PI / 200;
     }
     //slightly alter momentum based on rotation
-    this.physics.velocityFromRotation(angle, 100*hill.scale, this.player.body.acceleration);
+    if(hill.scale < 1) {
+        this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
+    } else {
+        this.physics.velocityFromRotation(angle, 100*hill.scale, this.player.body.acceleration);
+    }
 }
 
 //collision with hole

@@ -57,7 +57,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         } else if (this.body.touching.none) {
             //if no forces acting on player, reset acceleration
             this.body.setAcceleration(0);
-            this.scene.bounceSound.volume = 0;
         }
         //charge hit while key is down
         if (this.keyUp.isDown && (!this.body.enable || this.infiniteHit)) {

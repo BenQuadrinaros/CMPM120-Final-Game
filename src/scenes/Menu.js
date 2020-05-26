@@ -17,6 +17,7 @@ class Menu extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.singleClick = 0;
+        this.hasChosen = false;
 
         //create a ball to bounce in the background
         this.player = this.physics.add.sprite(Phaser.Math.Between(100, game.config.width - 100),
@@ -66,7 +67,8 @@ class Menu extends Phaser.Scene {
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyUP)) {
+        if (Phaser.Input.Keyboard.JustDown(keyUP) && !this.hasChosen) {
+            this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
@@ -75,7 +77,8 @@ class Menu extends Phaser.Scene {
                 callbackScope: this
             });
         }
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
+            this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,

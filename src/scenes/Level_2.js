@@ -29,7 +29,6 @@ class Level_2 extends Phaser.Scene {
     create() {
         //misc set up
         this.cameras.main.setBackgroundColor("#5A5");
-        this.singleClick = 0;
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
@@ -38,6 +37,27 @@ class Level_2 extends Phaser.Scene {
         this.endPosX = 750;
         this.endPosY = 550;
 
+        //create mouse listener for terrain manipulation
+        this.input.on('pointerdown', () => {
+            console.log("on click " + this.singleClick);
+            if (this.mouseType == "Ravine") {
+                //if left click, add ravine to group
+                var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
+                console.log("temp: " + temp);
+                this.ravines.add(temp);
+                temp.play("ravine");
+                console.log(this.ravines);
+                sizeIncrease(temp, true, this.mouse, this.time);
+            } else if (this.mouseType == "Hill") {
+                //if right click, add hill to group
+                var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
+                console.log("temp: " + temp);
+                this.hills.add(temp);
+                temp.play("mountain");
+                console.log(this.hills);
+                sizeIncrease(temp, true, this.mouse, this.time);
+            }
+        });
 
         //create animations
         createAnims(this);
@@ -79,8 +99,16 @@ class Level_2 extends Phaser.Scene {
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
-            keyRIGHT, keyLEFT,false,'roll1').setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', () => { this.bounceSound.volume = .75 }, this);
+            keyRIGHT, keyLEFT, false, 'roll1').setOrigin(.5).setCircle(135).setScale(.25, .25);
+        this.physics.world.on('worldbounds', () => {
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+        }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -96,7 +124,15 @@ class Level_2 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
             this.walls.add(floor4);
         }
-        this.physics.add.collider(this.player, this.walls, () => { this.bounceSound.volume = .75 }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => {
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+        }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
@@ -196,48 +232,19 @@ class Level_2 extends Phaser.Scene {
             this.scene.start("menuScene");
         }
         if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            this.rotateSound.play();
+            this.sound.play("rotate");
             this.mouseType = "Remove";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
-            this.rotateSound.play();
+            this.sound.play("rotate");
             this.mouseType = "Hill";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
-            this.rotateSound.play();
+            this.sound.play("rotate");
             this.mouseType = "Ravine";
             this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
-        }
-
-        //mouse controls for terrain manipulation
-        if (game.input.mousePointer.isDown) {
-            this.singleClick++;
-        } else {
-            this.singleClick = 0;
-        }
-        //create new object when clicking
-        if (this.singleClick == 1 && !this.player.body.enable) {
-            this.input.on('pointerdown', () => {
-                if (this.mouseType == "Ravine") {
-                    //if left click, add ravine to group
-                    var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
-                    console.log("temp: " + temp);
-                    this.ravines.add(temp);
-                    console.log(this.ravines);
-                    temp.play("ravine");
-                    sizeIncrease(temp, true, this.mouse, this.time);
-                } else if (this.mouseType == "Hill") {
-                    //if right click, add hill to group
-                    var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
-                    console.log("temp: " + temp);
-                    this.hills.add(temp);
-                    console.log(this.hills);
-                    temp.play("mountain");
-                    sizeIncrease(temp, true, this.mouse, this.time);
-                }
-            });
         }
     }
 }
