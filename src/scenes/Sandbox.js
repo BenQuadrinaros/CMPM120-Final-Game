@@ -33,11 +33,19 @@ class Sandbox extends Phaser.Scene {
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
         this.chargeSound.volume = .5;
-        this.rotateSound = this.sound.add("rotate");
-        this.rotateSound.volume = .5;
+        this.chargeSound.loop = true;
+        this.chargeSound.play();
         this.music = this.sound.add("music");
         this.music.loop = true;
         this.music.play();
+        this.turningSound = this.sound.add("rotate");
+        this.turningSound.volume = 0;
+        this.turningSound.loop = true;
+        this.turningSound.play();
+        this.bounceSound = this.sound.add("bounce");
+        this.bounceSound.volume = 0;
+        this.bounceSound.loop = true;
+        this.bounceSound.play();
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -58,7 +66,7 @@ class Sandbox extends Phaser.Scene {
         this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
             keyRIGHT, keyLEFT, true).setOrigin(.5).setCircle(135).setScale(.25, .25);
 
-        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
+        this.physics.world.on('worldbounds', () => { this.bounceSound.volume = .75 }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -67,7 +75,7 @@ class Sandbox extends Phaser.Scene {
             //create each walls for the level
             this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
         }
-        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.bounceSound.volume = .75 }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
@@ -133,8 +141,8 @@ class Sandbox extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
-            this.player.rotation = 0;
             this.player.body.setEnable(false);
+            this.player.rotation = 0;
         }
         if (Phaser.Input.Keyboard.JustDown(keyR)) {
             this.sound.play("wipe");

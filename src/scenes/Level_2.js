@@ -45,11 +45,19 @@ class Level_2 extends Phaser.Scene {
         //audio volume adjustments
         this.chargeSound = this.sound.add("chargeHit");
         this.chargeSound.volume = .5;
-        this.rotateSound = this.sound.add("rotate");
-        this.rotateSound.volume = .5;
+        this.chargeSound.loop = true;
+        this.chargeSound.play();
         this.music = this.sound.add("music");
         this.music.loop = true;
         this.music.play();
+        this.turningSound = this.sound.add("rotate");
+        this.turningSound.volume = 0;
+        this.turningSound.loop = true;
+        this.turningSound.play();
+        this.bounceSound = this.sound.add("bounce");
+        this.bounceSound.volume = 0;
+        this.bounceSound.loop = true;
+        this.bounceSound.play();
 
         //key bindings for interface
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -72,7 +80,7 @@ class Level_2 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT,false,'roll1').setOrigin(.5).setCircle(135).setScale(.25, .25);
-        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
+        this.physics.world.on('worldbounds', () => { this.bounceSound.volume = .75 }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -88,7 +96,7 @@ class Level_2 extends Phaser.Scene {
             var floor4 = new Obstacle(this, 360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
             this.walls.add(floor4);
         }
-        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.bounceSound.volume = .75 }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
@@ -173,6 +181,7 @@ class Level_2 extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
+            this.player.body.setEnable(false);
             this.player.rotation = 0;
             this.player.body.setEnable(false);
         }
