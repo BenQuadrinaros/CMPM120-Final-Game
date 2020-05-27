@@ -52,7 +52,7 @@ function toNextLevel(player, hole) {
     this.time.addEvent({
         delay: 2000,
         callback: () => {
-            this.scene.start("level_"+nextLevel+"Scene");
+            this.scene.start("pre"+nextLevel);
         },
         loop: false,
         callbackScope: this

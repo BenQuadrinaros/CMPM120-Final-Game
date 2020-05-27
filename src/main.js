@@ -1,6 +1,6 @@
 /*
 Mark Medved, Ben Rowland, and Thane Wisherop
-NAME OF GAME
+Terra-Golfing
 DATE COMPLETED
 
 DESCRIPTION TEXT
@@ -21,7 +21,7 @@ let config = {
         }
     },
 
-    scene: [Menu, Level_Select, Sandbox, Pre1, Level_1, Level_2, Level_3, Level_4]
+    scene: [Menu, Level_Select, Sandbox, Pre1, Pre2, Level_1, Level_2, Level_3, Level_4]
 
 };
 
@@ -30,7 +30,7 @@ let game = new Phaser.Game(config);
 game.settings = {
     
 };
-let levelsAvailable = [1, 4];
+let levelsAvailable = [1];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
