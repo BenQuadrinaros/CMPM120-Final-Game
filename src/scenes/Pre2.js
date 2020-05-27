@@ -21,6 +21,37 @@ class Pre2 extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
+        this.increasing = true;
+
+        //ball sfx
+        this.chargeSound = this.sound.add("chargeHit");
+        this.chargeSound.volume = .5;
+        this.chargeSound.loop = true;
+        this.chargeSound.play();
+        this.turningSound = this.sound.add("rotate");
+        this.turningSound.volume = 0;
+        this.turningSound.loop = true;
+        this.turningSound.play();
+        this.bounceSound = this.sound.add("bounce");
+        this.bounceSound.volume = 0;
+        this.bounceSound.loop = true;
+        this.bounceSound.play();
+
+        //create a ball to show hitting
+        this.player = new Player(this, game.config.width / 3, game.config.height / 2, 'ball', keyUP,
+            keyRIGHT, keyLEFT, false, 1);
+        this.player.body.setEnable(true);
+        this.player.rotation = Phaser.Math.Between(-Math.PI / 2, Math.PI / 2);
+        this.physics.world.on('worldbounds', () => {
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+        }, this);
+        this.physics.world.on('worldbounds', this.worldBounce, this);
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -38,20 +69,23 @@ class Pre2 extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
-        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 2.", menuConfig)
-            .setOrigin(.5).setInteractive();
-        this.changingText = this.add.text(centerX, centerY + textSpacer, "Press (P) to Place the ball back at the start.", menuConfig)
-            .setOrigin(.5).setInteractive();
+        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 2.", menuConfig).setOrigin(.5);
+        this.changingText = this.add.text(centerX, centerY + textSpacer, "Press (Q) to Quit to the Main Menu.",
+            menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
             delay: 5000,
             callback: () => {
-                this.changingText.text = "Press (R) to Reset the whole hole.";
+                this.changingText.text = "Press (R) to Reset the whole course.";
+                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
+                this.player.ballSpeed = 0;
                 this.time.addEvent({
                     delay: 5000,
                     callback: () => {
-                        this.changingText.text = "Press (Q) to Quit to the Main Menu.";
+                        this.changingText.text = "Press (P) to Place the ball\nback at the start.";
+                        this.player.body.reset(game.config.width / 3, game.config.height / 2);
+                        this.player.rotation = 0;
                         this.time.addEvent({
                             delay: 5000,
                             callback: () => { this.scene.restart() },
@@ -69,6 +103,15 @@ class Pre2 extends Phaser.Scene {
     }
 
     update() {
+        this.player.update();
+
+        if (this.increasing) {
+            this.player.ballSpeed++;
+            if (this.player.ballSpeed >= 150) {
+                this.increasing = false;
+            }
+        }
+
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
             this.bounceSound.volume = 0
@@ -81,4 +124,41 @@ class Pre2 extends Phaser.Scene {
             });
         }
     }
+
+    //angle adjustment for bouncing off world bounds
+    worldBounce() {
+        if (this.player.y - this.player.body.height / 2 - 5 <= 0 ||
+            this.player.y + this.player.body.height / 2 + 5 >= game.config.height) {
+            //if player bounces off top or bottom walls, adjust angle accordingly
+            if (0 < this.player.rotation <= Math.PI / 2) {
+                let temp = this.player.rotation;
+                this.player.rotation = -temp;
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = Math.PI / 2 + temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
+                this.player.rotation = temp;
+            }
+        } else {
+            //if player bounces off left or right walls, adjust angle accordingly
+            if (0 < this.player.rotation <= Math.PI / 2) {
+                let temp = this.player.rotation;
+                this.player.rotation = Math.PI - temp;
+            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
+                let temp = Math.PI - this.player.rotation;
+                this.player.rotation = 2 * Math.PI + temp;
+            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
+                let temp = this.player.rotation - Math.PI;
+                this.player.rotation = 2 * Math.PI - temp;
+            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
+                let temp = 2 * Math.PI - this.player.rotation;
+                this.player.rotation = Math.PI + temp;
+            }
+        }
+    }
+
 }

@@ -30,34 +30,11 @@ class Level_2 extends Phaser.Scene {
         //misc set up
         this.cameras.main.setBackgroundColor("#5A5");
         this.ballSpeed = 0;
-        this.mouse = this.input.activePointer;
         this.mouseType = "None";
         this.startPosX = 100;
         this.startPosY = 250;
         this.endPosX = 750;
         this.endPosY = 550;
-
-        //create mouse listener for terrain manipulation
-        this.input.on('pointerdown', () => {
-            console.log("on click " + this.singleClick);
-            if (this.mouseType == "Ravine") {
-                //if left click, add ravine to group
-                var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
-                console.log("temp: " + temp);
-                this.ravines.add(temp);
-                temp.play("ravine");
-                console.log(this.ravines);
-                sizeIncrease(temp, true, this.mouse, this.time);
-            } else if (this.mouseType == "Hill") {
-                //if right click, add hill to group
-                var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
-                console.log("temp: " + temp);
-                this.hills.add(temp);
-                temp.play("mountain");
-                console.log(this.hills);
-                sizeIncrease(temp, true, this.mouse, this.time);
-            }
-        });
 
         //create animations
         createAnims(this);
@@ -86,13 +63,6 @@ class Level_2 extends Phaser.Scene {
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-
-        //key bindings for mouse controls
-        keyZERO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
-        keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
-        keyTWO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
-        keyTHREE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
-        keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up map background
         this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
@@ -193,13 +163,6 @@ class Level_2 extends Phaser.Scene {
         this.add.text(centerX - game.config.width / 3, game.config.height / 15,
             "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
             textConfig).setOrigin(.5);
-        this.mouseText = this.add.text(centerX, game.config.height / 15,
-            "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
-            textConfig).setOrigin(.5);
-        this.add.text(centerX + game.config.width / 3, game.config.height / 15,
-            "(0) Remove\n(1) Hill\n(2) Ravine",
-            textConfig).setOrigin(.5);
-
     }
 
 
@@ -230,21 +193,6 @@ class Level_2 extends Phaser.Scene {
             this.sound.play("quit");
             this.music.pause();
             this.scene.start("menuScene");
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            this.sound.play("rotate");
-            this.mouseType = "Remove";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyONE)) {
-            this.sound.play("rotate");
-            this.mouseType = "Hill";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
-            this.sound.play("rotate");
-            this.mouseType = "Ravine";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
         }
     }
 }

@@ -98,7 +98,7 @@ class Level_Select extends Phaser.Scene {
                 this.time.addEvent({
                     delay: 1300,
                     callback: () => {
-                        this.scene.start("level_2Scene")
+                        this.scene.start("pre2")
                     },
                     loop: false,
                     callbackScope: this
@@ -113,7 +113,7 @@ class Level_Select extends Phaser.Scene {
                 this.time.addEvent({
                     delay: 1300,
                     callback: () => {
-                        this.scene.start("level_3Scene")
+                        this.scene.start("pre3")
                     },
                     loop: false,
                     callbackScope: this
@@ -126,7 +126,7 @@ class Level_Select extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("level_4Scene") },
+                callback: () => { this.scene.start("pre4") },
                 loop: false,
                 callbackScope: this
             });

@@ -1,11 +1,12 @@
-class Pre1 extends Phaser.Scene {
+class Pre4 extends Phaser.Scene {
     constructor() {
-        super("pre1");
+        super("pre4");
     }
 
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
+        this.load.image('ravine', './assets/ravine.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -21,7 +22,8 @@ class Pre1 extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
-        this.increasing = true;
+        this.increasingHit = false;
+        this.increasingRavine = true;
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -37,11 +39,14 @@ class Pre1 extends Phaser.Scene {
         this.bounceSound.loop = true;
         this.bounceSound.play();
 
+        //create a ravine
+        this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01);
+
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width/3, game.config.height/2, 'ball', keyUP,
+        this.player = new Player(this, game.config.width / 3, game.config.height / 2, 'ball', keyUP,
             keyRIGHT, keyLEFT, false, 1);
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => { 
+        this.physics.world.on('worldbounds', () => {
             this.bounceSound.volume = .75;
             this.time.addEvent({
                 delay: 750,
@@ -50,7 +55,10 @@ class Pre1 extends Phaser.Scene {
                 callbackScope: this
             });
         }, this);
+
+        //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.pull = this.physics.add.overlap(this.player, this.ravine, this.pullOverlap, null, this);
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -68,21 +76,31 @@ class Pre1 extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
-        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 1.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + 2 * textSpacer, "You only have 1 shot to reach the hole.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + textSpacer, "Hold (↑) to charge a shot.",
+        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 4.", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY + textSpacer, "Hold Left Click to use your tools.", menuConfig).setOrigin(.5);
+        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "Press (2) to use Ravines.",
             menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
-            delay: Phaser.Math.Between(3000, 5000),
+            delay: 5000,
             callback: () => {
-                this.changingText.text = "Release (↑) to hit the ball";
-                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
-                this.player.ballSpeed = 0;
+                this.increasingHit = true;
                 this.time.addEvent({
                     delay: 5000,
-                    callback: () => { this.scene.restart() },
+                    callback: () => {
+                        this.changingText.text = "Ravines will pull the ball in.";
+                        this.increasingHit = false;
+                        this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
+                            this.player.body.acceleration);
+                        this.player.ballSpeed = 0;
+                        this.time.addEvent({
+                            delay: 12000,
+                            callback: () => { this.scene.restart() },
+                            loop: false,
+                            callbackScope: this
+                        });
+                    },
                     loop: false,
                     callbackScope: this
                 });
@@ -95,10 +113,16 @@ class Pre1 extends Phaser.Scene {
     update() {
         this.player.update();
 
-        if (this.increasing) {
+        if (this.increasingHit) {
             this.player.ballSpeed++;
             if (this.player.ballSpeed >= 150) {
                 this.increasing = false;
+            }
+        }
+        if (this.increasingRavine) {
+            this.ravine.scale += .005;
+            if (this.ravine.scale >= 1.15) {
+                this.increasingRavine = false;
             }
         }
 
@@ -108,7 +132,7 @@ class Pre1 extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("level_1Scene") },
+                callback: () => { this.scene.start("level_4Scene") },
                 loop: false,
                 callbackScope: this
             });
@@ -148,6 +172,24 @@ class Pre1 extends Phaser.Scene {
                 let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
             }
+        }
+    }
+
+    //overlapping with ravines should pull the player towards the center while changing momentum
+    pullOverlap(player, ravine) {
+        //get the angle towards the center of the ravine
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, ravine.x, ravine.y);
+        //adjust player angle towards ravine center
+        if (angle < this.player.rotation) {
+            this.player.rotation -= Math.PI / 200;
+        } else if (angle > this.player.rotation) {
+            this.player.rotation += Math.PI / 200;
+        }
+        //slightly alter momentum based on rotation
+        if (ravine.scale < 1) {
+            this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
+        } else {
+            this.physics.velocityFromRotation(angle, 100 * ravine.scale, this.player.body.acceleration);
         }
     }
 

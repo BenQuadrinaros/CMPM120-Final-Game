@@ -6,6 +6,7 @@ class Pre3 extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
+        this.load.image('hill', './assets/mountain.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -21,7 +22,8 @@ class Pre3 extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
-        this.increasing = true;
+        this.increasingHit = false;
+        this.increasingHill = true;
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -37,13 +39,14 @@ class Pre3 extends Phaser.Scene {
         this.bounceSound.loop = true;
         this.bounceSound.play();
 
+        //set up hill
+        this.hill = new Hill(this, 2 * game.config.width / 3, game.config.height / 2 + 50, 'hill', .01);
+
         //create a ball to show hitting
-        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
-            Phaser.Math.Between(100, game.config.height - 100), 'ball', keyUP,
+        this.player = new Player(this, game.config.width / 3, game.config.height / 2, 'ball', keyUP,
             keyRIGHT, keyLEFT, false, 1);
         this.player.body.setEnable(true);
-        this.player.rotation = Phaser.Math.Between(0, 2 * Math.PI);
-        this.physics.world.on('worldbounds', () => { 
+        this.physics.world.on('worldbounds', () => {
             this.bounceSound.volume = .75;
             this.time.addEvent({
                 delay: 750,
@@ -52,7 +55,10 @@ class Pre3 extends Phaser.Scene {
                 callbackScope: this
             });
         }, this);
+
+        //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.push = this.physics.add.overlap(this.player, this.hill, this.pushOverlap, null, this);
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -70,21 +76,31 @@ class Pre3 extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
-        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 1.", menuConfig)
-            .setOrigin(.5).setInteractive();
-        this.changingText = this.add.text(centerX, centerY + textSpacer, "Hold (↑) to charge a shot.", menuConfig)
-            .setOrigin(.5).setInteractive();
+        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 3.", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY + textSpacer, "Hold Left Click to use your tools.", menuConfig).setOrigin(.5);
+        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "Press (1) to use Hills.",
+            menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
-            delay: 3500,
+            delay: 5000,
             callback: () => {
-                this.changingText.text = "Release (↑) to hit the ball";
-                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
-                this.player.ballSpeed = 0;
+                this.increasingHit = true;
                 this.time.addEvent({
                     delay: 5000,
-                    callback: () => { this.scene.restart() },
+                    callback: () => {
+                        this.changingText.text = "Hills will push the ball away.";
+                        this.increasingHit = false;
+                        this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
+                            this.player.body.acceleration);
+                        this.player.ballSpeed = 0;
+                        this.time.addEvent({
+                            delay: 10000,
+                            callback: () => { this.scene.restart() },
+                            loop: false,
+                            callbackScope: this
+                        });
+                    },
                     loop: false,
                     callbackScope: this
                 });
@@ -97,10 +113,16 @@ class Pre3 extends Phaser.Scene {
     update() {
         this.player.update();
 
-        if (this.increasing) {
+        if (this.increasingHit) {
             this.player.ballSpeed++;
             if (this.player.ballSpeed >= 150) {
                 this.increasing = false;
+            }
+        }
+        if (this.increasingHill) {
+            this.hill.scale += .005;
+            if (this.hill.scale >= 1) {
+                this.increasingHill = false;
             }
         }
 
@@ -150,6 +172,25 @@ class Pre3 extends Phaser.Scene {
                 let temp = 2 * Math.PI - this.player.rotation;
                 this.player.rotation = Math.PI + temp;
             }
+        }
+    }
+
+    //overlapping with hills should push the player away from the center while changing momentum
+    pushOverlap(player, hill) {
+        //get the angle away from the center of the hill
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
+        angle += Math.PI;
+        //adjust player angle away from hill center
+        if (angle < this.player.rotation) {
+            this.player.rotation -= Math.PI / 200;
+        } else if (angle > this.player.rotation) {
+            this.player.rotation += Math.PI / 200;
+        }
+        //slightly alter momentum based on rotation
+        if (hill.scale < 1) {
+            this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
+        } else {
+            this.physics.velocityFromRotation(angle, 100 * hill.scale, this.player.body.acceleration);
         }
     }
 

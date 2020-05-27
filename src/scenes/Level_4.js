@@ -206,10 +206,10 @@ class Level_4 extends Phaser.Scene {
             "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
             textConfig).setOrigin(.5);
         this.mouseText = this.add.text(centerX, game.config.height / 15,
-            "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
+            "Hold Left Click to use tools.\n(1) or (2) to select tool.\nCurrent tool type: " + this.mouseType,
             textConfig).setOrigin(.5);
         this.add.text(centerX + game.config.width / 3, game.config.height / 15,
-            "(0) Remove\n(1) Hill\n(2) Ravine",
+            "\n(1) Hill\n(2) Ravine",
             textConfig).setOrigin(.5);
     }
 
@@ -243,20 +243,15 @@ class Level_4 extends Phaser.Scene {
             this.music.pause();
             this.scene.start("menuScene");
         }
-        if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            this.sound.play("rotate");
-            this.mouseType = "Remove";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
-        }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
             this.sound.play("rotate");
             this.mouseType = "Hill";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Hold Left Click to use tools.\n(1) or (2) to select tool.\nCurrent tool type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
             this.sound.play("rotate");
             this.mouseType = "Ravine";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Hold Left Click to use tools.\n(1) or (2) to select tool.\nCurrent tool type: " + this.mouseType;
         }
 
     }
