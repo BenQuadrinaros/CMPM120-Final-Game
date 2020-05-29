@@ -52,7 +52,7 @@ function toNextLevel(player, hole) {
     this.time.addEvent({
         delay: 2000,
         callback: () => {
-            if(nextLevel < 5) {
+            if(nextLevel < 7) {
                 this.scene.start("pre"+nextLevel);
             } else {
                 this.scene.start("menuScene");
@@ -64,13 +64,11 @@ function toNextLevel(player, hole) {
 }
 
 
-function sizeIncrease(object, looping,mouseB,time) {
+function sizeIncrease(object, looping, mouseB, time) {
     //increase size as long as the correct mouse button is held down
     object.scale += .01;
-    console.log("make it bigger");
     if (!mouseB.leftButtonDown()) {
         looping = false;
-        console.log("wrong key (left)");
     }
     time.addEvent({
         delay:100,

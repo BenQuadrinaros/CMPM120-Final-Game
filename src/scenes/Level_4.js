@@ -7,7 +7,7 @@ class Level_4 extends Phaser.Scene {
         //console.log("in level 4");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background2', './assets/Level2background.png');
+        this.load.image('plateau', './assets/plateaus.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab', './assets/crab.png');
@@ -34,13 +34,12 @@ class Level_4 extends Phaser.Scene {
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
         this.startPosX = game.config.width / 10;
-        this.startPosY = game.config.height - 40;
-        this.endPosX = game.config.width / 10;
-        this.endPosY = game.config.height / 3;
+        this.startPosY = game.config.height / 2;
+        this.endPosX = 9 * game.config.width / 10;
+        this.endPosY = 9 * game.config.height / 10;
 
         //create mouse listener for terrain manipulation
         this.input.on('pointerdown', () => {
-            console.log("on click " + this.singleClick);
             if (this.mouseType == "Ravine") {
                 //if left click, add ravine to group
                 var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
@@ -96,7 +95,7 @@ class Level_4 extends Phaser.Scene {
         keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up map background
-        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
+        this.add.sprite(0, 0, 'plateau').setOrigin(0, 0).setScale(1.1, 1);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
@@ -115,16 +114,27 @@ class Level_4 extends Phaser.Scene {
         //set up obstacles physics
         this.walls = this.add.group();
         {
-            //create each walls for the level
+            //create barrier under UI
             this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
 
             //create each walls for the level
-            this.walls.add(new Obstacle(this, 300, 2 * game.config.height / 3, 'wall').setOrigin(.5, .5).setScale(3, .5));
+            this.walls.add(new Obstacle(this, game.config.width / 4, game.config.height / 4 - 25, 'wall')
+                .setOrigin(.5, .5).setScale(1.7, .6));
 
-            this.walls.add(new Obstacle(this, 300, game.config.height / 3 - 15, 'wall').setOrigin(.5, .5).setScale(.5, 2));
+            this.walls.add(new Obstacle(this, game.config.width / 3 + 65, 3 * game.config.height / 4 - 45, 'wall')
+                .setOrigin(.5, .5).setScale(.5, 1.9));
+            
+            this.walls.add(new Obstacle(this, game.config.width / 4 + 10, 4 * game.config.height / 5 - 25, 'wall')
+                .setOrigin(.5, .5).setScale(1, 1));
 
-            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 - 50, 3 * game.config.height / 7 + 10,
-                'wall').setOrigin(.5, .5).setScale(.5, 2));
+            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 - 10, 5 * game.config.height / 7 + 10,
+                'wall').setOrigin(.5, .5).setScale(.55, .95));
+
+            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 + 75, 2 * game.config.height / 7 - 20,
+                'wall').setOrigin(.5, .5).setScale(.8, .75));
+
+            this.walls.add(new Obstacle(this, 9 * game.config.width / 10 + 15, game.config.height / 2 - 50,
+                'wall').setOrigin(.5, .5).setScale(.5, 2.8));
 
         }
         this.physics.add.collider(this.player, this.walls, () => {
