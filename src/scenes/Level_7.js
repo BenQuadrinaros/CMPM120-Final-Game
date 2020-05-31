@@ -4,7 +4,7 @@ class Level_7 extends Phaser.Scene {
     }
 
     preload() {
-        //console.log("in level 6");
+        //console.log("in level 7");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('river', './assets/meanderingRiver.jpg');
@@ -33,9 +33,9 @@ class Level_7 extends Phaser.Scene {
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
-        this.startPosX =   3 * game.config.width / 8;
-        this.startPosY = 9 *game.config.height / 10;
-        this.endPosX =  7 * game.config.width / 10;
+        this.startPosX =   1 * game.config.width / 8;
+        this.startPosY = 2 *game.config.height / 10;
+        this.endPosX =  9 * game.config.width / 10;
         this.endPosY = 9 * game.config.height / 10;
 
         //create mouse listener for terrain manipulation
@@ -119,12 +119,13 @@ class Level_7 extends Phaser.Scene {
 
             //create each walls for the level
 
-            this.walls.add(new Obstacle(this,game.config.width/2,4*game.config.height/8,'wall').setOrigin(0,0).setScale(.5,4));
-            this.walls.add(new Obstacle(this,2*game.config.width/7,5*game.config.height/8,'wall').setOrigin(0,0).setScale(1,.5));
-            this.walls.add(new Obstacle(this,2*game.config.width/7,2*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,1));
-            this.walls.add(new Obstacle(this,6*game.config.width/8,5*game.config.height/8,'wall').setOrigin(0,0).setScale(.75,.25));
-
-
+            this.walls.add(new Obstacle(this,game.config.width/2,7*game.config.height/8,'wall').setOrigin(0,0).setScale(1,1));
+            this.walls.add(new Obstacle(this,1*game.config.width/7,5*game.config.height/8,'wall').setOrigin(0,0).setScale(1,.5));
+            this.walls.add(new Obstacle(this,2*game.config.width/7,1*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,1.5));
+            this.walls.add(new Obstacle(this,7*game.config.width/8,7*game.config.height/9,'wall').setOrigin(0,0).setScale(.75,.25));
+            this.walls.add(new Obstacle(this,game.config.width/2,4*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,2.15));
+            this.walls.add(new Obstacle(this,4*game.config.width/8,5*game.config.height/8,'wall').setOrigin(0,0).setScale(.75,.25));
+            this.walls.add(new Obstacle(this,7*game.config.width/10,2*game.config.height/8,'wall').setOrigin(0,0).setScale(.125,1));
 
         }
         this.physics.add.collider(this.player, this.walls, () => {
@@ -154,7 +155,7 @@ class Level_7 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 4);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 7);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
 
@@ -163,7 +164,7 @@ class Level_7 extends Phaser.Scene {
         this.crabs.add(this.crab1);
         this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
 
-        //tutorial text for Level_6
+        //tutorial text for Level_7
         let textConfig = {
             fontFamily: "Courier",
             fontSize: "18px",

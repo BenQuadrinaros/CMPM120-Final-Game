@@ -7,6 +7,7 @@ class Pre5 extends Phaser.Scene {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('ravine', './assets/ravine.png');
+        this.load.image('hill', './assets/mountain.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -22,8 +23,9 @@ class Pre5 extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
-        this.increasingHit = false;
-        this.increasingRavine = true;
+        this.increasingHit = true;
+        this.increasingHill = false;
+        this.increasingRavine = false;
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -38,6 +40,9 @@ class Pre5 extends Phaser.Scene {
         this.bounceSound.volume = 0;
         this.bounceSound.loop = true;
         this.bounceSound.play();
+
+        //set up hill
+        this.hill = new Hill(this, 3 * game.config.width / 5, game.config.height / 2 + 50, 'hill', .01);
 
         //create a ravine
         this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01);
@@ -58,6 +63,7 @@ class Pre5 extends Phaser.Scene {
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
+        this.push = this.physics.add.overlap(this.player, this.hill, this.pushOverlap, null, this);
         this.pull = this.physics.add.overlap(this.player, this.ravine, this.pullOverlap, null, this);
 
         let menuConfig = {
@@ -77,26 +83,50 @@ class Pre5 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 5.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + textSpacer, "Hold Left Click to use your tools.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "Press (2) to use Ravines.",
+        this.add.text(centerX, centerY + textSpacer, "You can terraform after you have hit the ball.", 
             menuConfig).setOrigin(.5);
-
+        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "Push the ball from behind.",
+            menuConfig).setOrigin(.5);
         //tutorial broken up into parts
         this.time.addEvent({
-            delay: 5000,
+            delay: 1500,
             callback: () => {
-                this.increasingHit = true;
+                this.increasingHit = false;
+                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
+                    this.player.body.acceleration);
+                this.player.ballSpeed = 0;
                 this.time.addEvent({
-                    delay: 5000,
+                    delay: 500,
                     callback: () => {
-                        this.changingText.text = "Ravines will pull the ball in.";
-                        this.increasingHit = false;
-                        this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
-                            this.player.body.acceleration);
-                        this.player.ballSpeed = 0;
+                        this.increasingHill = true;
                         this.time.addEvent({
-                            delay: 12000,
-                            callback: () => { this.scene.restart() },
+                            delay: 3000,
+                            callback: () => {
+                                this.increasingHill = false;
+                                this.increasingRavine = true;
+                                this.changingText.text = "Pull the ball from the front."
+                                this.time.addEvent({
+                                    delay: 3500,
+                                    callback: () => { 
+                                        this.increasingRavine = false;
+                                        this.time.addEvent({
+                                            delay: 2500,
+                                            callback: () => {
+                                                this.time.addEvent({
+                                                    delay: 7500,
+                                                    callback: () => { this.scene.restart() },
+                                                    loop: false,
+                                                    callbackScope: this
+                                                });
+                                            },
+                                            loop: false,
+                                            callbackScope: this
+                                        });
+                                     },
+                                    loop: false,
+                                    callbackScope: this
+                                });
+                            },
                             loop: false,
                             callbackScope: this
                         });
@@ -123,6 +153,12 @@ class Pre5 extends Phaser.Scene {
             this.ravine.scale += .005;
             if (this.ravine.scale >= 1.15) {
                 this.increasingRavine = false;
+            }
+        }
+        if (this.increasingHill) {
+            this.hill.scale += .005;
+            if (this.hill.scale >= 1.15) {
+                this.increasingHill = false;
             }
         }
 
@@ -190,6 +226,25 @@ class Pre5 extends Phaser.Scene {
             this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
         } else {
             this.physics.velocityFromRotation(angle, 100 * ravine.scale, this.player.body.acceleration);
+        }
+    }
+
+    //overlapping with hills should push the player away from the center while changing momentum
+    pushOverlap(player, hill) {
+        //get the angle away from the center of the hill
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, hill.x, hill.y);
+        angle += Math.PI;
+        //adjust player angle away from hill center
+        if (angle < this.player.rotation) {
+            this.player.rotation -= Math.PI / 200;
+        } else if (angle > this.player.rotation) {
+            this.player.rotation += Math.PI / 200;
+        }
+        //slightly alter momentum based on rotation
+        if (hill.scale < 1) {
+            this.physics.velocityFromRotation(angle, 100, this.player.body.acceleration);
+        } else {
+            this.physics.velocityFromRotation(angle, 100 * hill.scale, this.player.body.acceleration);
         }
     }
 

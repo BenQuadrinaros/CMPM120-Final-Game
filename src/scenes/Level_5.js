@@ -153,7 +153,7 @@ class Level_5 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 4);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 5);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
 

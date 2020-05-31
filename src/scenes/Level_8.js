@@ -4,7 +4,7 @@ class Level_8 extends Phaser.Scene {
     }
 
     preload() {
-        //console.log("in level 6");
+        //console.log("in level 8");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('river', './assets/meanderingRiver.jpg');
@@ -33,9 +33,9 @@ class Level_8 extends Phaser.Scene {
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
-        this.startPosX =   1 * game.config.width / 8;
-        this.startPosY = 2 *game.config.height / 10;
-        this.endPosX =  9 * game.config.width / 10;
+        this.startPosX = game.config.width / 8;
+        this.startPosY = game.config.height / 4 + 15;
+        this.endPosX = 9 * game.config.width / 10;
         this.endPosY = 9 * game.config.height / 10;
 
         //create mouse listener for terrain manipulation
@@ -118,18 +118,28 @@ class Level_8 extends Phaser.Scene {
             this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
 
             //create each walls for the level
+            this.walls.add(new Obstacle(this, 125, game.config.height / 2 - 25, 'wall').setOrigin(.5, .5).setScale(1.3, .6));
 
-            this.walls.add(new Obstacle(this,game.config.width/2,7*game.config.height/8,'wall').setOrigin(0,0).setScale(1,1));
-            this.walls.add(new Obstacle(this,1*game.config.width/7,5*game.config.height/8,'wall').setOrigin(0,0).setScale(1,.5));
-            this.walls.add(new Obstacle(this,2*game.config.width/7,1*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,1.5));
-            this.walls.add(new Obstacle(this,7*game.config.width/8,7*game.config.height/9,'wall').setOrigin(0,0).setScale(.75,.25));
-            this.walls.add(new Obstacle(this,game.config.width/2,4*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,2.15));
-            this.walls.add(new Obstacle(this,4*game.config.width/8,5*game.config.height/8,'wall').setOrigin(0,0).setScale(.75,.25));
-            this.walls.add(new Obstacle(this,7*game.config.width/10,2*game.config.height/8,'wall').setOrigin(0,0).setScale(.125,1));
+            this.walls.add(new Obstacle(this, game.config.width / 2 + 65, game.config.height / 3 - 35, 'wall')
+                .setOrigin(.5, .5).setScale(.2, 1.7));
 
+            this.walls.add(new Obstacle(this, game.config.width / 3 - 15, 5 * game.config.height / 7 + 35,
+                'wall').setOrigin(.5, .5).setScale(.6, .6));
 
+            this.walls.add(new Obstacle(this, game.config.width / 3 + 55, 5 * game.config.height / 7 - 25,
+                'wall').setOrigin(.5, .5).setScale(.6, .6));
 
+            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 - 10, 6 * game.config.height / 7 + 25,
+                'wall').setOrigin(.5, .5).setScale(.3, 1.6));
 
+            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 + 30, 4 * game.config.height / 7 + 40,
+                'wall').setOrigin(.5, .5).setScale(.2, 1.1));
+
+            this.walls.add(new Obstacle(this, 4 * game.config.width / 5, 3 * game.config.height / 7 + 25,
+                'wall').setOrigin(.5, .5).setScale(.55, .55));
+
+            this.walls.add(new Obstacle(this, 10 * game.config.width / 11, 5 * game.config.height / 7 + 10,
+                'wall').setOrigin(.5, .5).setScale(.6, .6));
 
         }
         this.physics.add.collider(this.player, this.walls, () => {
@@ -159,12 +169,12 @@ class Level_8 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 4);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 8);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
 
         this.crabs = this.add.group();
-        this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'crab', .5).setScale(.1, .1);
+        this.crab1 = new Crab(this, game.config.width / 2 - 50, game.config.height / 2 + 20, 'crab', .5).setScale(.1, .1);
         this.crabs.add(this.crab1);
         this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
 

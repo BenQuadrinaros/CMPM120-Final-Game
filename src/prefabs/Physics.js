@@ -52,7 +52,7 @@ function toNextLevel(player, hole) {
     this.time.addEvent({
         delay: 2000,
         callback: () => {
-            if(nextLevel < 7) {
+            if(nextLevel < 10) {
                 this.scene.start("pre"+nextLevel);
             } else {
                 this.scene.start("menuScene");

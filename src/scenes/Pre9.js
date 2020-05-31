@@ -1,12 +1,11 @@
-class Pre6 extends Phaser.Scene {
+class Pre9 extends Phaser.Scene {
     constructor() {
-        super("pre6");
+        super("pre9");
     }
 
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
-        this.load.image('crab', './assets/crab.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -22,7 +21,7 @@ class Pre6 extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
-        this.increasingHit = true;
+        this.increasing = true;
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -38,17 +37,11 @@ class Pre6 extends Phaser.Scene {
         this.bounceSound.loop = true;
         this.bounceSound.play();
 
-        // create a crab
-        this.crabs= this.add.group();
-        this.crab1 = new Crab(this, game.config.width / 2 - 50, game.config.height / 2, 'crab', .5).setScale(.1, .1);
-        this.crabs.add(this.crab1);
-
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width / 2, game.config.height / 3, 'ball', keyUP,
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'ball', keyUP,
             keyRIGHT, keyLEFT, false, 1);
-        this.player.rotation = Math.PI / 2;
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
+        this.physics.world.on('worldbounds', () => { 
             this.bounceSound.volume = .75;
             this.time.addEvent({
                 delay: 750,
@@ -57,10 +50,7 @@ class Pre6 extends Phaser.Scene {
                 callbackScope: this
             });
         }, this);
-
-        //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -78,38 +68,22 @@ class Pre6 extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
-        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 6.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + textSpacer, "Watch out for crabs.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "They will knock your ball around.",
+        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 9.", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY + 2 * textSpacer, "CONGRATULATIONS!", menuConfig).setOrigin(.5);
+        this.changingText = this.add.text(centerX, centerY + textSpacer, 
+            "You have made it so far and you\nhave proved you terragolfing ability.",
             menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
-            delay: 3500,
+            delay: Phaser.Math.Between(3000, 5000),
             callback: () => {
-                this.increasingHit = false;
-                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
-                    this.player.body.acceleration);
+                this.changingText.text = "Now, there is one last hole to conquer.";
+                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
                 this.player.ballSpeed = 0;
                 this.time.addEvent({
-                    delay: 3500,
-                    callback: () => {
-                        this.changingText.text = "Watch their patterns to avoid them.";
-                        this.time.addEvent({
-                            delay: 3500,
-                            callback: () => {
-                                this.changingText.text = "Or just knock them out of the way.";
-                                this.time.addEvent({
-                                    delay: 3500,
-                                    callback: () => { this.scene.restart() },
-                                    loop: false,
-                                    callbackScope: this
-                                });
-                            },
-                            loop: false,
-                            callbackScope: this
-                        });
-                    },
+                    delay: 5000,
+                    callback: () => { this.scene.restart() },
                     loop: false,
                     callbackScope: this
                 });
@@ -121,9 +95,8 @@ class Pre6 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
 
-        if (this.increasingHit) {
+        if (this.increasing) {
             this.player.ballSpeed++;
             if (this.player.ballSpeed >= 150) {
                 this.increasing = false;
@@ -136,7 +109,7 @@ class Pre6 extends Phaser.Scene {
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
-                callback: () => { this.scene.start("level_6Scene") },
+                callback: () => { this.scene.start("level_9Scene") },
                 loop: false,
                 callbackScope: this
             });
@@ -163,42 +136,6 @@ class Pre6 extends Phaser.Scene {
             }
         } else {
             //if player bounces off left or right walls, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = Math.PI - temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = 2 * Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = 2 * Math.PI - temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            }
-        }
-    }
-
-    //angle adjustment for bouncing off objects
-    objectBounce(player, object) {
-        if (this.player.y - this.player.body.height / 2 - 5 <= object.y + object.body.height ||
-            this.player.y + this.player.body.height / 2 + 5 >= object.y) {
-            //if player bounces off top or bottom side of object, adjust angle accordingly
-            if (0 < this.player.rotation <= Math.PI / 2) {
-                let temp = this.player.rotation;
-                this.player.rotation = -temp;
-            } else if (Math.PI / 2 < this.player.rotation <= Math.PI) {
-                let temp = Math.PI - this.player.rotation;
-                this.player.rotation = Math.PI + temp;
-            } else if (Math.PI < this.player.rotation <= 3 * Math.PI / 2) {
-                let temp = this.player.rotation - Math.PI;
-                this.player.rotation = Math.PI / 2 + temp;
-            } else if (3 * Math.PI / 2 < this.player.rotation <= 2 * Math.PI) {
-                let temp = 2 * Math.PI - this.player.rotation;
-                this.player.rotation = temp;
-            }
-        } else {
-            //if player bounces off left or right side of object, adjust angle accordingly
             if (0 < this.player.rotation <= Math.PI / 2) {
                 let temp = this.player.rotation;
                 this.player.rotation = Math.PI - temp;
