@@ -158,6 +158,28 @@ class Level_Select extends Phaser.Scene {
                 callbackScope: this
             });
         }
+
+        if (Phaser.Input.Keyboard.JustDown(keySEVEN) && !this.hasChosen) {
+            this.hasChosen = true;
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("level_7Scene") },
+                loop: false,
+                callbackScope: this
+            });
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(keyEIGHT) && !this.hasChosen) {
+            this.hasChosen = true;
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("level_8Scene") },
+                loop: false,
+                callbackScope: this
+            });
+        }
     }
 
     //angle adjustment for bouncing off world bounds
