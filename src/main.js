@@ -21,7 +21,7 @@ let config = {
         }
     },
 
-    scene: [Menu, Level_Select, Sandbox, Pre1, Level_1, Pre2, Level_2, Pre3, Level_3, Pre4, Level_4, Pre5, Level_5, Pre6, Level_6,Level_7]
+    scene: [Menu, Level_Select, Sandbox, Pre1, Level_1, Pre2, Level_2, Pre3, Level_3, Pre4, Level_4, Pre5, Level_5, Pre6, Level_6,Level_7,Level_8]
 
 };
 
@@ -30,7 +30,7 @@ let game = new Phaser.Game(config);
 game.settings = {
     
 };
-let levelsAvailable = [1, 4, 5, 6,7];
+let levelsAvailable = [1, 4, 5, 6,7,8];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
