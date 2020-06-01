@@ -70,7 +70,9 @@ class Level_Select extends Phaser.Scene {
 
         });
 
-        this.add.text(centerX, centerY + textSpacer, "Press (0) to go to the sandbox.", menuConfig)
+        this.add.text(centerX, centerY - textSpacer, "Press the key of the level you would\nlike to start. Levels will be unlocked\nwhen the previous is completed.", menuConfig)
+            .setOrigin(.5);
+        this.add.text(centerX, centerY + .75*textSpacer, "Press (0) to go to the sandbox.\nYou can practice your skills here.", menuConfig)
             .setOrigin(.5);
         this.add.text(centerX, centerY + 2*textSpacer, "Press (↓) to return to the main menu.", menuConfig)
             .setOrigin(.5);

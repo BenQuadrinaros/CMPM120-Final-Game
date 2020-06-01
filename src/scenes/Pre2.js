@@ -70,20 +70,20 @@ class Pre2 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 2.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + textSpacer, "Press (Q) to Quit to the Main Menu.",
+        this.changingText = this.add.text(centerX, centerY + textSpacer, "In levels, press (Q) to Quit\nto the Main Menu.",
             menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
             delay: 5000,
             callback: () => {
-                this.changingText.text = "Press (R) to Reset the whole course.";
+                this.changingText.text = "Or, press (R) to Reset the whole course.";
                 this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
                 this.player.ballSpeed = 0;
                 this.time.addEvent({
                     delay: 5000,
                     callback: () => {
-                        this.changingText.text = "Press (P) to Place the ball\nback at the start.";
+                        this.changingText.text = "Or, press (P) to Place the ball\nback at the start.";
                         this.player.body.reset(game.config.width / 3, game.config.height / 2);
                         this.player.rotation = 0;
                         this.time.addEvent({

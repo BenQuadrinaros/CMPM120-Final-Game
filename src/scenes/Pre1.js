@@ -69,15 +69,15 @@ class Pre1 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 1.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + 2 * textSpacer, "You only have 1 shot to reach the hole.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + textSpacer, "Hold (↑) to charge a shot.",
+        this.add.text(centerX, centerY + 2 * textSpacer, "You only have one shot to reach the hole.", menuConfig).setOrigin(.5);
+        this.changingText = this.add.text(centerX, centerY + textSpacer, "In each level, hold (↑) to charge a shot.",
             menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
         this.time.addEvent({
             delay: Phaser.Math.Between(3000, 5000),
             callback: () => {
-                this.changingText.text = "Release (↑) to hit the ball";
+                this.changingText.text = "Then, release (↑) to hit the ball";
                 this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
                 this.player.ballSpeed = 0;
                 this.time.addEvent({

@@ -85,7 +85,7 @@ class Pre5 extends Phaser.Scene {
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 5.", menuConfig).setOrigin(.5);
         this.add.text(centerX, centerY + textSpacer, "You can terraform after you have hit the ball.", 
             menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "Push the ball from behind.",
+        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "You can push the ball from behind.",
             menuConfig).setOrigin(.5);
         //tutorial broken up into parts
         this.time.addEvent({
@@ -104,7 +104,7 @@ class Pre5 extends Phaser.Scene {
                             callback: () => {
                                 this.increasingHill = false;
                                 this.increasingRavine = true;
-                                this.changingText.text = "Pull the ball from the front."
+                                this.changingText.text = "Or, you can pull the ball from the front."
                                 this.time.addEvent({
                                     delay: 3500,
                                     callback: () => { 
