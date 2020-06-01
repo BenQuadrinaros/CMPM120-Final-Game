@@ -52,6 +52,7 @@ class Level_Select extends Phaser.Scene {
         let centerY = game.config.height / 2;
         let textSpacer = 80;
 
+        keyZERO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
         keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
         keyTWO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
         keyTHREE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
@@ -69,11 +70,24 @@ class Level_Select extends Phaser.Scene {
 
         });
 
-        this.add.text(centerX, centerY - 2*textSpacer, "Press (↓) to Return.", menuConfig)
-            .setOrigin(.5).setInteractive();
+        this.add.text(centerX, centerY + textSpacer, "Press (0) to go to the sandbox.", menuConfig)
+            .setOrigin(.5);
+        this.add.text(centerX, centerY + 2*textSpacer, "Press (↓) to return to the main menu.", menuConfig)
+            .setOrigin(.5);
     }
 
     update() {
+        if (Phaser.Input.Keyboard.JustDown(keyZERO) && !this.hasChosen) {
+            this.hasChosen = true;
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("sandboxScene") },
+                loop: false,
+                callbackScope: this
+            });
+        }
+
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
@@ -176,6 +190,17 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { this.scene.start("pre8") },
+                loop: false,
+                callbackScope: this
+            });
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(keyNINE) && !this.hasChosen) {
+            this.hasChosen = true;
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => { this.scene.start("pre9") },
                 loop: false,
                 callbackScope: this
             });

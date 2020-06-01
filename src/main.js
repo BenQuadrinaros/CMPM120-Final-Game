@@ -1,9 +1,12 @@
 /*
 Mark Medved, Ben Rowland, and Thane Wisherop
-Terra-Golfing
+Terra-Golf
 DATE COMPLETED
 
-DESCRIPTION TEXT
+A mini-golf inspired game, where you terraform the course itself
+to achieve impossible shots on nature-inspired courses. Play
+through 9 increasingly difficult holes, or just experiment in the
+sandbox.
 */
 
 let config = {

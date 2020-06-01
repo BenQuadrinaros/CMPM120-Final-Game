@@ -18,6 +18,7 @@ class Menu extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.singleClick = 0;
         this.hasChosen = false;
+        this.creditsRoll = false;
 
         //create a ball to bounce in the background
         this.player = this.physics.add.sprite(Phaser.Math.Between(100, game.config.width - 100),
@@ -57,13 +58,21 @@ class Menu extends Phaser.Scene {
 
         // (↑) & (↓)
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↑) to start golfing.", menuConfig)
-            .setOrigin(.5).setInteractive();
-        this.add.text(centerX, centerY + 2 * textSpacer, "Press (↓) to go to the sandbox.", menuConfig)
-            .setOrigin(.5).setInteractive();
+            .setOrigin(.5);
+        this.credits = this.add.text(centerX, centerY + 2 * textSpacer, "Press (↓) to view the credits.", menuConfig)
+            .setOrigin(.5);
+        this.creditsMark = this.add.text(centerX, game.config.height + 1.25 * textSpacer,
+            "Mark Medved - Level Designer/Programmer", menuConfig).setOrigin(.5);
+        this.creditsBen = this.add.text(centerX, game.config.height + 2 * textSpacer,
+            "Ben Rowland - UI Designer/Programmer", menuConfig).setOrigin(.5);
+        this.creditsThane = this.add.text(centerX, game.config.height + 2.75 * textSpacer,
+            "Thane Wisherop - Artist/Animator", menuConfig).setOrigin(.5);
+        this.creditsSound = this.add.text(centerX, game.config.height + 3.5 * textSpacer,
+            "Sound Design by Mark Medved and Ben Rowland", menuConfig).setOrigin(.5);
         menuConfig.fontSize = "48px";
         menuConfig.strokeThickness = 3;
         menuConfig.stroke = "#FD0";
-        this.add.text(centerX, centerY, "GOD GOLF", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY, "TERRA-GOLF", menuConfig).setOrigin(.5);
     }
 
     update() {
@@ -77,61 +86,20 @@ class Menu extends Phaser.Scene {
                 callbackScope: this
             });
         }
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
-            this.hasChosen = true;
-            this.sound.play("menuSelect");
-            this.time.addEvent({
-                delay: 1300,
-                callback: () => { this.scene.start("sandboxScene") },
-                loop: false,
-                callbackScope: this
-            });
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN) && this.credits.alpha == 1) {
+            this.creditsRoll = true;
+        }
+
+        if (this.creditsRoll && this.credits.alpha > 0) {
+            this.credits.alpha -= .01;
+        } else if (this.creditsRoll && this.credits.alpha == 0) {
+            this.creditsMark.y--;
+            this.creditsBen.y--;
+            this.creditsThane.y--;
+            this.creditsSound.y--;
+            if(this.creditsMark.y <= 2*game.config.height/3) {
+                this.creditsRoll = false;
+            }
         }
     }
-
-    /*update() {
-        if(game.input.mousePointer.isDown){
-            this.singleClick++;
-        } else if(!(game.input.mousePointer.isDown)){
-            this.singleClick = 0;
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyUP)) {
-            this.sound.play("menuSelect");
-            this.time.addEvent({
-                delay:1300,
-                callback: () => {this.scene.start("playScene")},
-                loop:false,
-                callbackScope:this
-            });
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-            this.sound.play("menuSelect");
-            this.time.addEvent({
-                delay:1300,
-                callback: () => {this.scene.start("instructionScene")},
-                loop:false,
-                callbackScope:this
-            });
-        }
-        if(this.singleClick == 1) {
-            this.playText.on('pointerdown',() => {
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay:1300,
-                    callback: () => {this.scene.start("playScene")},
-                    loop:false,
-                    callbackScope:this
-                });
-            });
-            this.instructionsText.on('pointerdown',() => {
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay:1300,
-                    callback: () => {this.scene.start("instructionScene")},
-                    loop:false,
-                    callbackScope:this
-                });
-            });
-        }
-    }*/
 }

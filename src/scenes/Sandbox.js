@@ -119,8 +119,8 @@ class Sandbox extends Phaser.Scene {
         this.hills = this.add.group();
         {
             this.hills.add(new Hill(this, Phaser.Math.Between(100, game.config.width - 100),
-                Phaser.Math.Between(200, game.config.height - 100), 'hill',
-                Phaser.Math.Between(.1, .5)));
+                Phaser.Math.Between(300, game.config.height - 100), 'hill',
+                Phaser.Math.Between(.05, .35)));
         }
         this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
@@ -129,8 +129,8 @@ class Sandbox extends Phaser.Scene {
         {
             //create a ravine in the hole
             this.ravines.add(new Ravine(this, Phaser.Math.Between(100, game.config.width - 100),
-                Phaser.Math.Between(200, game.config.height - 100), 'ravine',
-                Phaser.Math.Between(.1, .5)));
+                Phaser.Math.Between(300, game.config.height - 100), 'ravine',
+                Phaser.Math.Between(.05, .35)));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
@@ -163,10 +163,10 @@ class Sandbox extends Phaser.Scene {
             "(←) / (→)  to angle.\nHold (↑) to charge.\nRelease (↑) to swing.",
             textConfig).setOrigin(.5);
         this.mouseText = this.add.text(centerX, game.config.height / 15,
-            "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType,
+            "Left Click to use object type.\n(1) or (2) to change.\nCurrent object type: " + this.mouseType,
             textConfig).setOrigin(.5);
         this.add.text(centerX + game.config.width / 3, game.config.height / 15,
-            "(0) Remove\n(1) Hill\n(2) Ravine",
+            "\n(1) Hill\n(2) Ravine",
             textConfig).setOrigin(.5);
     }
 
@@ -177,7 +177,11 @@ class Sandbox extends Phaser.Scene {
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
-            this.player.body.reset(this.startPosX, this.startPosY);
+            if(game.input.mousePointer.x <= game.config.width && game.input.mousePointer.y <= game.config.height) {
+                this.player.body.reset(game.input.mousePointer.x, game.input.mousePointer.y);
+            } else {
+                this.player.body.reset(this.startPosX, this.startPosY);
+            }
             this.player.body.setEnable(false);
             this.player.rotation = 0;
         }
@@ -191,20 +195,15 @@ class Sandbox extends Phaser.Scene {
             this.music.pause();
             this.scene.start("menuScene");
         }
-        if (Phaser.Input.Keyboard.JustDown(keyZERO)) {
-            this.sound.play("rotate");
-            this.mouseType = "Remove";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
-        }
         if (Phaser.Input.Keyboard.JustDown(keyONE)) {
             this.sound.play("rotate");
             this.mouseType = "Hill";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(1) or (2) to change.\nCurrent object type: " + this.mouseType;
         }
         if (Phaser.Input.Keyboard.JustDown(keyTWO)) {
             this.sound.play("rotate");
             this.mouseType = "Ravine";
-            this.mouseText.text = "Left Click to use object type.\n(0) -> (2) to change.\nCurrent object type: " + this.mouseType;
+            this.mouseText.text = "Left Click to use object type.\n(1) or (2) to change.\nCurrent object type: " + this.mouseType;
         }
     }
 
