@@ -6,6 +6,7 @@ class Menu extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
+        this.load.image('logo', './assets/megagolftitle.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -43,7 +44,7 @@ class Menu extends Phaser.Scene {
         let menuConfig = {
             fontFamily: "Courier",
             fontSize: "32px",
-            color: "#FFF",
+            color: "#000",
             align: "center",
             padding: {
                 top: 5,
@@ -57,9 +58,9 @@ class Menu extends Phaser.Scene {
         let textSpacer = 64;
 
         // (↑) & (↓)
-        this.add.text(centerX, centerY - 2 * textSpacer, "Press (↑) to start golfing.", menuConfig)
+        this.upper = this.add.text(centerX, centerY - 2.75 * textSpacer, "Press (↑) to start golfing.", menuConfig)
             .setOrigin(.5);
-        this.credits = this.add.text(centerX, centerY + 2 * textSpacer, "Press (↓) to view the credits.", menuConfig)
+        this.credits = this.add.text(centerX, centerY + 2.75 * textSpacer, "Press (↓) to view the credits.", menuConfig)
             .setOrigin(.5);
         this.creditsMark = this.add.text(centerX, game.config.height + 1.25 * textSpacer,
             "Mark Medved - Level Designer/Programmer", menuConfig).setOrigin(.5);
@@ -69,10 +70,7 @@ class Menu extends Phaser.Scene {
             "Thane Wisherop - Artist/Animator", menuConfig).setOrigin(.5);
         this.creditsSound = this.add.text(centerX, game.config.height + 3.5 * textSpacer,
             "Sound Design by Mark Medved and Ben Rowland", menuConfig).setOrigin(.5);
-        menuConfig.fontSize = "48px";
-        menuConfig.strokeThickness = 3;
-        menuConfig.stroke = "#FD0";
-        this.add.text(centerX, centerY, "MEGA GOLF", menuConfig).setOrigin(.5);
+        this.logo = this.add.image(centerX, centerY, 'logo').setScale(2.5, 2.5);
     }
 
     update() {
@@ -93,6 +91,8 @@ class Menu extends Phaser.Scene {
         if (this.creditsRoll && this.credits.alpha > 0) {
             this.credits.alpha -= .01;
         } else if (this.creditsRoll && this.credits.alpha == 0) {
+            this.upper.y -= .15;
+            this.logo.y -= .3;
             this.creditsMark.y--;
             this.creditsBen.y--;
             this.creditsThane.y--;

@@ -67,7 +67,6 @@ class Level_Select extends Phaser.Scene {
         levelsAvailable.forEach(level => {
             this.add.rectangle(textSpacer*level,70,50,50,'0xffffff');
             this.add.text(textSpacer*level,70,level.toString(),menuConfig).setOrigin(.5,.5);
-
         });
 
         this.add.text(centerX, centerY - textSpacer, "Press the key of the level you would\nlike to start. Levels will be unlocked\nwhen the previous is completed.", menuConfig)
@@ -112,9 +111,8 @@ class Level_Select extends Phaser.Scene {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyTWO) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyTWO) && !this.hasChosen && levelsAvailable.includes(2)) {
             this.hasChosen = true;
-            if (levelsAvailable.includes(2)) {
                 this.sound.play("menuSelect");
                 this.time.addEvent({
                     delay: 1300,
@@ -124,12 +122,11 @@ class Level_Select extends Phaser.Scene {
                     loop: false,
                     callbackScope: this
                 });
-            }
+            
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyTHREE) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyTHREE) && !this.hasChosen && levelsAvailable.includes(3)) {
             this.hasChosen = true;
-            if (levelsAvailable.includes(3)) {
                 this.sound.play("menuSelect");
                 this.time.addEvent({
                     delay: 1300,
@@ -139,10 +136,10 @@ class Level_Select extends Phaser.Scene {
                     loop: false,
                     callbackScope: this
                 });
-            }
+            
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyFOUR) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyFOUR) && !this.hasChosen && levelsAvailable.includes(4)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -153,7 +150,7 @@ class Level_Select extends Phaser.Scene {
             });
         }
         
-        if (Phaser.Input.Keyboard.JustDown(keyFIVE) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyFIVE) && !this.hasChosen && levelsAvailable.includes(5)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -164,7 +161,7 @@ class Level_Select extends Phaser.Scene {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keySIX) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keySIX) && !this.hasChosen && levelsAvailable.includes(6)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -175,7 +172,7 @@ class Level_Select extends Phaser.Scene {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keySEVEN) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keySEVEN) && !this.hasChosen && levelsAvailable.includes(7)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -186,7 +183,7 @@ class Level_Select extends Phaser.Scene {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyEIGHT) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyEIGHT) && !this.hasChosen && levelsAvailable.includes(8)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({
@@ -197,7 +194,7 @@ class Level_Select extends Phaser.Scene {
             });
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyNINE) && !this.hasChosen) {
+        if (Phaser.Input.Keyboard.JustDown(keyNINE) && !this.hasChosen && levelsAvailable.includes(9)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");
             this.time.addEvent({

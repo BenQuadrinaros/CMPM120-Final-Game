@@ -1,18 +1,19 @@
-class Level_7 extends Phaser.Scene {
+class Level_9 extends Phaser.Scene {
     constructor() {
-        super("level_7Scene");
+        super("level_9Scene");
     }
 
     preload() {
-        //console.log("in level 7");
+        //console.log("in level 9");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('river', './assets/meanderingRiver.jpg');
+        this.load.image('background2', './assets/Level2background.png');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab', './assets/crab.png');
         this.load.image('hole', './assets/hole.png');
 
+        //load texture atlasii
         this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
 
         //load player assosciated audio
@@ -29,14 +30,13 @@ class Level_7 extends Phaser.Scene {
     create() {
         //misc set up
         this.cameras.main.setBackgroundColor("#5A5");
-        this.singleClick = 0;
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
-        this.startPosX =   1 * game.config.width / 8;
-        this.startPosY = 2 *game.config.height / 10;
-        this.endPosX =  9 * game.config.width / 10;
-        this.endPosY = 9 * game.config.height / 10;
+        this.startPosX = game.config.width / 2;
+        this.startPosY = 9 * game.config.height / 10;
+        this.endPosX = game.config.width / 2;
+        this.endPosY = game.config.height / 5;
 
         //create mouse listener for terrain manipulation
         this.input.on('pointerdown', () => {
@@ -84,14 +84,11 @@ class Level_7 extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         //key bindings for mouse controls
-        keyZERO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ZERO);
         keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
         keyTWO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
-        keyTHREE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
-        keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up map background
-        this.add.sprite(0, 50, 'river').setOrigin(0, 0).setScale(1.1, 1);
+        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
@@ -110,18 +107,12 @@ class Level_7 extends Phaser.Scene {
         //set up obstacles physics
         this.walls = this.add.group();
         {
-            //create barrier uner UI
+            //create each walls for the level
             this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
 
             //create each walls for the level
-
-            this.walls.add(new Obstacle(this,game.config.width/2,7*game.config.height/8,'wall').setOrigin(0,0).setScale(1,1));
-            this.walls.add(new Obstacle(this,1*game.config.width/7,5*game.config.height/8,'wall').setOrigin(0,0).setScale(1,.5));
-            this.walls.add(new Obstacle(this,2*game.config.width/7,1*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,1.5));
-            this.walls.add(new Obstacle(this,7*game.config.width/8,7*game.config.height/9,'wall').setOrigin(0,0).setScale(.75,.25));
-            this.walls.add(new Obstacle(this,game.config.width/2,4*game.config.height/8,'wall').setOrigin(0,0).setScale(.25,2.15));
-            this.walls.add(new Obstacle(this,4*game.config.width/8,5*game.config.height/8,'wall').setOrigin(0,0).setScale(.75,.25));
-            this.walls.add(new Obstacle(this,7*game.config.width/10,2*game.config.height/8,'wall').setOrigin(0,0).setScale(.125,1));
+            this.walls.add(new Obstacle(this, game.config.width / 2, 3 * game.config.height / 5 - 20,
+                'wall').setOrigin(.5, .5).setScale(2, 2));
 
         }
         this.physics.add.collider(this.player, this.walls, () => {
@@ -138,7 +129,7 @@ class Level_7 extends Phaser.Scene {
         //set up hill physics
         this.hills = this.add.group();
         {
-            //this.hills.add(new Hole(this, 750, 205, 'hill', .75))
+            //this.hills.add(new Hill(this, 750, 205, 'hill', .75))
         }
         this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
@@ -151,20 +142,28 @@ class Level_7 extends Phaser.Scene {
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 
         //set up level goal
-        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 7);
+        this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 9);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
-
+        //set up crab
         this.crabs = this.add.group();
-        this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'crab', .5).setScale(.1, .1);
-        this.crabs.add(this.crab1);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
 
-        //tutorial text for Level_7
+        this.crab1 = new Crab(this, game.config.width / 10, game.config.height / 3 + 25, 'crab', .5, .25);
+        this.crabs.add(this.crab1);
+        this.crab2 = new Crab(this, game.config.width / 10, 2 * game.config.height / 3 + 75, 'crab', .5, .25);
+        this.crabs.add(this.crab2);
+        this.crab3 = new Crab(this, 8 * game.config.width / 10 - 30, game.config.height / 3 + 25, 'crab', .5, .25);
+        this.crabs.add(this.crab3);
+        this.crab4 = new Crab(this, 8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75, 'crab', .5, .25);
+        this.crabs.add(this.crab4);
+        this.physics.add.collider(this.player, this.crabs, null, null, this);
+
+
+        //tutorial text for Level_9
         let textConfig = {
             fontFamily: "Courier",
             fontSize: "18px",
-            color: "#FFF",
+            color: "#000",
             align: "center",
             padding: {
                 top: 5,
@@ -175,6 +174,7 @@ class Level_7 extends Phaser.Scene {
         let centerX = game.config.width / 2;
         let centerY = game.config.height / 2;
         let textSpacer = 64;
+
         //permanent control display
         textConfig.color = "#000";
         this.add.text(centerX - game.config.width / 3, game.config.height / 15,
@@ -192,11 +192,18 @@ class Level_7 extends Phaser.Scene {
     update() {
         this.player.update();
         this.crab1.update();
+        this.crab2.update();
+        this.crab3.update();
+        this.crab4.update();
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
             this.player.body.reset(this.startPosX, this.startPosY);
+            this.crab1.body.reset(game.config.width / 10, game.config.height / 3 + 25);
+            this.crab2.body.reset(game.config.width / 10, 2 * game.config.height / 3 + 75);
+            this.crab3.body.reset(8 * game.config.width / 10 - 30, game.config.height / 3 + 25);
+            this.crab4.body.reset(8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75);
             this.player.body.setEnable(false);
             this.player.rotation = 0;
         }
@@ -220,7 +227,5 @@ class Level_7 extends Phaser.Scene {
             this.mouseType = "Ravine";
             this.mouseText.text = "Hold Left Click to use tools.\n(1) or (2) to select tool.\nCurrent tool type: " + this.mouseType;
         }
-
     }
-
 }
