@@ -72,7 +72,7 @@ class Menu extends Phaser.Scene {
         menuConfig.fontSize = "48px";
         menuConfig.strokeThickness = 3;
         menuConfig.stroke = "#FD0";
-        this.add.text(centerX, centerY, "TERRA-GOLF", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY, "MEGA GOLF", menuConfig).setOrigin(.5);
     }
 
     update() {

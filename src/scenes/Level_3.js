@@ -43,18 +43,14 @@ class Level_3 extends Phaser.Scene {
             if (this.mouseType == "Ravine") {
                 //if left click, add ravine to group
                 var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
-                console.log("temp: " + temp);
                 this.ravines.add(temp);
                 temp.play("ravine");
-                console.log(this.ravines);
                 sizeIncrease(temp, true, this.mouse, this.time);
             } else if (this.mouseType == "Hill") {
                 //if right click, add hill to group
                 var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
-                console.log("temp: " + temp);
                 this.hills.add(temp);
                 temp.play("mountain");
-                console.log(this.hills);
                 sizeIncrease(temp, true, this.mouse, this.time);
             }
         });
@@ -151,11 +147,11 @@ class Level_3 extends Phaser.Scene {
         //set up crab
         this.crabs = this.add.group();
 
-        this.crab1 = new Crab(this, this.endPosX - 100, 150, 'crab', .5).setScale(.1, .1);
+        this.crab1 = new Crab(this, this.endPosX - 100, 150, 'crab', .5);
         this.crabs.add(this.crab1);
-        this.crab2 = new Crab(this, this.endPosX - 100, 450, 'crab', -.5).setScale(.1, .1);
-        this.crabs.add(this.crab2);
-        this.physics.add.collider(this.player, this.crabs, objectBounce, null, this);
+        // this.crab2 = new Crab(this, this.endPosX - 100, 450, 'crab', -.5, .1);
+        // this.crabs.add(this.crab2);
+        this.physics.add.collider(this.player, this.crabs, null, null, this);
 
 
         //tutorial text for Level_3
@@ -207,7 +203,7 @@ class Level_3 extends Phaser.Scene {
     update() {
         this.player.update();
         this.crab1.update();
-        this.crab2.update();
+        // this.crab2.update();
 
         //fade out text slowly
         if (this.fadeText1.alpha > 0 && this.fadeDelay) {

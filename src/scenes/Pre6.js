@@ -80,7 +80,7 @@ class Pre6 extends Phaser.Scene {
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 6.", menuConfig).setOrigin(.5);
         this.add.text(centerX, centerY + textSpacer, "Watch out for crabs.", menuConfig).setOrigin(.5);
-        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "They will knock your ball around.",
+        this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "They will try to grab your ball.",
             menuConfig).setOrigin(.5);
 
         //tutorial broken up into parts
@@ -98,7 +98,7 @@ class Pre6 extends Phaser.Scene {
                         this.time.addEvent({
                             delay: 3500,
                             callback: () => {
-                                this.changingText.text = "Or just knock them out of the way.";
+                                this.changingText.text = "If you get stuck, you can (R)eset.";
                                 this.time.addEvent({
                                     delay: 3500,
                                     callback: () => { this.scene.restart() },

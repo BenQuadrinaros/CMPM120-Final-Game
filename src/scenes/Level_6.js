@@ -160,7 +160,7 @@ class Level_6 extends Phaser.Scene {
         this.crabs = this.add.group();
         this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'crab', .5).setScale(.1, .1);
         this.crabs.add(this.crab1);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
+        this.physics.add.collider(this.player, this.crabs, null, null, this);
 
         //tutorial text for Level_7
         let textConfig = {

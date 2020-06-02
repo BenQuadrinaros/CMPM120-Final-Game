@@ -7,7 +7,7 @@ class Hill extends Phaser.Physics.Arcade.Sprite {
         //set physics properties
         scene.add.existing(this);
         scene.physics.add.existing(this)
-        this.setOrigin(.5).setCircle(130, 20, 20).setScale(scale, scale).setInteractive();
+        this.setOrigin(.5).setCircle(130, 20, 20).setScale(scale, scale);
         this.body.setImmovable(true);
         this.body.setGravity(false);
     }

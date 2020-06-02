@@ -7,7 +7,7 @@ class Hole extends Phaser.Physics.Arcade.Sprite {
         //set physics properties
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setOrigin(.5).setCircle(40, 90, 90).setScale(.4, .4);
+        this.setOrigin(.5).setCircle(30, 120, 120).setScale(.4, .4);
         this.body.updateCenter();
         this.body.setImmovable(true);
         this.body.setGravity(false);

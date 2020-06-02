@@ -1,6 +1,6 @@
 /*
 Mark Medved, Ben Rowland, and Thane Wisherop
-Terra-Golf
+Mega Golf
 DATE COMPLETED
 
 A mini-golf inspired game, where you terraform the course itself
@@ -16,7 +16,7 @@ let config = {
     physics:{
         default:'arcade',
         arcade:{
-            debug: false,
+            debug: true,
             gravity:{
                 x:0,
                 y:0
@@ -34,7 +34,7 @@ let game = new Phaser.Game(config);
 game.settings = {
     
 };
-let levelsAvailable = [1, 7, 8];
+let levelsAvailable = [1, 3, 7, 8];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
