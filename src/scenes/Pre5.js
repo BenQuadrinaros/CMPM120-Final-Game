@@ -83,7 +83,7 @@ class Pre5 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 5.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + textSpacer, "You can terraform after you have hit the ball.", 
+        this.add.text(centerX, centerY + textSpacer, "You can terraform after you\nhave hit the ball.", 
             menuConfig).setOrigin(.5);
         this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "You can push the ball from behind.",
             menuConfig).setOrigin(.5);

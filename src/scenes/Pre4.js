@@ -77,7 +77,7 @@ class Pre4 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 4.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + textSpacer, "To terraform in levels, hold Left Mouse Button.", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY + textSpacer, "To terraform in levels,\nhold Left Mouse Button.", menuConfig).setOrigin(.5);
         this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "To use the Ravine tool, press (2).",
             menuConfig).setOrigin(.5);
 
