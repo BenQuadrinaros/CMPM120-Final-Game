@@ -6,6 +6,8 @@ class Level_Select extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -16,10 +18,11 @@ class Level_Select extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.singleClick = 0;
         this.hasChosen = false;
+        createAnims(this);
 
         //create a ball to bounce in the background
-        this.player = this.physics.add.sprite(Phaser.Math.Between(100, game.config.width - 100), 
-            Phaser.Math.Between(100, game.config.height - 100), "ball");
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
         this.player.setOrigin(.5).setCircle(130).setScale(.25, .25);
         this.player.rotation = Phaser.Math.Between(0, 2 * Math.PI);
         this.player.setCollideWorldBounds(true, .9, .9);
@@ -29,6 +32,7 @@ class Level_Select extends Phaser.Scene {
         this.physics.world.on('worldbounds', this.worldBounce, this);
         this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000) * 100,
             this.player.body.acceleration);
+        this.player.play("roll");
         this.time.addEvent({
             delay: 100,
             callback: () => { this.player.body.acceleration = 0; },

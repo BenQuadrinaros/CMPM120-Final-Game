@@ -7,6 +7,8 @@ class Pre6 extends Phaser.Scene {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('crab', './assets/crab.png');
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -23,6 +25,9 @@ class Pre6 extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.hasChosen = false;
         this.increasingHit = true;
+
+        createAnims(this);
+
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -44,8 +49,8 @@ class Pre6 extends Phaser.Scene {
         this.crabs.add(this.crab1);
 
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width / 2, game.config.height / 3, 'ball', keyUP,
-            keyRIGHT, keyLEFT, false, 1);
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
         this.player.rotation = Math.PI / 2;
         this.player.body.setEnable(true);
         this.physics.world.on('worldbounds', () => {
@@ -90,6 +95,7 @@ class Pre6 extends Phaser.Scene {
                 this.increasingHit = false;
                 this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
                     this.player.body.acceleration);
+                this.player.play("roll");
                 this.player.ballSpeed = 0;
                 this.time.addEvent({
                     delay: 3500,

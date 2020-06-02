@@ -8,6 +8,9 @@ class Pre3 extends Phaser.Scene {
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('hill', './assets/mountain.png');
 
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
+
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
@@ -24,6 +27,9 @@ class Pre3 extends Phaser.Scene {
         this.hasChosen = false;
         this.increasingHit = false;
         this.increasingHill = true;
+
+        createAnims(this);
+
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -43,8 +49,8 @@ class Pre3 extends Phaser.Scene {
         this.hill = new Hill(this, 2 * game.config.width / 3, game.config.height / 2 + 50, 'hill', .01);
 
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width / 3, game.config.height / 2, 'ball', keyUP,
-            keyRIGHT, keyLEFT, false, 1);
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
         this.physics.world.on('worldbounds', () => {
             this.bounceSound.volume = .75;
@@ -93,6 +99,7 @@ class Pre3 extends Phaser.Scene {
                         this.increasingHit = false;
                         this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
                             this.player.body.acceleration);
+                        this.player.play("roll");
                         this.player.ballSpeed = 0;
                         this.time.addEvent({
                             delay: 10000,
