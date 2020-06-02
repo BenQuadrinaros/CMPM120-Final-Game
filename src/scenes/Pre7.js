@@ -6,6 +6,8 @@ class Pre7 extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -23,6 +25,9 @@ class Pre7 extends Phaser.Scene {
         this.hasChosen = false;
         this.increasing = true;
 
+        createAnims(this);
+
+
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
         this.chargeSound.volume = .5;
@@ -38,8 +43,8 @@ class Pre7 extends Phaser.Scene {
         this.bounceSound.play();
 
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width/3, game.config.height/2, 'ball', keyUP,
-            keyRIGHT, keyLEFT, false, 1);
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
         this.physics.world.on('worldbounds', () => { 
             this.bounceSound.volume = .75;
@@ -80,6 +85,7 @@ class Pre7 extends Phaser.Scene {
                 this.changingText.text = "Good luck out there.";
                 this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200, this.player.body.acceleration);
                 this.player.ballSpeed = 0;
+                this.player.play("roll");
                 this.time.addEvent({
                     delay: 5000,
                     callback: () => { this.scene.restart() },

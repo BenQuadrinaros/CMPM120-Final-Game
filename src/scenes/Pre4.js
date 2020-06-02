@@ -7,6 +7,8 @@ class Pre4 extends Phaser.Scene {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('ravine', './assets/ravine.png');
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
+
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -24,6 +26,8 @@ class Pre4 extends Phaser.Scene {
         this.hasChosen = false;
         this.increasingHit = false;
         this.increasingRavine = true;
+        createAnims(this);
+
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
@@ -43,8 +47,8 @@ class Pre4 extends Phaser.Scene {
         this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01);
 
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width / 3, game.config.height / 2, 'ball', keyUP,
-            keyRIGHT, keyLEFT, false, 1);
+        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
         this.physics.world.on('worldbounds', () => {
             this.bounceSound.volume = .75;
@@ -93,6 +97,7 @@ class Pre4 extends Phaser.Scene {
                         this.increasingHit = false;
                         this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
                             this.player.body.acceleration);
+                        this.player.play("roll");
                         this.player.ballSpeed = 0;
                         this.time.addEvent({
                             delay: 12000,
@@ -112,7 +117,6 @@ class Pre4 extends Phaser.Scene {
 
     update() {
         this.player.update();
-
         if (this.increasingHit) {
             this.player.ballSpeed++;
             if (this.player.ballSpeed >= 150) {
@@ -120,6 +124,7 @@ class Pre4 extends Phaser.Scene {
             }
         }
         if (this.increasingRavine) {
+            this.ravine.play("ravine");
             this.ravine.scale += .005;
             if (this.ravine.scale >= 1.15) {
                 this.increasingRavine = false;
@@ -128,7 +133,7 @@ class Pre4 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0
+            this.bounceSound.volume = 0;
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
