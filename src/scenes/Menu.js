@@ -23,6 +23,8 @@ class Menu extends Phaser.Scene {
         this.singleClick = 0;
         this.hasChosen = false;
         this.creditsRoll = false;
+
+        createAnims(this);
         
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
