@@ -28,8 +28,8 @@ function createAnims(scene){
     }) ;
     scene.anims.create({
         key: 'swing',
-        frameRate:5,
-        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'swing', end: 6}),
+        frameRate:7,
+        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'swing', end: 7}),
         repeat: 0
     }) ;
 

@@ -30,6 +30,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.shotIndicate.y = this.y;
         this.shotIndicate.rotation = this.rotation;
 
+
         //update shot indicator
         if (this.ballSpeed < 50) {
             this.shotIndicate.fillColor = '0x00FF00';
@@ -56,14 +57,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         //charge and hit ball by holding and realeasing up key
         if (Phaser.Input.Keyboard.JustUp(this.keyUp) && (!this.body.enable || this.infiniteHit)) {
-            this.body.setEnable(true);
-            this.shotIndicate.fillColor = '0xFACE44';
-            //hit the ball with velocity proportional to charge time
-            this.scene.sound.play("ballHit");
-            this.body.stop();
-            this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 200, this.body.acceleration);
-            this.play("roll");
-            this.ballSpeed = 0;
+
+            this.scene.putter.play("swing").on('animationcomplete', () =>{
+                this.body.setEnable(true);
+                this.shotIndicate.fillColor = '0xFACE44';
+                //hit the ball with velocity proportional to charge time
+                this.scene.sound.play("ballHit");
+                this.body.stop();
+                this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 200, this.body.acceleration);
+                this.play("roll");
+                this.ballSpeed = 0;
+            });
+
         } else if (this.body.touching.none) {
             //if no forces acting on player, reset acceleration
             this.body.setAcceleration(0);
@@ -90,6 +95,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.rotation += Math.PI / 100;
         } else {
             this.scene.turningSound.volume = 0;
+        }
+
+        if (this.scene.putter !== undefined) {
+            this.scene.putter.angle = this.rotation;
         }
     }
 }
