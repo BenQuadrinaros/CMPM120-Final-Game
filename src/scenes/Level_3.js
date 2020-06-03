@@ -92,6 +92,8 @@ class Level_3 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
+        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
+
         this.physics.world.on('worldbounds', () => { 
             this.bounceSound.volume = .75;
             this.time.addEvent({
