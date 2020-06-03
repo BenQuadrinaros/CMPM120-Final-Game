@@ -99,7 +99,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (this.scene.putter !== undefined) {
-            this.scene.putter.angle = this.rotation;
+            this.scene.putter.rotation = this.rotation;
         }
     }
 }
