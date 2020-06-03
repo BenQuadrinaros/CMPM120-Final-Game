@@ -23,7 +23,15 @@ function createAnims(scene){
     scene.anims.create({
         key: 'score',
         frameRate:5,
-        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'score', end: 4}),
+        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'sink', end: 3}),
         repeat: 0
     }) ;
+    scene.anims.create({
+        key: 'swing',
+        frameRate:5,
+        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'swing', end: 6}),
+        repeat: 0
+    }) ;
+
+
 }
