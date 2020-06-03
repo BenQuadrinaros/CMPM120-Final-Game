@@ -57,9 +57,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         //charge and hit ball by holding and realeasing up key
         if (Phaser.Input.Keyboard.JustUp(this.keyUp) && (!this.body.enable || this.infiniteHit)) {
+            this.body.setEnable(true);
 
             this.scene.putter.play("swing").on('animationcomplete', () =>{
-                this.body.setEnable(true);
                 this.shotIndicate.fillColor = '0xFACE44';
                 //hit the ball with velocity proportional to charge time
                 this.scene.sound.play("ballHit");
@@ -67,6 +67,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.scene.physics.velocityFromRotation(this.rotation, this.ballSpeed * 200, this.body.acceleration);
                 this.play("roll");
                 this.ballSpeed = 0;
+                this.scene.putter.setFrame('swing1');
             });
 
         } else if (this.body.touching.none) {
