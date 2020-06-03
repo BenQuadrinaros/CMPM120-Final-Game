@@ -8,9 +8,11 @@ class Level_Select extends Phaser.Scene {
         this.load.image('ball', './assets/ball_temp.png');
         this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
 
-
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
+        this.load.audio("chargeHit", "./assets/shotIndicator.wav");
+        this.load.audio("rotate", "./assets/angleTick.wav");
+        this.load.audio("bounce", "./assets/bounce.wav");
     }
 
     create() {
@@ -20,22 +22,43 @@ class Level_Select extends Phaser.Scene {
         this.hasChosen = false;
         createAnims(this);
 
+        //ball sfx
+        this.chargeSound = this.sound.add("chargeHit");
+        this.chargeSound.volume = .5;
+        this.chargeSound.loop = true;
+        this.chargeSound.play();
+        this.turningSound = this.sound.add("rotate");
+        this.turningSound.volume = 0;
+        this.turningSound.loop = true;
+        this.turningSound.play();
+        this.bounceSound = this.sound.add("bounce");
+        this.bounceSound.volume = 0;
+        this.bounceSound.loop = true;
+        this.bounceSound.play();
+
         //create a ball to bounce in the background
-        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
+            Phaser.Math.Between(100, game.config.width - 100), 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
-        this.player.setOrigin(.5).setCircle(130).setScale(.25, .25);
         this.player.rotation = Phaser.Math.Between(0, 2 * Math.PI);
-        this.player.setCollideWorldBounds(true, .9, .9);
-        this.player.body.onWorldBounds = true;
-        this.player.body.setGravity(false);
-        this.player.setMaxVelocity(200);
-        this.physics.world.on('worldbounds', this.worldBounce, this);
-        this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000) * 100,
-            this.player.body.acceleration);
+        this.player.body.setEnable(true);
+        this.physics.world.on('worldbounds', () => {
+            this.bounceSound.volume = .75;
+            this.time.addEvent({
+                delay: 750,
+                callback: () => { this.bounceSound.volume = 0 },
+                loop: false,
+                callbackScope: this
+            });
+        }, this);
+        this.physics.world.on('worldbounds', worldBounce, this);
+        this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000), this.player.body.acceleration);
+        this.player.ballSpeed = 0;
+        this.player.shotIndicate.width = 0;
         this.player.play("roll");
         this.time.addEvent({
-            delay: 100,
-            callback: () => { this.player.body.acceleration = 0; },
+            delay: 150,
+            callback: () => { this.player.body.acceleration = 0 },
             loop: false,
             callbackScope: this
         });
@@ -69,15 +92,15 @@ class Level_Select extends Phaser.Scene {
 
         let i = 1;
         levelsAvailable.forEach(level => {
-            this.add.rectangle(textSpacer*level,70,50,50,'0xffffff');
-            this.add.text(textSpacer*level,70,level.toString(),menuConfig).setOrigin(.5,.5);
+            this.add.rectangle(textSpacer * level, 70, 50, 50, '0xffffff');
+            this.add.text(textSpacer * level, 70, level.toString(), menuConfig).setOrigin(.5, .5);
         });
 
         this.add.text(centerX, centerY - textSpacer, "Press the key of the level you would\nlike to start. Levels will be unlocked\nwhen the previous is completed.", menuConfig)
             .setOrigin(.5);
-        this.add.text(centerX, centerY + .75*textSpacer, "Press (0) to go to the sandbox.\nYou can practice your skills here.", menuConfig)
+        this.add.text(centerX, centerY + .75 * textSpacer, "Press (0) to go to the sandbox.\nYou can practice your skills here.", menuConfig)
             .setOrigin(.5);
-        this.add.text(centerX, centerY + 2*textSpacer, "Press (↓) to return to the main menu.", menuConfig)
+        this.add.text(centerX, centerY + 2 * textSpacer, "Press (↓) to return to the main menu.", menuConfig)
             .setOrigin(.5);
     }
 
@@ -117,30 +140,30 @@ class Level_Select extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyTWO) && !this.hasChosen && levelsAvailable.includes(2)) {
             this.hasChosen = true;
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay: 1300,
-                    callback: () => {
-                        this.scene.start("pre2")
-                    },
-                    loop: false,
-                    callbackScope: this
-                });
-            
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => {
+                    this.scene.start("pre2")
+                },
+                loop: false,
+                callbackScope: this
+            });
+
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyTHREE) && !this.hasChosen && levelsAvailable.includes(3)) {
             this.hasChosen = true;
-                this.sound.play("menuSelect");
-                this.time.addEvent({
-                    delay: 1300,
-                    callback: () => {
-                        this.scene.start("pre3")
-                    },
-                    loop: false,
-                    callbackScope: this
-                });
-            
+            this.sound.play("menuSelect");
+            this.time.addEvent({
+                delay: 1300,
+                callback: () => {
+                    this.scene.start("pre3")
+                },
+                loop: false,
+                callbackScope: this
+            });
+
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyFOUR) && !this.hasChosen && levelsAvailable.includes(4)) {
@@ -153,7 +176,7 @@ class Level_Select extends Phaser.Scene {
                 callbackScope: this
             });
         }
-        
+
         if (Phaser.Input.Keyboard.JustDown(keyFIVE) && !this.hasChosen && levelsAvailable.includes(5)) {
             this.hasChosen = true;
             this.sound.play("menuSelect");

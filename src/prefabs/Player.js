@@ -22,7 +22,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setGravity(false);
         this.setMaxVelocity(200);
         this.body.setEnable(false);
-        this.setOrigin(.5).setCircle(130).setScale(.25, .25);
+        this.setOrigin(.5).setCircle(50).setScale(.75, .75);
     }
 
     update() {
