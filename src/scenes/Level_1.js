@@ -71,7 +71,7 @@ class Level_1 extends Phaser.Scene {
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT,false,'roll1');
 
-        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
+        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1').setOrigin(1.25,.3);
 
         this.physics.world.on('worldbounds', () => { 
             this.bounceSound.volume = .75;
