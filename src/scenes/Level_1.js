@@ -88,7 +88,9 @@ class Level_1 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create each walls for the level
-            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
+            this.ui = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
+            this.ui.alpha = 1;
+            this.walls.add(this.ui);
 
             this.walls.add(new Obstacle(this, 0, 150, 'wall').setOrigin(0, 0).setScale(2.3, 1));
 
@@ -113,7 +115,7 @@ class Level_1 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4, 140));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 

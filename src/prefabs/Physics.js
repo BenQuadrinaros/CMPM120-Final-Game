@@ -72,7 +72,7 @@ function sizeIncrease(object, looping, mouseB, time) {
     }
     time.addEvent({
         delay:100,
-        callback: () => {if(looping){sizeIncrease(object, looping,mouseB,time);}},
+        callback: () => {if(looping){sizeIncrease(object, looping, mouseB, time);}},
         loop:false,
         callbackScope:this
     });

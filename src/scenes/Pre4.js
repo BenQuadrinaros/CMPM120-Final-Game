@@ -44,7 +44,7 @@ class Pre4 extends Phaser.Scene {
         this.bounceSound.play();
 
         //create a ravine
-        this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01);
+        this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01, 50);
 
         //create a ball to show hitting
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,

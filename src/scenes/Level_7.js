@@ -42,13 +42,13 @@ class Level_7 extends Phaser.Scene {
         this.input.on('pointerdown', () => {
             if (this.mouseType == "Ravine") {
                 //if left click, add ravine to group
-                var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01);
+                var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01, 50);
                 this.ravines.add(temp);
                 temp.play("ravine");
                 sizeIncrease(temp, true, this.mouse, this.time);
             } else if (this.mouseType == "Hill") {
                 //if right click, add hill to group
-                var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01);
+                var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01, 50);
                 this.hills.add(temp);
                 temp.play("mountain");
                 sizeIncrease(temp, true, this.mouse, this.time);
@@ -113,7 +113,9 @@ class Level_7 extends Phaser.Scene {
         this.walls = this.add.group();
         {
             //create barrier uner UI
-            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
+            this.ui = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
+            this.ui.alpha = 1;
+            this.walls.add(this.ui);
 
             //create each walls for the level
 
@@ -148,7 +150,7 @@ class Level_7 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole
-            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4, 140));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 

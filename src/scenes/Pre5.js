@@ -47,10 +47,10 @@ class Pre5 extends Phaser.Scene {
         this.bounceSound.play();
 
         //set up hill
-        this.hill = new Hill(this, 3 * game.config.width / 5, game.config.height / 2 + 50, 'hill', .01);
+        this.hill = new Hill(this, 3 * game.config.width / 5, game.config.height / 2 + 50, 'hill', .01, 140);
 
         //create a ravine
-        this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01);
+        this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01, 140);
 
         //create a ball to show hitting
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,

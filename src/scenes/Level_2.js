@@ -88,9 +88,10 @@ class Level_2 extends Phaser.Scene {
         {
             //create each walls for the level
             var floorFrame = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
+            floorFrame.alpha = 1;
             this.walls.add(floorFrame);
 
-            var floor3 = new Obstacle(this, 0, 350, 'wall').setOrigin(0, 0).setScale(2.3, 1);
+            var floor3 = new Obstacle(this, 0, 400, 'wall').setOrigin(0, 0).setScale(2.3, 1);
             this.walls.add(floor3);
 
             var floor4 = new Obstacle(this, 360, 450, 'wall').setOrigin(0, 0).setScale(.75, 1.75);
@@ -118,7 +119,7 @@ class Level_2 extends Phaser.Scene {
         this.ravines = this.add.group();
         {
             //create a ravine in the hole to pull the ball in
-            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4));
+            this.ravines.add(new Ravine(this, this.endPosX, this.endPosY, 'ravine', .4, 140));
         }
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
 

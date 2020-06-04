@@ -60,6 +60,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setEnable(true);
 
             this.scene.putter.play("swing").on('animationcomplete', () =>{
+                this.scene.putter.alpha = 0;
                 this.shotIndicate.fillColor = '0xFACE44';
                 //hit the ball with velocity proportional to charge time
                 this.scene.sound.play("ballHit");

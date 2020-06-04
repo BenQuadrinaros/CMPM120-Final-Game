@@ -1,19 +1,15 @@
 class Ravine extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, texture, scale) {
+    constructor(scene, x, y, texture, scale, radius) {
         super(scene, x, y, texture);
         this.scene = scene;
 
         //set physics properties
         scene.add.existing(this);
         scene.physics.add.existing(this)
-        this.setOrigin(.5).setCircle(130, 20, 20).setScale(scale, scale);
+        this.setOrigin(.5).setCircle(radius).setScale(scale, scale);
         this.body.setImmovable(true);
         this.body.setGravity(false);
-    }
-
-    update() {
-
     }
 
 }
