@@ -160,11 +160,14 @@ class Level_6 extends Phaser.Scene {
         this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 6);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
-
         this.crabs = this.add.group();
         this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'crab', .5).setScale(.1, .1);
         this.crabs.add(this.crab1);
         this.physics.add.collider(this.player, this.crabs, null, null, this);
+        
+        //move ball to top of render
+        this.player.depth = this.crab1.depth+1;
+        this.putter.depth = this.player.depth+1;
 
         //tutorial text for Level_7
         let textConfig = {

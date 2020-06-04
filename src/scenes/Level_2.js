@@ -126,6 +126,10 @@ class Level_2 extends Phaser.Scene {
         //set up level goal
         this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 2);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
+        
+        //move ball to top of render
+        this.player.depth = this.goal.depth+1;
+        this.putter.depth = this.player.depth+1;
 
         //tutorial text for Level_2
         let textConfig = {

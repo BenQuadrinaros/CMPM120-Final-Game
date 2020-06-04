@@ -154,13 +154,13 @@ class Level_3 extends Phaser.Scene {
 
         //set up crab
         this.crabs = this.add.group();
-
         this.crab1 = new Crab(this, this.endPosX - 100, 150, 'crab', .5);
         this.crabs.add(this.crab1);
-        // this.crab2 = new Crab(this, this.endPosX - 100, 450, 'crab', -.5, .1);
-        // this.crabs.add(this.crab2);
         this.physics.add.collider(this.player, this.crabs, null, null, this);
-
+        
+        //move ball to top of render
+        this.player.depth = this.crab1.depth+1;
+        this.putter.depth = this.player.depth+1;
 
         //tutorial text for Level_3
         let textConfig = {
