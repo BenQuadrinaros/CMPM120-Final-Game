@@ -43,12 +43,16 @@ class Level_5 extends Phaser.Scene {
             if (this.mouseType == "Ravine") {
                 //if left click, add ravine to group
                 var temp = new Ravine(this, game.input.mousePointer.x, game.input.mousePointer.y, 'ravine', .01, 50);
+                this.player.depth = temp.depth+1;
+                this.putter.depth = this.player.depth+1;
                 this.ravines.add(temp);
                 temp.play("ravine");
                 sizeIncrease(temp, true, this.mouse, this.time);
             } else if (this.mouseType == "Hill") {
                 //if right click, add hill to group
                 var temp = new Hill(this, game.input.mousePointer.x, game.input.mousePointer.y, 'hill', .01, 50);
+                this.player.depth = temp.depth+1;
+                this.putter.depth = this.player.depth+1;
                 this.hills.add(temp);
                 temp.play("mountain");
                 sizeIncrease(temp, true, this.mouse, this.time);
