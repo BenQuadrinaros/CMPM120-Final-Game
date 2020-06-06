@@ -93,7 +93,7 @@ class Level_9 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
-        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
+        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1').setOrigin(1.25,.2);
 
         this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
@@ -136,13 +136,13 @@ class Level_9 extends Phaser.Scene {
         //set up crab
         this.crabs = this.add.group();
 
-        this.crab1 = new Crab(this, game.config.width / 10, game.config.height / 3 + 25, 'crab', .5, .25);
+        this.crab1 = new Crab(this, game.config.width / 10, game.config.height / 3 + 25, 'distortionAtlas', .5, .25,'twister1').play('tornado');
         this.crabs.add(this.crab1);
-        this.crab2 = new Crab(this, game.config.width / 10, 2 * game.config.height / 3 + 75, 'crab', .5, .25);
+        this.crab2 = new Crab(this, game.config.width / 10, 2 * game.config.height / 3 + 75, 'distortionAtlas', .5, .25,'twister1').play('tornado');
         this.crabs.add(this.crab2);
-        this.crab3 = new Crab(this, 8 * game.config.width / 10 - 30, game.config.height / 3 + 25, 'crab', .5, .25);
+        this.crab3 = new Crab(this, 8 * game.config.width / 10 - 30, game.config.height / 3 + 25, 'distortionAtlas', .5, .25,'twister1').play('tornado');
         this.crabs.add(this.crab3);
-        this.crab4 = new Crab(this, 8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75, 'crab', .5, .25);
+        this.crab4 = new Crab(this, 8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75, 'distortionAtlas', .5, .25,'twister1').play('tornado');
         this.crabs.add(this.crab4);
         this.physics.add.collider(this.player, this.crabs, null, null, this);
         

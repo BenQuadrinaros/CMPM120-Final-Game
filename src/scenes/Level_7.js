@@ -96,7 +96,7 @@ class Level_7 extends Phaser.Scene {
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
-        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
+        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1').setOrigin(1.25,.2);
 
         this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
@@ -143,7 +143,7 @@ class Level_7 extends Phaser.Scene {
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         this.crabs = this.add.group();
-        this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'crab', .5).setScale(.1, .1);
+        this.crab1 = new Crab(this, 3*game.config.width / 5 +25, game.config.height / 2+20 , 'distortionAtlas', .5,1,'twister1').setScale(.1, .1).play("tornado");
         this.crabs.add(this.crab1);
         this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
         
