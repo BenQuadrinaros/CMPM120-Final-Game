@@ -120,7 +120,7 @@
         "h": 100
       }
     },
-    "roll3": {
+    "twister3": {
       "frame": {
         "x": 202,
         "y": 101,
@@ -140,7 +140,7 @@
         "h": 100
       }
     },
-    "roll1": {
+    "roll3": {
       "frame": {
         "x": 202,
         "y": 202,
@@ -160,9 +160,29 @@
         "h": 100
       }
     },
-    "roll2": {
+    "roll1": {
       "frame": {
         "x": 0,
+        "y": 303,
+        "w": 100,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      }
+    },
+    "roll2": {
+      "frame": {
+        "x": 101,
         "y": 303,
         "w": 100,
         "h": 100
@@ -182,7 +202,7 @@
     },
     "sink1": {
       "frame": {
-        "x": 101,
+        "x": 202,
         "y": 303,
         "w": 100,
         "h": 100
@@ -202,8 +222,8 @@
     },
     "sink2": {
       "frame": {
-        "x": 202,
-        "y": 303,
+        "x": 303,
+        "y": 0,
         "w": 100,
         "h": 100
       },
@@ -223,7 +243,7 @@
     "sink3": {
       "frame": {
         "x": 303,
-        "y": 0,
+        "y": 101,
         "w": 100,
         "h": 100
       },
@@ -240,27 +260,7 @@
         "h": 100
       }
     },
-    "swing1": {
-      "frame": {
-        "x": 303,
-        "y": 202,
-        "w": 100,
-        "h": 100
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 100,
-        "h": 100
-      },
-      "sourceSize": {
-        "w": 100,
-        "h": 100
-      }
-    },
-    "swing2": {
+    "twister1": {
       "frame": {
         "x": 303,
         "y": 303,
@@ -280,7 +280,7 @@
         "h": 100
       }
     },
-    "swing3": {
+    "swing1": {
       "frame": {
         "x": 0,
         "y": 404,
@@ -300,7 +300,7 @@
         "h": 100
       }
     },
-    "swing4": {
+    "swing2": {
       "frame": {
         "x": 101,
         "y": 404,
@@ -320,7 +320,7 @@
         "h": 100
       }
     },
-    "swing5": {
+    "swing3": {
       "frame": {
         "x": 202,
         "y": 404,
@@ -340,7 +340,7 @@
         "h": 100
       }
     },
-    "swing6": {
+    "swing4": {
       "frame": {
         "x": 303,
         "y": 404,
@@ -360,10 +360,70 @@
         "h": 100
       }
     },
-    "swing7": {
+    "swing5": {
       "frame": {
         "x": 404,
         "y": 0,
+        "w": 100,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      }
+    },
+    "swing6": {
+      "frame": {
+        "x": 404,
+        "y": 101,
+        "w": 100,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      }
+    },
+    "swing7": {
+      "frame": {
+        "x": 404,
+        "y": 202,
+        "w": 100,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      }
+    },
+    "twister2": {
+      "frame": {
+        "x": 404,
+        "y": 303,
         "w": 100,
         "h": 100
       },

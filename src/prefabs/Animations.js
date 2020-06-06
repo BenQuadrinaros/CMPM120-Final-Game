@@ -33,5 +33,12 @@ function createAnims(scene){
         repeat: 0
     }) ;
 
+    scene.anims.create({
+        key: 'tornado',
+        frameRate:7,
+        frames: scene.anims.generateFrameNames('distortionAtlas', {prefix: 'twister', end: 3}),
+        repeat: -1
+    }) ;
+
 
 }
