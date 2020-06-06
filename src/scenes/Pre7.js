@@ -37,24 +37,12 @@ class Pre7 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //create a ball to show hitting
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => { 
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', this.worldBounce, this);
 
         let menuConfig = {
@@ -88,7 +76,7 @@ class Pre7 extends Phaser.Scene {
                 this.player.play("roll");
                 this.time.addEvent({
                     delay: 5000,
-                    callback: () => { this.scene.restart() },
+                    callback: () => { if (!this.hasChosen) { this.scene.restart() } },
                     loop: false,
                     callbackScope: this
                 });
@@ -110,7 +98,6 @@ class Pre7 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,

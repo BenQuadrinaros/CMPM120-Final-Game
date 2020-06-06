@@ -38,10 +38,6 @@ class Pre6 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         // create a crab
         this.crabs= this.add.group();
@@ -53,15 +49,7 @@ class Pre6 extends Phaser.Scene {
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.rotation = Math.PI / 2;
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
@@ -107,7 +95,7 @@ class Pre6 extends Phaser.Scene {
                                 this.changingText.text = "If you get stuck, you can (R)eset.";
                                 this.time.addEvent({
                                     delay: 3500,
-                                    callback: () => { this.scene.restart() },
+                                    callback: () => { if (!this.hasChosen) { this.scene.restart() } },
                                     loop: false,
                                     callbackScope: this
                                 });
@@ -138,7 +126,6 @@ class Pre6 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,

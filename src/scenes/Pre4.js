@@ -38,10 +38,6 @@ class Pre4 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //create a ravine
         this.ravine = new Ravine(this, 2 * game.config.width / 3, game.config.height / 2 - 50, 'ravine', .01, 50);
@@ -50,15 +46,7 @@ class Pre4 extends Phaser.Scene {
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
@@ -100,8 +88,8 @@ class Pre4 extends Phaser.Scene {
                         this.player.play("roll");
                         this.player.ballSpeed = 0;
                         this.time.addEvent({
-                            delay: 12000,
-                            callback: () => { this.scene.restart() },
+                            delay: 5000,
+                            callback: () => { if (!this.hasChosen) { this.scene.restart() } },
                             loop: false,
                             callbackScope: this
                         });
@@ -125,15 +113,14 @@ class Pre4 extends Phaser.Scene {
         }
         if (this.increasingRavine) {
             this.ravine.play("ravine");
-            this.ravine.scale += .005;
-            if (this.ravine.scale >= 1.15) {
+            this.ravine.scale += .01;
+            if (this.ravine.scale >= 1.5) {
                 this.increasingRavine = false;
             }
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0;
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,

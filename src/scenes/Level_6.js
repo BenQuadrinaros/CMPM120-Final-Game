@@ -7,7 +7,7 @@ class Level_6 extends Phaser.Scene {
         //console.log("in level 6");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('river', './assets/meanderingRiver.jpg');
+        this.load.image('river', './assets/cliffs_lvl6.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab', './assets/crab.png');
@@ -74,10 +74,6 @@ class Level_6 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -102,15 +98,7 @@ class Level_6 extends Phaser.Scene {
             keyRIGHT, keyLEFT, false, 'roll1');
         this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
 
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
         this.player.rotation = Math.PI;
 
@@ -130,15 +118,7 @@ class Level_6 extends Phaser.Scene {
             this.walls.add(new Obstacle(this,6*game.config.width/8,5*game.config.height/8,'wall').setOrigin(0,0).setScale(.75,.25));
 
         }
-        this.physics.add.collider(this.player, this.walls, () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics

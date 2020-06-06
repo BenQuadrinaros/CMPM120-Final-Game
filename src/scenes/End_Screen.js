@@ -1,60 +1,22 @@
-class Menu extends Phaser.Scene {
+class End_Screen extends Phaser.Scene {
     constructor() {
-        super("menuScene");
+        super("endScreen");
     }
 
     preload() {
         //load images
-        this.load.image('ball', './assets/ball_temp.png');
-        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
         this.load.image('logo', './assets/megagolftitle.png');
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
-        this.load.audio("chargeHit", "./assets/shotIndicator.wav");
-        this.load.audio("rotate", "./assets/angleTick.wav");
-        this.load.audio("bounce", "./assets/bounce.wav");
-        this.load.audio("boogie", "./assets/quit.wav");
     }
 
     create() {
         this.cameras.main.setBackgroundColor("#5A5");
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        this.singleClick = 0;
         this.hasChosen = false;
         this.creditsRoll = false;
-
-        createAnims(this);
-        
-        //ball sfx
-        this.chargeSound = this.sound.add("chargeHit");
-        this.chargeSound.volume = 0;
-        this.chargeSound.loop = true;
-        this.chargeSound.play();
-        this.turningSound = this.sound.add("rotate");
-        this.turningSound.volume = 0;
-        this.turningSound.loop = true;
-        this.turningSound.play();
-
-        //create a ball to bounce in the background
-        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
-            Phaser.Math.Between(100, game.config.width - 100), 'distortionAtlas', keyUP,
-            keyRIGHT, keyLEFT, false, 'roll1');
-        this.player.rotation = Phaser.Math.Between(0, 2*Math.PI);
-        this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
-        this.physics.world.on('worldbounds', worldBounce, this);
-        this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000), this.player.body.acceleration);
-        this.player.ballSpeed = 0;
-        this.player.shotIndicate.width = 0;
-        this.player.play("roll");
-        this.time.addEvent({
-            delay: 150,
-            callback: () => { this.player.body.acceleration = 0 },
-            loop: false,
-            callbackScope: this
-        });
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -73,7 +35,7 @@ class Menu extends Phaser.Scene {
         let textSpacer = 64;
 
         // (↑) & (↓)
-        this.upper = this.add.text(centerX, centerY - 2.75 * textSpacer, "Press (↑) to start golfing.", menuConfig)
+        this.upper = this.add.text(centerX, centerY - 2.75 * textSpacer, "Press (↑) to return to the main menu.", menuConfig)
             .setOrigin(.5);
         this.credits = this.add.text(centerX, centerY + 2.75 * textSpacer, "Press (↓) to view the credits.", menuConfig)
             .setOrigin(.5);
@@ -95,14 +57,14 @@ class Menu extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.scene.start("Level_Select");
+                    this.bounceSound.volume = 0;
+                    this.scene.start("menuScene");
                 },
                 loop: false,
                 callbackScope: this
             });
         }
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && this.credits.alpha == 1) {
-            this.sound.play("boogie");
             this.creditsRoll = true;
         }
 

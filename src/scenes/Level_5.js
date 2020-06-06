@@ -7,7 +7,7 @@ class Level_5 extends Phaser.Scene {
         //console.log("in level 5");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background2', './assets/Level2background.png');
+        this.load.image('background2', './assets/mountainousisland_lvl5.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab', './assets/crab.png');
@@ -34,7 +34,7 @@ class Level_5 extends Phaser.Scene {
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
         this.startPosX = game.config.width / 10;
-        this.startPosY = game.config.height - 40;
+        this.startPosY = game.config.height - 100;
         this.endPosX = game.config.width / 10;
         this.endPosY = game.config.height / 3;
 
@@ -74,10 +74,6 @@ class Level_5 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //key bindings
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -95,22 +91,14 @@ class Level_5 extends Phaser.Scene {
         keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up map background
-        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
+        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.05, 1);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1');
 
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
 
         //set up obstacles physics
@@ -124,21 +112,13 @@ class Level_5 extends Phaser.Scene {
             //create each walls for the level
             this.walls.add(new Obstacle(this, 300, 2 * game.config.height / 3, 'wall').setOrigin(.5, .5).setScale(3, .5));
 
-            this.walls.add(new Obstacle(this, 300, game.config.height / 3 - 15, 'wall').setOrigin(.5, .5).setScale(.5, 2));
+            this.walls.add(new Obstacle(this, 300, game.config.height / 3 - 35, 'wall').setOrigin(.5, .5).setScale(.5, 1.75));
 
-            this.walls.add(new Obstacle(this, 2 * game.config.width / 3 - 50, 3 * game.config.height / 7 + 10,
-                'wall').setOrigin(.5, .5).setScale(.5, 2));
+            this.walls.add(new Obstacle(this, 5 * game.config.width / 7 - 15, 3 * game.config.height / 7 + 40,
+                'wall').setOrigin(.5, .5).setScale(.4, 2));
 
         }
-        this.physics.add.collider(this.player, this.walls, () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
         this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics

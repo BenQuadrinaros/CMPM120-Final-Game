@@ -55,7 +55,7 @@ function toNextLevel(player, hole) {
             if(nextLevel < 10) {
                 this.scene.start("pre"+nextLevel);
             } else {
-                this.scene.start("menuScene");
+                this.scene.start("endScreen");
             }
         },
         loop: false,

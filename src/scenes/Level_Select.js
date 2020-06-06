@@ -24,17 +24,13 @@ class Level_Select extends Phaser.Scene {
 
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
-        this.chargeSound.volume = .5;
+        this.chargeSound.volume = 0;
         this.chargeSound.loop = true;
         this.chargeSound.play();
         this.turningSound = this.sound.add("rotate");
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //create a ball to bounce in the background
         this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
@@ -42,15 +38,7 @@ class Level_Select extends Phaser.Scene {
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.rotation = Phaser.Math.Between(0, 2 * Math.PI);
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
         this.physics.velocityFromRotation(this.player.rotation, Phaser.Math.Between(1000, 10000), this.player.body.acceleration);
         this.player.ballSpeed = 0;
@@ -111,7 +99,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("sandboxScene");
                 },
                 loop: false,
@@ -125,7 +112,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("menuScene");
                 },
                 loop: false,
@@ -139,7 +125,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre1");
                 },
                 loop: false,
@@ -153,7 +138,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => {
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre2");
                 },
                 loop: false,
@@ -168,7 +152,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => {
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre3");
                 },
                 loop: false,
@@ -183,7 +166,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre4");
                 },
                 loop: false,
@@ -197,7 +179,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre5");
                 },
                 loop: false,
@@ -211,7 +192,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre6");
                 },
                 loop: false,
@@ -225,7 +205,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre7");
                 },
                 loop: false,
@@ -239,7 +218,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre8");
                 },
                 loop: false,
@@ -253,7 +231,6 @@ class Level_Select extends Phaser.Scene {
             this.time.addEvent({
                 delay: 1300,
                 callback: () => { 
-                    this.bounceSound.volume = 0;
                     this.scene.start("pre9");
                 },
                 loop: false,

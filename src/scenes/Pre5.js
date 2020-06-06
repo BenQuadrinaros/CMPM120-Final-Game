@@ -41,10 +41,6 @@ class Pre5 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //set up hill
         this.hill = new Hill(this, 3 * game.config.width / 5, game.config.height / 2 + 50, 'hill', .01, 140);
@@ -56,15 +52,7 @@ class Pre5 extends Phaser.Scene {
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
@@ -97,7 +85,7 @@ class Pre5 extends Phaser.Scene {
             delay: 1500,
             callback: () => {
                 this.increasingHit = false;
-                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 200,
+                this.physics.velocityFromRotation(this.player.rotation, this.player.ballSpeed * 100,
                     this.player.body.acceleration);
                 this.player.play("roll");
                 this.player.ballSpeed = 0;
@@ -119,8 +107,8 @@ class Pre5 extends Phaser.Scene {
                                             delay: 2500,
                                             callback: () => {
                                                 this.time.addEvent({
-                                                    delay: 7500,
-                                                    callback: () => { this.scene.restart() },
+                                                    delay: 500,
+                                                    callback: () => { if (!this.hasChosen) { this.scene.restart() } },
                                                     loop: false,
                                                     callbackScope: this
                                                 });
@@ -170,7 +158,6 @@ class Pre5 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,

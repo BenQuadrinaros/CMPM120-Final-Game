@@ -40,10 +40,6 @@ class Pre3 extends Phaser.Scene {
         this.turningSound.volume = 0;
         this.turningSound.loop = true;
         this.turningSound.play();
-        this.bounceSound = this.sound.add("bounce");
-        this.bounceSound.volume = 0;
-        this.bounceSound.loop = true;
-        this.bounceSound.play();
 
         //set up hill
         this.hill = new Hill(this, 2 * game.config.width / 3, game.config.height / 2 + 50, 'hill', .01, 140);
@@ -52,15 +48,7 @@ class Pre3 extends Phaser.Scene {
         this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.body.setEnable(true);
-        this.physics.world.on('worldbounds', () => {
-            this.bounceSound.volume = .75;
-            this.time.addEvent({
-                delay: 750,
-                callback: () => { this.bounceSound.volume = 0 },
-                loop: false,
-                callbackScope: this
-            });
-        }, this);
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
@@ -103,7 +91,7 @@ class Pre3 extends Phaser.Scene {
                         this.player.ballSpeed = 0;
                         this.time.addEvent({
                             delay: 10000,
-                            callback: () => { this.scene.restart() },
+                            callback: () => { if (!this.hasChosen) { this.scene.restart() } },
                             loop: false,
                             callbackScope: this
                         });
@@ -128,14 +116,13 @@ class Pre3 extends Phaser.Scene {
         }
         if (this.increasingHill) {
             this.hill.scale += .005;
-            if (this.hill.scale >= 1) {
+            if (this.hill.scale >= 1.15) {
                 this.increasingHill = false;
             }
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyDOWN) && !this.hasChosen) {
             this.hasChosen = true;
-            this.bounceSound.volume = 0
             this.sound.play("menuSelect");
             this.time.addEvent({
                 delay: 1300,
