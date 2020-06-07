@@ -156,13 +156,14 @@ class Level_8 extends Phaser.Scene {
         this.goal = new Hole(this, this.endPosX, this.endPosY, 'hole', 8);
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
-        this.crabs = this.add.group();
-        this.crab1 = new Crab(this, game.config.width / 2 - 50, game.config.height / 2 + 20, 'distortionAtlas', .5,1,'twister1').setScale(.1, .1).play('tornado');
-        this.crabs.add(this.crab1);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
+        this.storms = this.add.group();
+        this.storm1 = new Hurricane(this, game.config.width / 2 - 50, game.config.height / 2 + 20,
+            'distortionAtlas', .5, 1, 'twister1').play('tornado');
+        this.storms.add(this.storm1);
+        this.physics.add.collider(this.player, this.storms, this.objectBounce, null, this);
         
         //move ball to top of render
-        this.player.depth = this.crab1.depth+1;
+        this.player.depth = this.storm1.depth+1;
         this.putter.depth = this.player.depth+1;
 
         //tutorial text for Level_6
@@ -211,7 +212,7 @@ class Level_8 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
+        this.storm1.update();
 
         //fade out text slowly
         if (this.fadeText1.alpha > 0 && this.fadeDelay) {

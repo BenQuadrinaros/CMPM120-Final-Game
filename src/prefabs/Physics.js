@@ -39,11 +39,9 @@ function pushOverlap(player, hill) {
 
 //collision with hole
 function toNextLevel(player, hole) {
-    console.log(hole.level);
     let nextLevel = hole.level+1;
-    player.play("score").on('animationcomplete', () => {
-        this.player.alpha = 0;
-    });
+    this.player.alpha = 0;
+    hole.play("score");
     this.player.body.stop();
     this.player.body.setEnable(false);
     //play animation for ball -> hole

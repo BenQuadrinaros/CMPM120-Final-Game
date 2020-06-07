@@ -1,6 +1,6 @@
-class Crab extends Phaser.Physics.Arcade.Sprite {
+class Hurricane extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, texture, direction, scale = .1,frame) {
+    constructor(scene, x, y, texture, direction, scale = .1, frame) {
         super(scene, x, y, texture, frame,direction);
         this.scene = scene;
         this.counter = 0;
@@ -11,7 +11,7 @@ class Crab extends Phaser.Physics.Arcade.Sprite {
         //set physics properties
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setOrigin(.5, .5).setCircle(225, 25, 25).setScale(scale, scale);
+        this.setOrigin(.5, .5).setCircle(50).setScale(scale, scale);
     }
 
     update() {

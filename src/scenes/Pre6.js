@@ -6,9 +6,7 @@ class Pre6 extends Phaser.Scene {
     preload() {
         //load images
         this.load.image('ball', './assets/ball_temp.png');
-        this.load.image('crab', './assets/crab.png');
         this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
-
 
         //load audio files
         this.load.audio("menuSelect", "./assets/menuSelect.wav");
@@ -28,7 +26,6 @@ class Pre6 extends Phaser.Scene {
 
         createAnims(this);
 
-
         //ball sfx
         this.chargeSound = this.sound.add("chargeHit");
         this.chargeSound.volume = .5;
@@ -40,12 +37,13 @@ class Pre6 extends Phaser.Scene {
         this.turningSound.play();
 
         // create a crab
-        this.crabs= this.add.group();
-        this.crab1 = new Crab(this, game.config.width / 2 - 50, game.config.height / 2, 'crab', .5).setScale(.1, .1);
-        this.crabs.add(this.crab1);
+        this.storms = this.add.group();
+        this.storm1 = new Hurricane(this, game.config.width / 2 - 15, game.config.height / 2, 'distortionAtlas', .5,
+            1, 'twister1').play('tornado');
+        this.storms.add(this.storm1);
 
         //create a ball to show hitting
-        this.player = new Player(this, game.config.width/3, game.config.height/2, 'distortionAtlas', keyUP,
+        this.player = new Player(this, game.config.width/2, game.config.height/3, 'distortionAtlas', keyUP,
             keyRIGHT, keyLEFT, false, 'roll1');
         this.player.rotation = Math.PI / 2;
         this.player.body.setEnable(true);
@@ -53,7 +51,7 @@ class Pre6 extends Phaser.Scene {
 
         //set up neccessary physics
         this.physics.world.on('worldbounds', this.worldBounce, this);
-        this.physics.add.collider(this.player, this.crabs, this.objectBounce, null, this);
+        this.physics.add.collider(this.player, this.storms, this.objectBounce, null, this);
 
         let menuConfig = {
             fontFamily: "Courier",
@@ -72,7 +70,7 @@ class Pre6 extends Phaser.Scene {
         let textSpacer = 80;
 
         this.add.text(centerX, centerY - 2 * textSpacer, "Press (↓) to proceed to Level 6.", menuConfig).setOrigin(.5);
-        this.add.text(centerX, centerY + textSpacer, "Watch out for crabs.", menuConfig).setOrigin(.5);
+        this.add.text(centerX, centerY + textSpacer, "Watch out for hurricanes.", menuConfig).setOrigin(.5);
         this.changingText = this.add.text(centerX, centerY + 2 * textSpacer, "They will try to grab your ball.",
             menuConfig).setOrigin(.5);
 
@@ -115,7 +113,7 @@ class Pre6 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
+        this.storm1.update();
 
         if (this.increasingHit) {
             this.player.ballSpeed++;

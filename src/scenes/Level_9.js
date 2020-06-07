@@ -88,7 +88,7 @@ class Level_9 extends Phaser.Scene {
         keyTWO = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
 
         //set up map background
-        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.1, 1);
+        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.05, 1.05);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
@@ -107,8 +107,8 @@ class Level_9 extends Phaser.Scene {
             this.walls.add(this.ui);
 
             //create each walls for the level
-            this.walls.add(new Obstacle(this, game.config.width / 2, 3 * game.config.height / 5 - 20,
-                'wall').setOrigin(.5, .5).setScale(2, 2));
+            // this.walls.add(new Obstacle(this, game.config.width / 2 + 25, 3 * game.config.height / 5 - 25,
+            //     'wall').setOrigin(.5, .5).setScale(2, 1.85));
 
         }
         this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
@@ -134,20 +134,24 @@ class Level_9 extends Phaser.Scene {
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         //set up crab
-        this.crabs = this.add.group();
+        this.storms = this.add.group();
 
-        this.crab1 = new Crab(this, game.config.width / 10, game.config.height / 3 + 25, 'distortionAtlas', .5, .25,'twister1').play('tornado');
-        this.crabs.add(this.crab1);
-        this.crab2 = new Crab(this, game.config.width / 10, 2 * game.config.height / 3 + 75, 'distortionAtlas', .5, .25,'twister1').play('tornado');
-        this.crabs.add(this.crab2);
-        this.crab3 = new Crab(this, 8 * game.config.width / 10 - 30, game.config.height / 3 + 25, 'distortionAtlas', .5, .25,'twister1').play('tornado');
-        this.crabs.add(this.crab3);
-        this.crab4 = new Crab(this, 8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75, 'distortionAtlas', .5, .25,'twister1').play('tornado');
-        this.crabs.add(this.crab4);
-        this.physics.add.collider(this.player, this.crabs, null, null, this);
+        this.storm1 = new Hurricane(this, game.config.width / 10, game.config.height / 3 + 25,
+            'distortionAtlas', .5, 1.5,'twister1').play('tornado');
+        this.storms.add(this.storm1);
+        this.storm2 = new Hurricane(this, game.config.width / 10, 2 * game.config.height / 3 + 75,
+            'distortionAtlas', .5, 1.5,'twister1').play('tornado');
+        this.storms.add(this.storm2);
+        this.storm3 = new Hurricane(this, 8 * game.config.width / 10 - 30, game.config.height / 3 + 25,
+            'distortionAtlas', .5, 1.5,'twister1').play('tornado');
+        this.storms.add(this.storm3);
+        this.storm4 = new Hurricane(this, 8 * game.config.width / 10 - 30, 2 * game.config.height / 3 + 75,
+            'distortionAtlas', .5, 1.5,'twister1').play('tornado');
+        this.storms.add(this.storm4);
+        this.physics.add.collider(this.player, this.storms, null, null, this);
         
         //move ball to top of render
-        this.player.depth = this.crab4.depth+1;
+        this.player.depth = this.storm4.depth+1;
         this.putter.depth = this.player.depth+1;
 
         //tutorial text for Level_9
@@ -182,10 +186,10 @@ class Level_9 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
-        this.crab2.update();
-        this.crab3.update();
-        this.crab4.update();
+        this.storm1.update();
+        this.storm2.update();
+        this.storm3.update();
+        this.storm4.update();
 
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {

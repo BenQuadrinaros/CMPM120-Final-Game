@@ -10,7 +10,6 @@ class Level_3 extends Phaser.Scene {
         this.load.image('background2', './assets/butte_lvl3.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
-        this.load.image('crab', './assets/crab.png');
         this.load.image('hole', './assets/hole.png');
 
         //load texture atlasii
@@ -132,13 +131,14 @@ class Level_3 extends Phaser.Scene {
         this.win = this.physics.add.overlap(this.player, this.goal, toNextLevel, null, this);
 
         //set up crab
-        this.crabs = this.add.group();
-        this.crab1 = new Crab(this, this.endPosX - 100, 150, 'distortionAtlas', .5,1,'twister1').play('tornado');
-        this.crabs.add(this.crab1);
-        this.physics.add.collider(this.player, this.crabs, null, null, this);
+        this.storms = this.add.group();
+        this.storm1 = new Hurricane(this, this.endPosX - 100, 150, 'distortionAtlas', .5,
+            1, 'twister1').play('tornado');
+        this.storms.add(this.storm1);
+        this.physics.add.collider(this.player, this.storms, null, null, this);
 
         //move ball to top of render
-        this.player.depth = this.crab1.depth + 1;
+        this.player.depth = this.storm1.depth + 1;
         this.putter.depth = this.player.depth + 1;
 
         //tutorial text for Level_3
@@ -189,7 +189,7 @@ class Level_3 extends Phaser.Scene {
 
     update() {
         this.player.update();
-        this.crab1.update();
+        this.storm1.update();
 
 
         //fade out text slowly
