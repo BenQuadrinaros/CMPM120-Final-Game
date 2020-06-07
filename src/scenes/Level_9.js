@@ -107,8 +107,8 @@ class Level_9 extends Phaser.Scene {
             this.walls.add(this.ui);
 
             //create each walls for the level
-            // this.walls.add(new Obstacle(this, game.config.width / 2 + 25, 3 * game.config.height / 5 - 25,
-            //     'wall').setOrigin(.5, .5).setScale(2, 1.85));
+            this.walls.add(new Obstacle(this, game.config.width / 2 + 25, 3 * game.config.height / 5 - 25,
+                'wall').setOrigin(.5, .5).setScale(2, 1.85));
 
         }
         this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);

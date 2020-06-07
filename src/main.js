@@ -16,7 +16,7 @@ let config = {
     physics:{
         default:'arcade',
         arcade:{
-            debug: true,
+            debug: false,
             gravity:{
                 x:0,
                 y:0
@@ -34,7 +34,7 @@ let game = new Phaser.Game(config);
 game.settings = {
     
 };
-let levelsAvailable = [1,2,3, 4, 5, 6, 7, 8, 9];
+let levelsAvailable = [1];
 
 //reserve some keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyP, keyQ;
