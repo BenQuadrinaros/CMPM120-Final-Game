@@ -41,10 +41,11 @@ function pushOverlap(player, hill) {
 function toNextLevel(player, hole) {
     console.log(hole.level);
     let nextLevel = hole.level+1;
-    this.player.play("score");
+    player.play("score").on('animationcomplete', () => {
+        this.player.alpha = 0;
+    });
     this.player.body.stop();
     this.player.body.setEnable(false);
-    this.player.alpha = 0;
     //play animation for ball -> hole
     this.music.stop();
     levelsAvailable.push(nextLevel);
