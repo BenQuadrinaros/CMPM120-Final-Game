@@ -81,24 +81,14 @@ class Sandbox extends Phaser.Scene {
         keyTHREE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
         keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
-        //set up player physics
-        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
-            Phaser.Math.Between(100, game.config.width - 100), 'distortionAtlas', keyUP,
-            keyRIGHT, keyLEFT, false, 'roll1');
-        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1').setOrigin(1.25,.2);
-
-
-        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
-        this.physics.world.on('worldbounds', worldBounce, this);
-
         //set up obstacles physics
         this.walls = this.add.group();
         {
             //create each walls for the level
-            this.walls.add(new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75));
+            this.ui = new Obstacle(this, 0, 0, 'wall').setOrigin(0, 0).setScale(4.6, .75);
+            this.walls.add(this.ui);
+            this.ui.alpha = 1;
         }
-        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
-        this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //set up hill physics
         this.hills = this.add.group();
@@ -107,7 +97,6 @@ class Sandbox extends Phaser.Scene {
                 Phaser.Math.Between(300, game.config.height - 100), 'hill',
                 Phaser.Math.Between(.05, .35)));
         }
-        this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
 
         //set up ravine phsyics
         this.ravines = this.add.group();
@@ -117,7 +106,20 @@ class Sandbox extends Phaser.Scene {
                 Phaser.Math.Between(300, game.config.height - 100), 'ravine',
                 Phaser.Math.Between(.05, .35)));
         }
+
+        //set up player 
+        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
+            Phaser.Math.Between(100, game.config.width - 100), 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
+        this.putter = this.add.sprite(this.player.x, this.player.y, 'distortionAtlas', 'swing1').setOrigin(1.25, .2);
+
+        //set up physics
+        this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
+        this.physics.world.on('worldbounds', worldBounce, this);
         this.pull = this.physics.add.overlap(this.player, this.ravines, pullOverlap, null, this);
+        this.push = this.physics.add.overlap(this.player, this.hills, pushOverlap, null, this);
+        this.physics.add.collider(this.player, this.walls, () => { this.sound.play("bounce") }, null, this);
+        this.physics.add.collider(this.player, this.walls, objectBounce, null, this);
 
         //sandbox text
         let textConfig = {
@@ -162,7 +164,7 @@ class Sandbox extends Phaser.Scene {
         //keyboard controls for pause and restart
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.sound.play("wipe");
-            if(game.input.mousePointer.x <= game.config.width && game.input.mousePointer.y <= game.config.height) {
+            if (game.input.mousePointer.x <= game.config.width && game.input.mousePointer.y <= game.config.height) {
                 this.player.body.reset(game.input.mousePointer.x, game.input.mousePointer.y);
             } else {
                 this.player.body.reset(this.startPosX, this.startPosY);
