@@ -7,7 +7,7 @@ class Level_3 extends Phaser.Scene {
         //console.log("in level 3");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background2', './assets/butte_lvl3.jpg');
+        this.load.image('background1', './assets/butte_lvl3.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('hole', './assets/hole.png');
@@ -28,7 +28,7 @@ class Level_3 extends Phaser.Scene {
 
     create() {
         //misc set up
-        this.cameras.main.setBackgroundColor("#5A5");
+        // this.cameras.main.setBackgroundColor("#5A5");
         this.ballSpeed = 0;
         this.mouse = this.input.activePointer;
         this.mouseType = "None";
@@ -85,7 +85,7 @@ class Level_3 extends Phaser.Scene {
         keyONE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
 
         //set up map background
-        this.add.sprite(0, 25, 'background2').setOrigin(0, 0).setScale(4.1, 3.9);
+        this.add.sprite(0, 25, 'background1').setOrigin(0, 0).setScale(4.1, 3.9);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
