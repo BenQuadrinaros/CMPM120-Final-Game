@@ -7,7 +7,7 @@ class Level_5 extends Phaser.Scene {
         //console.log("in level 5");
         this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
-        this.load.image('background2', './assets/mountainousisland_lvl5.jpg');
+        this.load.image('background5', './assets/mountainousisland_lvl5.jpg');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
         this.load.image('crab', './assets/crab.png');
@@ -91,7 +91,7 @@ class Level_5 extends Phaser.Scene {
         keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up map background
-        this.add.sprite(0, 0, 'background2').setOrigin(0, 0).setScale(1.05, 1);
+        this.add.sprite(0, 0, 'background5').setOrigin(0, 0).setScale(1.05, 1);
 
         //set up player physics
         this.player = new Player(this, this.startPosX, this.startPosY, 'distortionAtlas', keyUP,
