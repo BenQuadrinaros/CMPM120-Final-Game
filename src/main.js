@@ -1,7 +1,7 @@
 /*
 Mark Medved, Ben Rowland, and Thane Wisherop
 Mega Golf
-DATE COMPLETED
+Completed 6/7/2020
 
 A mini-golf inspired game, where you terraform the course itself
 to achieve impossible shots on nature-inspired courses. Play
