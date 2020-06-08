@@ -5,11 +5,11 @@ class Sandbox extends Phaser.Scene {
 
     preload() {
         //console.log("in sandbox");
-        this.load.image('ball', './assets/ball_temp.png');
         this.load.image('wall', './assets/rect.png');
         this.load.image('hill', './assets/mountain.png');
         this.load.image('ravine', './assets/ravine.png');
 
+        this.load.atlas('distortionAtlas', './assets/spritesheet.png', './assets/sprites.json');
         //load player assosciated audio
         this.load.audio("rotate", "./assets/angleTick.wav");
         this.load.audio("chargeHit", "./assets/shotIndicator.wav");
@@ -28,6 +28,8 @@ class Sandbox extends Phaser.Scene {
         this.mouseType = "None";
         this.startPosX = 100;
         this.startPosY = 200;
+
+        createAnims(this);
 
         //create mouse listener for terrain manipulation
         this.input.on('pointerdown', () => {
@@ -80,8 +82,11 @@ class Sandbox extends Phaser.Scene {
         keyFOUR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
 
         //set up player physics
-        this.player = new Player(this, this.startPosX, this.startPosY, 'ball', keyUP,
-            keyRIGHT, keyLEFT, true);
+        this.player = new Player(this, Phaser.Math.Between(100, game.config.width - 100),
+            Phaser.Math.Between(100, game.config.width - 100), 'distortionAtlas', keyUP,
+            keyRIGHT, keyLEFT, false, 'roll1');
+        this.putter = this.add.sprite(this.player.x,this.player.y,'distortionAtlas','swing1').setOrigin(1.25,.2);
+
 
         this.physics.world.on('worldbounds', () => { this.sound.play("bounce") }, this);
         this.physics.world.on('worldbounds', worldBounce, this);
